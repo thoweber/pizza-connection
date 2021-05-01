@@ -90,7 +90,6 @@ public final class PizzaStoreApp {
 	}
 
 	private static void showBanner() {
-
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(
 				PizzaStoreApp.class.getClassLoader().getResourceAsStream("banner.txt"), StandardCharsets.UTF_8))) {
 			String line = reader.readLine();
