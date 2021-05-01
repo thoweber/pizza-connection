@@ -89,10 +89,14 @@ public final class PizzaStoreApp {
 	}
 
 	private static void showBanner() {
-		try (Stream<String> lines = Files.lines(
-				Paths.get(PizzaStoreApp.class.getClassLoader().getResource("banner.txt").toURI()),
-				StandardCharsets.UTF_8)) {
-			lines.forEach(PizzaStoreApp::println);
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+				PizzaStoreApp.class.getClassLoader().getResourceAsStream("banner.txt"), StandardCharsets.UTF_8))) {
+			String line = reader.readLine();
+			while (line != null) {
+				println(line);
+				line = reader.readLine();
+			}
 		} catch (Exception e) {
 			LOGGER.error("Cannot show store banner", e);
 		}
