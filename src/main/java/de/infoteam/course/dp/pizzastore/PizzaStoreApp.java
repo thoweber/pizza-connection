@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
+import de.infoteam.course.dp.pizzastore.service.impl.ConcretePizzaFactory;
 
 /**
  * the PizzaStore application.
@@ -31,12 +32,12 @@ public final class PizzaStoreApp {
 	private static PizzaService pizzaService;
 
 	public static void main(String[] args) {
-		pizzaService = new PizzaService();
+		pizzaService = new PizzaService(new ConcretePizzaFactory());
 
 		while (RUNNING.get()) {
 			showBanner();
 			printMenu();
-			askForOrder().ifPresent(menuItem -> pizzaService.order());
+			askForOrder().ifPresent(pizzaService::order);
 		}
 
 		println("Store is closed.");
