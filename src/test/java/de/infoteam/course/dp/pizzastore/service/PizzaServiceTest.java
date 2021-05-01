@@ -26,7 +26,8 @@ import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.PepperoniPizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
-import de.infoteam.course.dp.pizzastore.service.impl.ConcretePizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
 @ExtendWith(MockitoExtension.class)
 class PizzaServiceTest {
@@ -35,7 +36,7 @@ class PizzaServiceTest {
 	Pizza pizza;
 
 	@Spy
-	PizzaService pizzaService = new PizzaService(new ConcretePizzaFactory());
+	PizzaService pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
 
 	@Test
 	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {

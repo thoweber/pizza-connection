@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -16,7 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
-import de.infoteam.course.dp.pizzastore.service.impl.ConcretePizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
 /**
  * the PizzaStore application.
@@ -32,7 +31,7 @@ public final class PizzaStoreApp {
 	private static PizzaService pizzaService;
 
 	public static void main(String[] args) {
-		pizzaService = new PizzaService(new ConcretePizzaFactory());
+		pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
 
 		while (RUNNING.get()) {
 			showBanner();

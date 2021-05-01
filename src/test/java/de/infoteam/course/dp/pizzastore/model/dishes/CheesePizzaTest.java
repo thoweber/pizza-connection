@@ -18,7 +18,7 @@ class CheesePizzaTest {
 	@Test
 	void test_CheesePizza_has_the_correct_ingredients() {
 		// given
-		CheesePizza pizza = new CheesePizza();
+		CheesePizza pizza = new CheesePizza(new ThinCrustyDough(), new PlainTomatoSauce());
 		// when
 		pizza.addIngredients();
 		// then
@@ -33,17 +33,17 @@ class CheesePizzaTest {
 	@Test
 	void test_CheesePizza_has_the_correct_baking_duration() {
 		// given
-		CheesePizza pizza = new CheesePizza();
+		CheesePizza pizza = new CheesePizza(new ThinCrustyDough(), new PlainTomatoSauce());
 		// when
 		Duration bakingDuration = pizza.getBakingDuration();
 		// then
 		assertEquals(6, bakingDuration.toMinutes());
 	}
-	
+
 	@Test
 	void test_CheesePizza_has_the_correct_baking_temperature() {
 		// given
-		CheesePizza pizza = new CheesePizza();
+		CheesePizza pizza = new CheesePizza(new ThinCrustyDough(), new PlainTomatoSauce());
 		// when
 		int temperature = pizza.getBakingTemperature();
 		// then

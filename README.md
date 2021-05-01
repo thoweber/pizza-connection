@@ -1,21 +1,15 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 02 - Factory Method
+## Kapitel 03 - Abstract Factory
 ### Szenario
-Das Geschäft lauft immer besser und wir müssen unseren Kunden mehr Abwechslung bieten. Wir wollen zukünftig drei Sorten Pizza anbieten: Pepperoni, Cheese und Veggie. 
 
-Unsere "Default Pizza" wird dabei zur Cheese Pizza.
 
 ### Aufgabe
-Erstelle eine Pizza Factory, die als Vorlage für unterschiedliche Pizzen in deinem Pizza Imbiss dient. Die Klasse soll als **abstrakte Klasse** realisiert werden, deren Methoden in den konkreten Klassen implementiert werden müssen. Da du mit deinem Pizza Geschäft noch ganz am Anfang stehst, fängst du mit drei unterschiedlichen Pizzen an, **PepperoniPizza**, **CheesePizza** und **VeggiePizza**.
 
 **Wichtig:**
 Einiges an Code habe ich bereits für dich angepasst und erstellt.
-* Die neuen Pizzen sind in `de.infoteam.course.dp.pizzastore.model.dishes`
-* Alle neu benötigten Zutaten sind erstellt
-* Die `PizzaService`, `PizzaFactory`, `ConcretePizzaFactory` wurden angepasst und/oder als Rumpf erzeugt
-* Die Tests wurden erweitert, so dass die Test-Suite grün wird, wenn alles richtig implementiert wurde
+
 
 
 ----

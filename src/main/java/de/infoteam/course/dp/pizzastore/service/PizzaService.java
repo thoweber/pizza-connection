@@ -13,19 +13,28 @@ public class PizzaService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	private final PizzaFactory pizzaFactory;
+	private final PizzaFactory sicilianPizzaFactory;
+	private final PizzaFactory gourmetPizzaFactory;
 
-	public PizzaService(PizzaFactory pizzaFactory) {
-		this.pizzaFactory = pizzaFactory;
+	public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
+		this.sicilianPizzaFactory = sicilianPizzaFactory;
+		this.gourmetPizzaFactory = gourmetPizzaFactory;
 	}
 
 	public Pizza order(MenuItem selectedItem) {
-		Pizza pizza = pizzaFactory.createPizza(selectedItem);
+		Pizza pizza = choosePizzaFactory(selectedItem).createPizza(selectedItem);
 		LOGGER.info("Received new order for {}", pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
 		return pizza;
+	}
+	
+	PizzaFactory choosePizzaFactory(MenuItem selectedItem) {
+		/*
+		 * Richtige Factory für bestellte Pizza auswählen
+		 */
+		return null;
 	}
 
 	void preparePizza(Pizza pizza) {
