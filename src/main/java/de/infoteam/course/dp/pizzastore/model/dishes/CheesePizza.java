@@ -11,9 +11,9 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaChees
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 
-public class DefaultPizza implements Pizza {
+public class CheesePizza implements Pizza {
 	
-	private static final String NAME = "default pizza";
+	private static final String NAME = "cheese pizza (formerly known as default)";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class DefaultPizza implements Pizza {
 
 	@Override
 	public String name() {
-		return DefaultPizza.NAME;
+		return CheesePizza.NAME;
 	}
 	
 }
