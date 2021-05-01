@@ -24,12 +24,6 @@
 			<version>1.7.30</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.16</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -55,12 +49,6 @@
 					<configuration>
 						<source>${java.version}</source>
 						<target>${java.version}</target>
-						<annotationProcessorPaths>
-							<path>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-							</path>
-						</annotationProcessorPaths>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -89,51 +77,33 @@
 					<version>2.22.2</version>
 				</plugin>
 				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.6</version>
-				</plugin>
-				<plugin>
-					<groupId>org.pitest</groupId>
-					<artifactId>pitest-maven</artifactId>
-					<version>1.5.2</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.pitest</groupId>
-							<artifactId>pitest-junit5-plugin</artifactId>
-							<version>0.12</version>
-						</dependency>
-					</dependencies>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.3.0</version>
+					<configuration>
+						<descriptorRefs>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
+						<archive>
+							<manifest>
+								<mainClass>de.infoteam.course.dp.pizzastore.PizzaStoreApp</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
 					<executions>
 						<execution>
-							<id>pitest-mutation-coverage</id>
-							<phase>test</phase>
+							<id>make-assembly</id>
+							<phase>package</phase>
 							<goals>
-								<goal>mutationCoverage</goal>
+								<goal>single</goal>
 							</goals>
 						</execution>
 					</executions>
-					<configuration>
-						<exportLineCoverage>true</exportLineCoverage>
-						<targetClasses>
-							<param>de.infoteam.course.dp.*</param>
-						</targetClasses>
-						<targetTests>
-							<param>de.infoteam.course.dp.*Test</param>
-						</targetTests>
-						<excludedTestClasses>
-							<param>de.infoteam.course.dp.*NoPitTest</param>
-						</excludedTestClasses>
-						<mutators>
-							<mutator>DEFAULTS</mutator>
-							<mutator>STRONGER</mutator>
-						</mutators>
-						<timestampedReports>false</timestampedReports>
-						<outputFormats>
-							<param>XML</param>
-							<param>HTML</param>
-						</outputFormats>
-					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.6</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -204,6 +174,10 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
