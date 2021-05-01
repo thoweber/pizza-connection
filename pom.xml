@@ -116,13 +116,13 @@
 					<configuration>
 						<exportLineCoverage>true</exportLineCoverage>
 						<targetClasses>
-							<param>guru.thomasweber.imgcmprss.*</param>
+							<param>de.infoteam.course.dp.*</param>
 						</targetClasses>
 						<targetTests>
-							<param>guru.thomasweber.imgcmprss.*Test</param>
+							<param>de.infoteam.course.dp.*Test</param>
 						</targetTests>
 						<excludedTestClasses>
-							<param>guru.thomasweber.imgcmprss.*NoPitTest</param>
+							<param>de.infoteam.course.dp.*NoPitTest</param>
 						</excludedTestClasses>
 						<mutators>
 							<mutator>DEFAULTS</mutator>

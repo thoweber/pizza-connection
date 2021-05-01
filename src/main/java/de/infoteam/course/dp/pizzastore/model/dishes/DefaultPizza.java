@@ -7,7 +7,7 @@ import java.util.List;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
-import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozarellaCheese;
+import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 
@@ -21,7 +21,7 @@ public class DefaultPizza implements Pizza {
 	public void addIngredients() {
 		this.ingredients.add(new ThinCrustyDough());
 		this.ingredients.add(new PlainTomatoSauce());
-		this.ingredients.add(new MozarellaCheese());
+		this.ingredients.add(new MozzarellaCheese());
 	}
 
 	@Override

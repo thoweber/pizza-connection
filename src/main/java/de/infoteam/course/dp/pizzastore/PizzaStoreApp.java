@@ -3,10 +3,10 @@ package de.infoteam.course.dp.pizzastore;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -14,64 +14,68 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.infoteam.course.dp.pizzastore.model.Pizza;
-import de.infoteam.course.dp.pizzastore.model.PizzaService;
+import de.infoteam.course.dp.pizzastore.model.MenuItem;
+import de.infoteam.course.dp.pizzastore.service.PizzaService;
 
-public class PizzaStoreApp {
+/**
+ * the PizzaStore application.
+ * 
+ * @author Thomas Weber
+ */
+public final class PizzaStoreApp {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaStoreApp.class);
 	private static final AtomicBoolean RUNNING = new AtomicBoolean(true);
+	private static final PrintStream OUTPUT = System.out;
 
 	private static PizzaService pizzaService;
 
 	public static void main(String[] args) {
 		pizzaService = new PizzaService();
-		
+
 		while (RUNNING.get()) {
 			showBanner();
-			askForOrder().ifPresent(pizzaService::order);
+			printMenu();
+			askForOrder().ifPresent(menuItem -> pizzaService.order());
 		}
-		
-		System.out.println("Store is closed.");
+
+		println("Store is closed.");
 	}
 
-	private static Optional<Pizza> askForOrder() {
-		List<Pizza> dishes = pizzaService.getDishes();
-
-		printMenu(dishes);
+	private static Optional<MenuItem> askForOrder() {
 		String choice = readConsoleInput();
+		return menuItemForChoice(choice);
+	}
 
+	static Optional<MenuItem> menuItemForChoice(String choice) {
 		if ("q".equals(choice)) {
 			RUNNING.set(false);
 			return Optional.empty();
 		}
 		try {
 			int index = Integer.parseInt(choice);
-			if (index > 0 && index <= dishes.size()) {
-				Pizza dish = dishes.get(index - 1);
-				System.out.println("Will order " + dish.name() + " for you...");
-				return Optional.of(dish);
-			} else {
-				System.out.println("Sorry, no dish for " + choice);
+			if (index > 0 && index <= MenuItem.values().length) {
+				MenuItem menuItem = MenuItem.values()[index - 1];
+				println("Will order " + menuItem.getName() + " for you...");
+				return Optional.of(menuItem);
 			}
 		} catch (NumberFormatException e) {
-			System.out.println("Sorry, no dish for " + choice);
+			LOGGER.debug("Cannot parse number {}:", e.getMessage());
 		}
+		println("Sorry, no menu item for " + choice);
 		return Optional.empty();
 	}
 
-	private static void printMenu(List<Pizza> dishes) {
-		System.out.println();
-		System.out.println("Our menu for today:");
-		for (int i = 0; i < dishes.size(); i++) {
-			System.out.println((i + 1) + "\t" + dishes.get(i).name());
-		}
-		System.out.println("q\tto quit the app");
-		System.out.println();
+	private static void printMenu() {
+		println();
+		println("Our menu for today:");
+		Stream.of(MenuItem.values()).forEach(menu -> println((menu.ordinal() + 1) + "\t" + menu.getName()));
+		println("q\tto quit the app");
+		println();
 	}
 
 	private static String readConsoleInput() {
-		System.out.print("Your choice: ");
+		print("Your choice: ");
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			return reader.readLine().trim();
@@ -80,7 +84,7 @@ public class PizzaStoreApp {
 			System.exit(1);
 			return "";
 		} finally {
-			System.out.println();
+			println();
 		}
 	}
 
@@ -88,10 +92,21 @@ public class PizzaStoreApp {
 		try (Stream<String> lines = Files.lines(
 				Paths.get(PizzaStoreApp.class.getClassLoader().getResource("banner.txt").toURI()),
 				StandardCharsets.UTF_8)) {
-			lines.forEach(System.out::println);
+			lines.forEach(PizzaStoreApp::println);
 		} catch (Exception e) {
 			LOGGER.error("Cannot show store banner", e);
 		}
 	}
 
+	private static void print(String output) {
+		OUTPUT.print(output);
+	}
+
+	private static void println() {
+		println("");
+	}
+
+	private static void println(String output) {
+		OUTPUT.println(output);
+	}
 }

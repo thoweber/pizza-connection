@@ -1,19 +1,20 @@
-package de.infoteam.course.dp.pizzastore.model;
+package de.infoteam.course.dp.pizzastore.service;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.StringJoiner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.infoteam.course.dp.pizzastore.model.Ingredient;
+import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.DefaultPizza;
 
 public class PizzaService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	public Pizza order(Pizza pizza) {
+	public Pizza order() {
+		Pizza pizza = new DefaultPizza();
 		LOGGER.info("Received new order for {}", pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
@@ -39,10 +40,6 @@ public class PizzaService {
 	void servePizza(Pizza pizza) {
 		// output serving to log
 		LOGGER.info(" > serving...");
-	}
-
-	public List<Pizza> getDishes() {
-		return Arrays.asList(new DefaultPizza());
 	}
 
 }

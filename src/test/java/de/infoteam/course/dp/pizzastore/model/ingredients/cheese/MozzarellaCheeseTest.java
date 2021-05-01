@@ -4,14 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-class MozarellaCheeseTest {
+class MozzarellaCheeseTest {
 
 	@Test
 	void test_name_returns_expected_value() {
 		// given
-		MozarellaCheese cheese = new MozarellaCheese();
+		MozzarellaCheese cheese = new MozzarellaCheese();
 		// when/then
-		assertEquals("mozarella", cheese.name());
+		assertEquals("mozzarella", cheese.name());
 	}
 
 }

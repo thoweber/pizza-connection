@@ -9,6 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
+import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
+import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
+import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 
 class DefaultPizzaTest {
 
@@ -22,9 +25,9 @@ class DefaultPizzaTest {
 		assertNotNull(pizza.getIngredients());
 		List<Ingredient> ingredients = pizza.getIngredients();
 		assertEquals(3, ingredients.size());
-		assertEquals("thin crusty dough", ingredients.get(0).name());
-		assertEquals("plain tomato sauce", ingredients.get(1).name());
-		assertEquals("mozarella", ingredients.get(2).name());
+		assertEquals(ThinCrustyDough.class, ingredients.get(0).getClass());
+		assertEquals(PlainTomatoSauce.class, ingredients.get(1).getClass());
+		assertEquals(MozzarellaCheese.class, ingredients.get(2).getClass());
 	}
 
 	@Test
