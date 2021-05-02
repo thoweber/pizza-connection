@@ -22,11 +22,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.PepperoniPizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
-import de.infoteam.course.dp.pizzastore.service.impl.ConcretePizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
 @ExtendWith(MockitoExtension.class)
 class PizzaServiceTest {
@@ -35,12 +37,12 @@ class PizzaServiceTest {
 	Pizza pizza;
 
 	@Spy
-	PizzaService pizzaService = new PizzaService(new ConcretePizzaFactory());
+	PizzaService pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
 
 	@Test
 	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
 		// when
-		pizzaService.order(MenuItem.CHEESE_PIZZA);
+		pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
 		// then
 		InOrder inOrder = inOrder(pizzaService);
 		then(pizzaService).should(inOrder).preparePizza(any());
@@ -78,11 +80,39 @@ class PizzaServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+	void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
 		// when
-		Pizza pizza = pizzaService.order(menuItem);
+		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
+		// then
+		assertEquals(expectedPizzaKind, pizza.getClass());
+	}
+	
+	@ParameterizedTest
+	@MethodSource("menuItemPizzaClassSource")
+	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+		// when
+		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
 		// then
 		assertEquals(expectedPizzaKind, pizza.getClass());
 	}
 
+	@Test
+	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_SICILIAN() {
+		// given
+		PizzaStyle style = PizzaStyle.SICILIAN;
+		// when
+		PizzaFactory factory = pizzaService.chooseFactory(style);
+		// then
+		assertEquals(SicilianPizzaFactory.class, factory.getClass());
+	}
+	
+	@Test
+	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_GOURMET() {
+		// given
+		PizzaStyle style = PizzaStyle.GOURMET;
+		// when
+		PizzaFactory factory = pizzaService.chooseFactory(style);
+		// then
+		assertEquals(GourmetPizzaFactory.class, factory.getClass());
+	}
 }

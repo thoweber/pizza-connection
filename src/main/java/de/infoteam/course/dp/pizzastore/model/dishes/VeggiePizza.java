@@ -5,25 +5,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.infoteam.course.dp.pizzastore.model.AbstractPizza;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
-import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
-import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
-import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
+import de.infoteam.course.dp.pizzastore.model.ingredients.dough.Dough;
+import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.ArtichokeTopping;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.OliveTopping;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.TomatoTopping;
 
-public class VeggiePizza implements Pizza {
-	
+public class VeggiePizza extends AbstractPizza {
+
 	private static final String NAME = "veggie pizza";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
+	public VeggiePizza(Dough dough, Sauce sauce) {
+		super(dough, sauce);
+	}
+	
 	@Override
 	public void addIngredients() {
-		this.ingredients.add(new ThinCrustyDough());
-		this.ingredients.add(new PlainTomatoSauce());
+		this.ingredients.add(getDough());
+		this.ingredients.add(getSauce());
 		this.ingredients.add(new MozzarellaCheese());
 		this.ingredients.add(new TomatoTopping());
 		this.ingredients.add(new ArtichokeTopping());
@@ -34,7 +38,6 @@ public class VeggiePizza implements Pizza {
 	public List<Ingredient> getIngredients() {
 		return Collections.unmodifiableList(this.ingredients);
 	}
-
 
 	@Override
 	public Duration getBakingDuration() {
@@ -50,5 +53,5 @@ public class VeggiePizza implements Pizza {
 	public String name() {
 		return VeggiePizza.NAME;
 	}
-	
+
 }

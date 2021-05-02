@@ -8,24 +8,42 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 
 public class PizzaService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	private final PizzaFactory pizzaFactory;
+	private final PizzaFactory sicilianPizzaFactory;
+	private final PizzaFactory gourmetPizzaFactory;
 
-	public PizzaService(PizzaFactory pizzaFactory) {
-		this.pizzaFactory = pizzaFactory;
+	public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
+		this.sicilianPizzaFactory = sicilianPizzaFactory;
+		this.gourmetPizzaFactory = gourmetPizzaFactory;
 	}
 
-	public Pizza order(MenuItem selectedItem) {
-		Pizza pizza = pizzaFactory.createPizza(selectedItem);
-		LOGGER.info("Received new order for {}", pizza.name());
+	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
+		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
+		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
 		return pizza;
+	}
+	
+	PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
+		PizzaFactory factory = null;
+		switch (selectedStyle) {
+		case SICILIAN:
+			factory = this.sicilianPizzaFactory;
+			break;
+		case GOURMET:
+			factory = this.gourmetPizzaFactory;
+			break;
+		default:
+			throw new IllegalArgumentException("No PizzaFactory for style " + selectedStyle);
+		}
+		return factory;
 	}
 
 	void preparePizza(Pizza pizza) {
