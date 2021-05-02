@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
 import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
 import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
@@ -32,8 +33,9 @@ public final class PizzaStoreApp {
 	private static PizzaService pizzaService;
 
 	public static void main(String[] args) {
+		IngredientLogger ingredientLogger = new IngredientLogger();
 		pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).build();
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
 
 		while (RUNNING.get()) {
 			showBanner();
@@ -42,6 +44,10 @@ public final class PizzaStoreApp {
 		}
 
 		println("Store is closed.");
+		
+		println("===================================");
+		println("Consumed Ingredients:");
+		ingredientLogger.printShoppingList(OUTPUT);
 	}
 
 	private static Optional<MenuItem> askForOrder() {
