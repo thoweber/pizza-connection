@@ -21,7 +21,7 @@ class VeggiePizzaTest {
 	@Test
 	void test_VeggiePizza_has_the_correct_ingredients() {
 		// given
-		VeggiePizza pizza = new VeggiePizza(new ThinCrustyDough(), new PlainTomatoSauce());
+		VeggiePizza pizza = new VeggiePizza();
 		// when
 		pizza.addIngredients();
 		// then
@@ -39,17 +39,17 @@ class VeggiePizzaTest {
 	@Test
 	void test_VeggiePizza_has_the_correct_baking_duration() {
 		// given
-		VeggiePizza pizza = new VeggiePizza(new ThinCrustyDough(), new PlainTomatoSauce());
+		VeggiePizza pizza = new VeggiePizza();
 		// when
 		Duration bakingDuration = pizza.getBakingDuration();
 		// then
 		assertEquals(8, bakingDuration.toMinutes());
 	}
-
+	
 	@Test
 	void test_VeggiePizza_has_the_correct_baking_temperature() {
 		// given
-		VeggiePizza pizza = new VeggiePizza(new ThinCrustyDough(), new PlainTomatoSauce());
+		VeggiePizza pizza = new VeggiePizza();
 		// when
 		int temperature = pizza.getBakingTemperature();
 		// then

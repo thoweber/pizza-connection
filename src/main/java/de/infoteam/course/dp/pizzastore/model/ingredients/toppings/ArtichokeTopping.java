@@ -1,6 +1,8 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.toppings;
 
-public class ArtichokeTopping implements Topping {
+import de.infoteam.course.dp.pizzastore.model.Ingredient;
+
+public class ArtichokeTopping implements Ingredient {
 
 	private static final String NAME = "artichoke hearts";
 

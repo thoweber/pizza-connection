@@ -1,6 +1,8 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.toppings;
 
-public class TomatoTopping implements Topping {
+import de.infoteam.course.dp.pizzastore.model.Ingredient;
+
+public class TomatoTopping implements Ingredient {
 
 	private static final String NAME = "freshly sliced tomato";
 

@@ -1,6 +1,8 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.dough;
 
-public class ThinCrustyDough implements Dough {
+import de.infoteam.course.dp.pizzastore.model.Ingredient;
+
+public class ThinCrustyDough implements Ingredient {
 
 	private static final String NAME = "thin crusty dough";
 	

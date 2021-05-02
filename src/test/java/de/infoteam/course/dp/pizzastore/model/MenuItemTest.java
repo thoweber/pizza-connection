@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class MenuItemTest {
 
 	@Test
-	void test_MenuItem_has_exactly_three_values() {
+	void test_MenuItem_has_exactly_one_value() {
 		assertEquals(3, MenuItem.values().length);
 	}
 

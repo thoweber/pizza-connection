@@ -1,6 +1,8 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.sauce;
 
-public class PlainTomatoSauce implements Sauce {
+import de.infoteam.course.dp.pizzastore.model.Ingredient;
+
+public class PlainTomatoSauce implements Ingredient {
 
 	private static final String NAME = "plain tomato sauce";
 	

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -13,10 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
-import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
-import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.ConcretePizzaFactory;
 
 /**
  * the PizzaStore application.
@@ -32,51 +32,47 @@ public final class PizzaStoreApp {
 	private static PizzaService pizzaService;
 
 	public static void main(String[] args) {
-		pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
+		pizzaService = new PizzaService(new ConcretePizzaFactory());
 
 		while (RUNNING.get()) {
 			showBanner();
-			askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem)
-					.ifPresent(pizzaStyle -> pizzaService.order(selectedItem, pizzaStyle)));
+			printMenu();
+			askForOrder().ifPresent(pizzaService::order);
 		}
 
 		println("Store is closed.");
 	}
 
 	private static Optional<MenuItem> askForOrder() {
-		println();
-		println("Our menu for today:");
-		Stream.of(MenuItem.values()).forEach(menu -> println((menu.ordinal() + 1) + "\t" + menu.getName()));
-		println("q\tto quit the app");
-		println();
 		String choice = readConsoleInput();
-		return choiceToEnumValue(choice, MenuItem.values(), "q");
+		return menuItemForChoice(choice);
 	}
 
-	private static Optional<PizzaStyle> chooseStyle(MenuItem selectedItem) {
-		println("Choose your style for " + selectedItem.getName() + ":");
-		Stream.of(PizzaStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
-		println();
-		String choice = readConsoleInput();
-		return choiceToEnumValue(choice, PizzaStyle.values(), null);
-	}
-
-	static <T extends Enum<T>> Optional<T> choiceToEnumValue(String choice, T[] enumValues, String quit) {
-		if (quit != null && quit.equals(choice)) {
+	static Optional<MenuItem> menuItemForChoice(String choice) {
+		if ("q".equals(choice)) {
 			RUNNING.set(false);
 			return Optional.empty();
 		}
 		try {
 			int index = Integer.parseInt(choice);
-			if (index > 0 && index <= enumValues.length) {
-				T menuItem = enumValues[index - 1];
+			if (index > 0 && index <= MenuItem.values().length) {
+				MenuItem menuItem = MenuItem.values()[index - 1];
+				println("Will order " + menuItem.getName() + " for you...");
 				return Optional.of(menuItem);
 			}
 		} catch (NumberFormatException e) {
 			LOGGER.debug("Cannot parse number {}:", e.getMessage());
 		}
-		println("Sorry, I do not undestand " + choice);
+		println("Sorry, no menu item for " + choice);
 		return Optional.empty();
+	}
+
+	private static void printMenu() {
+		println();
+		println("Our menu for today:");
+		Stream.of(MenuItem.values()).forEach(menu -> println((menu.ordinal() + 1) + "\t" + menu.getName()));
+		println("q\tto quit the app");
+		println();
 	}
 
 	private static String readConsoleInput() {

@@ -1,24 +1,27 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 04 - Builder
+## Kapitel 02 - Factory Method
 ### Szenario
-Wir haben im vorangegangenen Kapitel unseren `PizzaService` erweitert, so dass er Pizzen in den Stilen `SICILIAN` und `GOURMET` erzeugen kann. Dafür haben wir folgenden Konstruktor erstellt, der zwei Instanzen von `PizzaService` entgegennimmt:
-```
-public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory)
-```
-Das ist für die Zukunft sehr flexibel, weil wir uns nicht auf konkrete `PizzaFactory`-Implementierungen festlegen, aber leider auch fehleranfällig.
+Das Geschäft lauft immer besser🤑 und wir müssen unseren Kunden mehr Abwechslung bieten. Wir wollen zukünftig drei Sorten Pizza anbieten: Pepperoni, Cheese und Veggie. 
 
-Es kam wie es kommen musste: Unser Praktikant wollte eine kleine Verbesserung an der `PizzaServiceApp` vornehmen und hat die Factories falsch zugewiesen. Die Kunden waren nicht erfreut🤦‍♂️
-
-Um diese Fehler in der Zukunft zu vermeiden, soll das Erzeugen des `PizzaService` auf das Builder-Pattern umgestellt werden.
+Unsere "Default Pizza" wird dabei zur Cheese Pizza.
 
 ### Aufgabe
-* Erstelle einen Builder für den `PizzaService`
-* Stelle sicher, dass zum Erzeugen des `PizzaService` der Builder verwendet werden muss
-* Passe den Code und die Tests entsprechend an
+Erstelle eine Pizza Factory🏭, die als Vorlage für unterschiedliche Pizzen in deinem Pizza Imbiss dient. Die Klasse soll als **Interface** realisiert werden, deren Methoden in den konkreten Klassen implementiert werden müssen. Da du mit deinem Pizza Geschäft noch ganz am Anfang stehst, fängst du mit drei unterschiedlichen Pizzen an, **PepperoniPizza**, **CheesePizza** und **VeggiePizza**.
 
-**Hinweis:** Für diese Aufgabe habe ich _nichts_ vorbereitet😋
+Das Interface soll folgende Factory-Methode deklarieren:
+```
+Pizza createPizza(MenuItem selectedItem);
+```
+
+**Wichtig:**
+Einiges an Code habe ich bereits für dich angepasst und erstellt.
+* Die neuen Pizzen sind in `de.infoteam.course.dp.pizzastore.model.dishes`
+* Alle neu benötigten Zutaten sind erstellt
+* Die `PizzaService`, `PizzaFactory`, `ConcretePizzaFactory` wurden angepasst und/oder als Rumpf erzeugt
+* Die Tests wurden erweitert, so dass die Test-Suite grün wird, wenn alles richtig implementiert wurde
+
 
 ----
 
