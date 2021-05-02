@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -37,9 +39,11 @@ class PizzaServiceTest {
 	@Mock
 	Pizza pizza;
 
+	IngredientLogger ingredientLogger = new IngredientLogger();
+
 	@Spy
 	PizzaService pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-			.sicilianFactory(new SicilianPizzaFactory()).build();
+			.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
 
 	@Test
 	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
@@ -120,15 +124,34 @@ class PizzaServiceTest {
 
 	@Test
 	void test_builder_without_sicilian_factory_throw_IllegalStateException() {
-		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory());
-		assertThrows(IllegalStateException.class,
-				() -> builder.build());
+		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
+				.ingredientLogger(new IngredientLogger());
+		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
-	
+
 	@Test
 	void test_builder_without_gourmet_factory_throw_IllegalStateException() {
-		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory());
-		assertThrows(IllegalStateException.class,
-				() -> builder.build());
+		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
+				.ingredientLogger(new IngredientLogger());
+		assertThrows(IllegalStateException.class, () -> builder.build());
+	}
+
+	@Test
+	void test_builder_without_IngredientLogger_throw_IllegalStateException() {
+		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
+				.gourmetFactory(new GourmetPizzaFactory());
+		assertThrows(IllegalStateException.class, () -> builder.build());
+	}
+
+	@Test
+	void test_consumed_ingredients_are_logged_by_IngredientLogger() {
+		// given
+		IngredientLogger ingredientLoggerMock = mock(IngredientLogger.class);
+		PizzaService methodLocalPizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLoggerMock).build();
+		// when
+		methodLocalPizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.GOURMET);
+		// then
+		then(ingredientLoggerMock).should(times(3)).logIngredient(any());
 	}
 }

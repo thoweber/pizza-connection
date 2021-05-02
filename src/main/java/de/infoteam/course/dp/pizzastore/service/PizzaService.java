@@ -16,10 +16,13 @@ public class PizzaService {
 
 	private final PizzaFactory sicilianPizzaFactory;
 	private final PizzaFactory gourmetPizzaFactory;
+	private final IngredientLogger ingredientLogger;
 
-	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
+	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory,
+			IngredientLogger ingredientLogger) {
 		this.sicilianPizzaFactory = sicilianPizzaFactory;
 		this.gourmetPizzaFactory = gourmetPizzaFactory;
+		this.ingredientLogger = ingredientLogger;
 	}
 
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
@@ -28,7 +31,12 @@ public class PizzaService {
 		preparePizza(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
+		logConsumedIngredients(pizza);
 		return pizza;
+	}
+
+	private void logConsumedIngredients(Pizza pizza) {
+		pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
 	}
 
 	PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
@@ -77,11 +85,8 @@ public class PizzaService {
 
 		private PizzaFactory sicilianFactory;
 		private PizzaFactory gourmetFactory;
+		private IngredientLogger ingredientLogger;
 
-		/*
-		 * sicherstellen, dass der Builder nur über die statische Methode in {@code
-		 * PizzaService} erzeugt wird.
-		 */
 		private Builder() {
 			super();
 		}
@@ -96,6 +101,11 @@ public class PizzaService {
 			return this;
 		}
 
+		public Builder ingredientLogger(IngredientLogger ingredientLogger) {
+			this.ingredientLogger = ingredientLogger;
+			return this;
+		}
+
 		public PizzaService build() {
 			if (this.sicilianFactory == null) {
 				throw new IllegalStateException("A Sicilian PizzaFactory is required");
@@ -103,7 +113,10 @@ public class PizzaService {
 			if (this.gourmetFactory == null) {
 				throw new IllegalStateException("A Gourmet PizzaFactory is required");
 			}
-			return new PizzaService(sicilianFactory, gourmetFactory);
+			if (this.ingredientLogger == null) {
+				throw new IllegalStateException("An IngredientLogger is required");
+			}
+			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger);
 		}
 	}
 }
