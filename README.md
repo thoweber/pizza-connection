@@ -2,7 +2,7 @@
 ***The Pizza Connection***
 
 ## Kapitel 01 - Vorstellung
-Wir haben einen kleinen Pizza-Laden und verkaufen nur eine Sorte Pizza - die Kunden stehen drauf🤩 und lieben unsere einfache, aber extrem leckere Mozarella Pizza🍕
+Wir haben einen kleinen Pizza-Laden und verkaufen nur eine Sorte Pizza - die Kunden stehen drauf🤩 und lieben unsere einfache, aber extrem leckere Mozzarella Pizza🍕
 
 Das dürfte zum Teil auch an unserem ausgefallenen Bestellprinzip liegen, das ganz retromäßig als Terminalanwendung daher kommt - man fühlt sich ein bisschen wie in einem Science-Fiction-Film aus den 80ern🤖
 
