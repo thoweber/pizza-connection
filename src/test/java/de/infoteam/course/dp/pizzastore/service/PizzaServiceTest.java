@@ -80,11 +80,39 @@ class PizzaServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+	void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
 		// when
 		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
 		// then
 		assertEquals(expectedPizzaKind, pizza.getClass());
 	}
+	
+	@ParameterizedTest
+	@MethodSource("menuItemPizzaClassSource")
+	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+		// when
+		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
+		// then
+		assertEquals(expectedPizzaKind, pizza.getClass());
+	}
 
+	@Test
+	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_SICILIAN() {
+		// given
+		PizzaStyle style = PizzaStyle.SICILIAN;
+		// when
+		PizzaFactory factory = pizzaService.chooseFactory(style);
+		// then
+		assertEquals(SicilianPizzaFactory.class, factory.getClass());
+	}
+	
+	@Test
+	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_GOURMET() {
+		// given
+		PizzaStyle style = PizzaStyle.GOURMET;
+		// when
+		PizzaFactory factory = pizzaService.chooseFactory(style);
+		// then
+		assertEquals(GourmetPizzaFactory.class, factory.getClass());
+	}
 }

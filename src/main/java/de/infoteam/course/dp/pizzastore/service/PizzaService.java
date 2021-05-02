@@ -23,18 +23,29 @@ public class PizzaService {
 	}
 
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-		/*
-		 * Richtige Factory für bestellte Pizza auswählen und Pizza erzeugen
-		 */
-		Pizza pizza = null;
-		
-		LOGGER.info("Received new order for {}", pizza.name());
+		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
+		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
 		return pizza;
 	}
 	
+	PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
+		PizzaFactory factory = null;
+		switch (selectedStyle) {
+		case SICILIAN:
+			factory = this.sicilianPizzaFactory;
+			break;
+		case GOURMET:
+			factory = this.gourmetPizzaFactory;
+			break;
+		default:
+			throw new IllegalArgumentException("No PizzaFactory for style " + selectedStyle);
+		}
+		return factory;
+	}
+
 	void preparePizza(Pizza pizza) {
 		pizza.addIngredients();
 
