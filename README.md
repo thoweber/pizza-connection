@@ -2,9 +2,9 @@
 ***The Pizza Connection***
 
 ## Kapitel 01 - Vorstellung
-Wir haben einen kleinen Pizza-Laden und verkaufen nur eine Sorte Pizza - die Kunden stehen drauf und lieben unsere einfache, aber extrem leckere Mozarella Pizza.
+Wir haben einen kleinen Pizza-Laden und verkaufen nur eine Sorte Pizza - die Kunden stehen drauf🤩 und lieben unsere einfache, aber extrem leckere Mozarella Pizza🍕
 
-Das dürfte zum Teil auch an unserem ausgefallenen Bestellprinzip liegen, das ganz retromäßig als Terminalanwendung daher kommt - man fühlt sich ein bisschen wie in einem Science-Fiction-Film aus den 80ern.
+Das dürfte zum Teil auch an unserem ausgefallenen Bestellprinzip liegen, das ganz retromäßig als Terminalanwendung daher kommt - man fühlt sich ein bisschen wie in einem Science-Fiction-Film aus den 80ern🤖
 
 ### Aufbau der Software
 Der Anwendungscode unseres Pizza-Geschäfts befindet sich unter `src/main/java`:
@@ -20,7 +20,7 @@ Der Anwendungscode unseres Pizza-Geschäfts befindet sich unter `src/main/java`:
 
 **Schaut euch ein wenig um, und versucht mit dem Aufbau vertraut zu werden.**
 
-Die Anwendung verfügt auch schon über entsprechende Testfälle (im Herzen sind wir doch alle Software Engineers), die ihr wie bei Maven üblich unter `src/test/java` findet.
+Die Anwendung verfügt auch schon über entsprechende Testfälle (im Herzen sind wir doch alle Software Engineers🤓), die ihr wie bei Maven üblich unter `src/test/java` findet👍
 
 ### Maven verwenden
 
