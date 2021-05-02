@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.infoteam.course.dp.pizzastore.decorator.IngredientLoggerDecorator;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
@@ -44,10 +45,10 @@ public final class PizzaStoreApp {
 		}
 
 		println("Store is closed.");
-		
+
 		println("===================================");
 		println("Consumed Ingredients:");
-		ingredientLogger.printShoppingList(OUTPUT);
+		new IngredientLoggerDecorator(ingredientLogger).printShoppingList(OUTPUT);
 	}
 
 	private static Optional<MenuItem> askForOrder() {
