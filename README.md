@@ -1,26 +1,26 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 01 - Vorstellung
-Wir haben einen kleinen Pizza-Laden und verkaufen nur eine Sorte Pizza - die Kunden stehen drauf🤩 und lieben unsere einfache, aber extrem leckere Mozarella Pizza🍕
+## Kapitel 04 - Builder
+### Szenario
+Wir haben im vorangegangenen Kapitel unseren `PizzaService` erweitert, so dass er Pizzen in den Stilen `SICILIAN` und `GOURMET` erzeugen kann. Dafür haben wir folgenden Konstruktor erstellt, der zwei Instanzen von `PizzaService` entgegennimmt:
+```
+public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory)
+```
+Das ist für die Zukunft sehr flexibel, weil wir uns nicht auf konkrete `PizzaFactory`-Implementierungen festlegen, aber leider auch fehleranfällig.
 
-Das dürfte zum Teil auch an unserem ausgefallenen Bestellprinzip liegen, das ganz retromäßig als Terminalanwendung daher kommt - man fühlt sich ein bisschen wie in einem Science-Fiction-Film aus den 80ern🤖
+Es kam wie es kommen musste: Unser Praktikant wollte eine kleine Verbesserung an der `PizzaServiceApp` vornehmen und hat die Factories falsch zugewiesen. Die Kunden waren nicht erfreut🤦‍♂️
 
-### Aufbau der Software
-Der Anwendungscode unseres Pizza-Geschäfts befindet sich unter `src/main/java`:
-* `de.infoteam.course.dp.pizzastore`:
-  enthält unsere coole `PizzaStoreApp` - eine Konsolenanwendung, die Pizza-Bestellungen unsere Kunden annimmt
-* `de.infoteam.course.dp.pizzastore.model`: Das Datenmodell unseres Pizza-Ladens.
-    * `de.infoteam.course.dp.pizzastore.model.dishes`: alle Gerichte, die wir anbieten
-    * `de.infoteam.course.dp.pizzastore.model.ingredients`: unsere Zutaten
-        * `de.infoteam.course.dp.pizzastore.model.ingredients.cheese`: Käse
-        * `de.infoteam.course.dp.pizzastore.model.ingredients.dough`: Teig-Sorten
-        * `de.infoteam.course.dp.pizzastore.model.ingredients.sauce`: Soßen
-* `de.infoteam.course.dp.pizzastore.service`: enthält den `PizzaService`, der auf Bestellung leckere Pizza produziert
+Um diese Fehler in der Zukunft zu vermeiden, soll das Erzeugen des `PizzaService` auf das Builder-Pattern umgestellt werden.
 
-**Schaut euch ein wenig um, und versucht mit dem Aufbau vertraut zu werden.**
+### Aufgabe
+* Erstelle einen Builder für den `PizzaService`
+* Stelle sicher, dass zum Erzeugen des `PizzaService` der Builder verwendet werden muss
+* Passe den Code und die Tests entsprechend an
 
-Die Anwendung verfügt auch schon über entsprechende Testfälle (im Herzen sind wir doch alle Software Engineers🤓), die ihr wie bei Maven üblich unter `src/test/java` findet👍
+**Hinweis:** Für diese Aufgabe habe ich _nichts_ vorbereitet😋
+
+----
 
 ### Maven verwenden
 

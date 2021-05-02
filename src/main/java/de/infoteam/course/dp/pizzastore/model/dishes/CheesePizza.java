@@ -5,22 +5,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.infoteam.course.dp.pizzastore.model.AbstractPizza;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
-import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
-import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
-import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
+import de.infoteam.course.dp.pizzastore.model.ingredients.dough.Dough;
+import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 
-public class DefaultPizza implements Pizza {
-	
-	private static final String NAME = "default pizza";
+public class CheesePizza extends AbstractPizza {
+
+	private static final String NAME = "cheese pizza (formerly known as default)";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
+	public CheesePizza(Dough dough, Sauce sauce) {
+		super(dough, sauce);
+	}
+	
 	@Override
 	public void addIngredients() {
-		this.ingredients.add(new ThinCrustyDough());
-		this.ingredients.add(new PlainTomatoSauce());
+		this.ingredients.add(getDough());
+		this.ingredients.add(getSauce());
 		this.ingredients.add(new MozzarellaCheese());
 	}
 
@@ -42,7 +46,7 @@ public class DefaultPizza implements Pizza {
 
 	@Override
 	public String name() {
-		return DefaultPizza.NAME;
+		return CheesePizza.NAME;
 	}
 	
 }

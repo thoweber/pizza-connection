@@ -2,7 +2,7 @@ package de.infoteam.course.dp.pizzastore.model;
 
 public enum MenuItem {
 
-	DEFAULT_PIZZA("default pizza");
+	CHEESE_PIZZA("cheese pizza"), PEPPERONI_PIZZA("pepperoni pizza"), VEGGIE_PIZZA("veggie pizza");
 
 	private final String name;
 
