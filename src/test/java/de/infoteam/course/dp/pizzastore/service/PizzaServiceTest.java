@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.PepperoniPizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
@@ -41,7 +42,7 @@ class PizzaServiceTest {
 	@Test
 	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
 		// when
-		pizzaService.order(MenuItem.CHEESE_PIZZA);
+		pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
 		// then
 		InOrder inOrder = inOrder(pizzaService);
 		then(pizzaService).should(inOrder).preparePizza(any());
@@ -81,7 +82,7 @@ class PizzaServiceTest {
 	@MethodSource("menuItemPizzaClassSource")
 	void test_order_returns_the_right_kind_of_pizza(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
 		// when
-		Pizza pizza = pizzaService.order(menuItem);
+		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
 		// then
 		assertEquals(expectedPizzaKind, pizza.getClass());
 	}

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 
 public class PizzaService {
 
@@ -21,8 +22,12 @@ public class PizzaService {
 		this.gourmetPizzaFactory = gourmetPizzaFactory;
 	}
 
-	public Pizza order(MenuItem selectedItem) {
-		Pizza pizza = choosePizzaFactory(selectedItem).createPizza(selectedItem);
+	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
+		/*
+		 * Richtige Factory für bestellte Pizza auswählen und Pizza erzeugen
+		 */
+		Pizza pizza = null;
+		
 		LOGGER.info("Received new order for {}", pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
@@ -30,13 +35,6 @@ public class PizzaService {
 		return pizza;
 	}
 	
-	PizzaFactory choosePizzaFactory(MenuItem selectedItem) {
-		/*
-		 * Richtige Factory für bestellte Pizza auswählen
-		 */
-		return null;
-	}
-
 	void preparePizza(Pizza pizza) {
 		pizza.addIngredients();
 
