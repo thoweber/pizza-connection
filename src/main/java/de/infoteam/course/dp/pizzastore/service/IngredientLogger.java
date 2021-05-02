@@ -16,8 +16,7 @@ public class IngredientLogger {
 		this.consumedIngredients.add(ingredient);
 	}
 	
-	// visible for testing only
-	List<Ingredient> getConsumedIngredients() {
+	public List<Ingredient> getConsumedIngredients() {
 		return Collections.unmodifiableList(consumedIngredients);
 	}
 	
