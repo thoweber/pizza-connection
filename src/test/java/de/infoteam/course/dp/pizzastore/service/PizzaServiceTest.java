@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -37,7 +38,8 @@ class PizzaServiceTest {
 	Pizza pizza;
 
 	@Spy
-	PizzaService pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
+	PizzaService pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
+			.sicilianFactory(new SicilianPizzaFactory()).build();
 
 	@Test
 	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
@@ -86,7 +88,7 @@ class PizzaServiceTest {
 		// then
 		assertEquals(expectedPizzaKind, pizza.getClass());
 	}
-	
+
 	@ParameterizedTest
 	@MethodSource("menuItemPizzaClassSource")
 	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
@@ -105,7 +107,7 @@ class PizzaServiceTest {
 		// then
 		assertEquals(SicilianPizzaFactory.class, factory.getClass());
 	}
-	
+
 	@Test
 	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_GOURMET() {
 		// given
@@ -114,5 +116,19 @@ class PizzaServiceTest {
 		PizzaFactory factory = pizzaService.chooseFactory(style);
 		// then
 		assertEquals(GourmetPizzaFactory.class, factory.getClass());
+	}
+
+	@Test
+	void test_builder_without_sicilian_factory_throw_IllegalStateException() {
+		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory());
+		assertThrows(IllegalStateException.class,
+				() -> builder.build());
+	}
+	
+	@Test
+	void test_builder_without_gourmet_factory_throw_IllegalStateException() {
+		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory());
+		assertThrows(IllegalStateException.class,
+				() -> builder.build());
 	}
 }
