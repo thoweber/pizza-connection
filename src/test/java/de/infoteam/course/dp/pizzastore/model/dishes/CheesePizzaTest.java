@@ -39,7 +39,7 @@ class CheesePizzaTest {
 		// then
 		assertEquals(6, bakingDuration.toMinutes());
 	}
-	
+
 	@Test
 	void test_CheesePizza_has_the_correct_baking_temperature() {
 		// given

@@ -12,7 +12,7 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.PepperoniTopping;
 
-public class PepperoniPizza implements Pizza {
+public class PepperoniPizza  implements Pizza {
 	
 	private static final String NAME = "pepperoni pizza";
 

@@ -12,7 +12,7 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 
 public class CheesePizza implements Pizza {
-	
+
 	private static final String NAME = "cheese pizza (formerly known as default)";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();

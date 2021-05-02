@@ -1,8 +1,6 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.cheese;
 
-import de.infoteam.course.dp.pizzastore.model.Ingredient;
-
-public class MozzarellaCheese implements Ingredient {
+public class MozzarellaCheese implements Cheese {
 
 	private static final String NAME = "mozzarella";
 

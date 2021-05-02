@@ -15,7 +15,7 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.OliveTopping;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.TomatoTopping;
 
 public class VeggiePizza implements Pizza {
-	
+
 	private static final String NAME = "veggie pizza";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
@@ -35,7 +35,6 @@ public class VeggiePizza implements Pizza {
 		return Collections.unmodifiableList(this.ingredients);
 	}
 
-
 	@Override
 	public Duration getBakingDuration() {
 		return Duration.ofMinutes(8);
@@ -50,5 +49,5 @@ public class VeggiePizza implements Pizza {
 	public String name() {
 		return VeggiePizza.NAME;
 	}
-	
+
 }

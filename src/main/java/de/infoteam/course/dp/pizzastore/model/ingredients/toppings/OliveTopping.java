@@ -1,8 +1,6 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.toppings;
 
-import de.infoteam.course.dp.pizzastore.model.Ingredient;
-
-public class OliveTopping implements Ingredient {
+public class OliveTopping implements Topping {
 
 	private static final String NAME = "black Kalamata olives";
 
