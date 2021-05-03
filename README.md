@@ -5,7 +5,7 @@
 ### Szenario
 Der Rubel rollt💰, aber mit mehr Verkäufen steigen auch die Anforderungen.
 
-Das Management hat beschlossen, das es Zeit wird zu skalieren📈 und hat den Auftrag gegeben, unseren Pizza-Store in eine Client-Server-Anwendung umzubauen👷‍♂️ Die Wahl viel dabei auf _Spring Boot_ ❤
+Das Management hat beschlossen, dass es Zeit wird zu skalieren📈 und hat den Auftrag gegeben, unseren Pizza-Store in eine Client-Server-Anwendung umzubauen👷‍♂️ Die Wahl viel dabei auf _Spring Boot_ ❤
 
 Außerdem sind neue Anforderungen vom Einkauf🛒 hinzugekommen: Weil wir an manchen Tagen so viel 🍕 verkaufen, muss der Einkauf jederzeit einen Überblick über die verbrauchten Zutaten erhalten können, damit schnell reagiert werden kann.
 
