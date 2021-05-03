@@ -1,5 +1,7 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +30,18 @@ public class PizzaController {
 	public PizzaController() {
 		this.ingredientLogger = new IngredientLogger();
 		this.pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).numberOfChefs(2)
+				.build();
+	}
+
+	/*
+	 * Da wir so wenig Spring wie möglich benutzen, muss hier unser ExecutorService
+	 * "pizzaKitchen" im PizzaService beendet werden.
+	 * 
+	 */
+	@PreDestroy
+	void shutdownPizzaService() {
+		this.pizzaService.shutdown();
 	}
 
 	@PostMapping("/order")
@@ -45,4 +58,13 @@ public class PizzaController {
 	public ConsumedIngredientsResponse consumedIngredients() {
 		return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
+
+	/*
+	 * Schaffe unter "/queue" eine Schnittstelle für alle in Bearbeitung
+	 * befindlichen Pizzen.
+	 */
+
+	/*
+	 * Schaffe unter "/pick-up" eine Schnittstelle für alle fertigen Bestellungen.
+	 */
 }

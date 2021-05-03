@@ -1,12 +1,13 @@
 package de.infoteam.course.dp.pizzastore.service;
 
-import java.util.StringJoiner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
@@ -18,30 +19,27 @@ public class PizzaService {
 	private final PizzaFactory sicilianPizzaFactory;
 	private final PizzaFactory gourmetPizzaFactory;
 	private final IngredientLogger ingredientLogger;
+	private final ExecutorService pizzaKitchen;
 	private final AtomicLong orderIdSequence = new AtomicLong(0);
 
 	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory,
-			IngredientLogger ingredientLogger) {
+			IngredientLogger ingredientLogger, int numberOfChefs) {
 		this.sicilianPizzaFactory = sicilianPizzaFactory;
 		this.gourmetPizzaFactory = gourmetPizzaFactory;
 		this.ingredientLogger = ingredientLogger;
+		this.pizzaKitchen = Executors.newFixedThreadPool(numberOfChefs);
 	}
 
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
 		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
 		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
 		/*
-		 * Diese Funktion wird ausgelagert
+		 * Pizza wird asynchron in der Pizzaküche fertiggestellt. Klinke hier einen
+		 * Observer ein, der die Nachrichten für die REST-Schnittstellen entgegennimmt.
 		 */
-		preparePizza(pizza);
-		logConsumedIngredients(pizza);
-		bakePizza(pizza);
-		servePizza(pizza);
-		return pizza;
-	}
+		pizzaKitchen.submit(new PizzaChef(pizza, ingredientLogger));
 
-	private void logConsumedIngredients(Pizza pizza) {
-		pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
+		return pizza;
 	}
 
 	PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
@@ -59,24 +57,9 @@ public class PizzaService {
 		return factory;
 	}
 
-	void preparePizza(Pizza pizza) {
-		pizza.addIngredients();
-
-		// output ingredients to log
-		StringJoiner joiner = new StringJoiner(", ");
-		pizza.getIngredients().stream().map(Ingredient::name).forEach(joiner::add);
-		LOGGER.info(" > adding ingredients: {}", joiner);
-	}
-
-	void bakePizza(Pizza pizza) {
-		// output baking procedure to log
-		LOGGER.info(" > baking for {} minutes at {}° Celsius", pizza.getBakingDuration().toMinutes(),
-				pizza.getBakingTemperature());
-	}
-
-	void servePizza(Pizza pizza) {
-		// output serving to log
-		LOGGER.info(" > serving...");
+	public void shutdown() {
+		LOGGER.info("The PizzaKitchen is closing now. Pizza in progress will be finished though...");
+		this.pizzaKitchen.shutdown();
 	}
 
 	public static Builder builder() {
@@ -91,6 +74,7 @@ public class PizzaService {
 		private PizzaFactory sicilianFactory;
 		private PizzaFactory gourmetFactory;
 		private IngredientLogger ingredientLogger;
+		private int numberOfChefs = 1;
 
 		private Builder() {
 			super();
@@ -111,6 +95,14 @@ public class PizzaService {
 			return this;
 		}
 
+		public Builder numberOfChefs(int numberOfChefs) {
+			if (numberOfChefs < 1 || numberOfChefs > 8) {
+				throw new IllegalArgumentException("Number of chefs must be between 1 and 8");
+			}
+			this.numberOfChefs = numberOfChefs;
+			return this;
+		}
+
 		public PizzaService build() {
 			if (this.sicilianFactory == null) {
 				throw new IllegalStateException("A Sicilian PizzaFactory is required");
@@ -121,7 +113,7 @@ public class PizzaService {
 			if (this.ingredientLogger == null) {
 				throw new IllegalStateException("An IngredientLogger is required");
 			}
-			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger);
+			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger, numberOfChefs);
 		}
 	}
 }

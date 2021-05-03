@@ -2,15 +2,15 @@ package de.infoteam.course.dp.pizzastore.service;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 
 public class IngredientLogger {
 
-	private final List<Ingredient> consumedIngredients = new ArrayList<>();
+	private final List<Ingredient> consumedIngredients = new CopyOnWriteArrayList<>();
 	
 	public void logIngredient(Ingredient ingredient) {
 		this.consumedIngredients.add(ingredient);
