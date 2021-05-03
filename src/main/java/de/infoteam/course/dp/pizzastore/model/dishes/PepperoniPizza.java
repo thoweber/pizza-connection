@@ -13,15 +13,15 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.PepperoniTopping;
 
 public class PepperoniPizza extends AbstractPizza {
-	
+
 	private static final String NAME = "pepperoni pizza";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
-	public PepperoniPizza(Dough dough, Sauce sauce) {
-		super(dough, sauce);
+	public PepperoniPizza(long id, Dough dough, Sauce sauce) {
+		super(id, dough, sauce);
 	}
-	
+
 	@Override
 	public void addIngredients() {
 		this.ingredients.add(getDough());
@@ -34,7 +34,6 @@ public class PepperoniPizza extends AbstractPizza {
 	public List<Ingredient> getIngredients() {
 		return Collections.unmodifiableList(this.ingredients);
 	}
-
 
 	@Override
 	public Duration getBakingDuration() {
@@ -50,5 +49,5 @@ public class PepperoniPizza extends AbstractPizza {
 	public String name() {
 		return PepperoniPizza.NAME;
 	}
-	
+
 }
