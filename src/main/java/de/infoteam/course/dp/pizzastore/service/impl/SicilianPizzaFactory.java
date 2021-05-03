@@ -14,17 +14,17 @@ import de.infoteam.course.dp.pizzastore.service.PizzaFactory;
 public class SicilianPizzaFactory implements PizzaFactory {
 
 	@Override
-	public Pizza createPizza(MenuItem selectedItem) {
+	public Pizza createPizza(MenuItem selectedItem, long id) {
 		Pizza pizza = null;
 		switch (selectedItem) {
 		case CHEESE_PIZZA:
-			pizza = new CheesePizza(prepareDough(), prepareSauce());
+			pizza = new CheesePizza(id, prepareDough(), prepareSauce());
 			break;
 		case PEPPERONI_PIZZA:
-			pizza = new PepperoniPizza(prepareDough(), prepareSauce());
+			pizza = new PepperoniPizza(id, prepareDough(), prepareSauce());
 			break;
 		case VEGGIE_PIZZA:
-			pizza = new VeggiePizza(prepareDough(), prepareSauce());
+			pizza = new VeggiePizza(id, prepareDough(), prepareSauce());
 			break;
 		default:
 			throw new IllegalStateException("No pizza defined for " + selectedItem);

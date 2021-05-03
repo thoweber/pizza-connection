@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ public class PizzaService {
 	private final PizzaFactory sicilianPizzaFactory;
 	private final PizzaFactory gourmetPizzaFactory;
 	private final IngredientLogger ingredientLogger;
+	private final AtomicLong orderIdSequence = new AtomicLong(0);
 
 	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory,
 			IngredientLogger ingredientLogger) {
@@ -26,12 +28,15 @@ public class PizzaService {
 	}
 
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
+		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
 		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
+		/*
+		 * Diese Funktion wird ausgelagert
+		 */
 		preparePizza(pizza);
+		logConsumedIngredients(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
-		logConsumedIngredients(pizza);
 		return pizza;
 	}
 

@@ -1,77 +1,96 @@
 package de.infoteam.course.dp.pizzastore;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
+import static de.infoteam.course.dp.pizzastore.Console.println;
+import static de.infoteam.course.dp.pizzastore.Console.prompt;
+import static de.infoteam.course.dp.pizzastore.Console.showBanner;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import de.infoteam.course.dp.pizzastore.decorator.IngredientLoggerDecorator;
+import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
+import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
-import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
-import de.infoteam.course.dp.pizzastore.service.PizzaService;
-import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
-import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
 /**
- * the PizzaStore application.
+ * the PizzaStore order console.
  * 
  * @author Thomas Weber
  */
-public final class PizzaStoreApp {
+@Component
+public final class PizzaStoreApp implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaStoreApp.class);
-	private static final AtomicBoolean RUNNING = new AtomicBoolean(true);
-	private static final PrintStream OUTPUT = System.out;
+	private final AtomicBoolean running = new AtomicBoolean(true);
 
-	private static PizzaService pizzaService;
+	// Spring Application Context --> wird zum Stoppen der Anwendung benötigt
+	private ApplicationContext appContext;
 
-	public static void main(String[] args) {
-		IngredientLogger ingredientLogger = new IngredientLogger();
-		pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
+	/* REST Konstanten */
+	private RestTemplate restTemplate;
+	private final String serverAddress = "http://localhost:8080";
+	private final String orderPizzaRoute = "/order";
 
-		while (RUNNING.get()) {
+	public PizzaStoreApp(ApplicationContext appContext) {
+		this.appContext = appContext;
+		this.restTemplate = new RestTemplate();
+	}
+
+	@Override
+	public void run(String... args) {
+
+		while (running.get()) {
 			showBanner();
-			askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem)
-					.ifPresent(pizzaStyle -> pizzaService.order(selectedItem, pizzaStyle)));
+			askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem).ifPresent(pizzaStyle -> {
+				PizzaOrderResponse response = orderPizza(selectedItem, pizzaStyle);
+				println("Received order #" + response.getId() + " " + response.getFullName());
+				prompt("Press enter...");
+			}));
 		}
 
 		println("Store is closed.");
 
 		println("===================================");
 		println("Consumed Ingredients:");
-		new IngredientLoggerDecorator(ingredientLogger).printShoppingList(OUTPUT);
+
+		/*
+		 * Hier müssen wir noch die verbrauchten Zutaten vom Server holen
+		 */
+
+		// Stoppt die Spring Anwendung
+		SpringApplication.exit(appContext, () -> 0);
 	}
 
-	private static Optional<MenuItem> askForOrder() {
+	private Optional<MenuItem> askForOrder() {
 		println();
 		println("Our menu for today:");
 		Stream.of(MenuItem.values()).forEach(menu -> println((menu.ordinal() + 1) + "\t" + menu.getName()));
 		println("q\tto quit the app");
 		println();
-		String choice = readConsoleInput();
+		String choice = prompt("Your choice: ");
 		return choiceToEnumValue(choice, MenuItem.values(), "q");
 	}
 
-	private static Optional<PizzaStyle> chooseStyle(MenuItem selectedItem) {
+	private Optional<PizzaStyle> chooseStyle(MenuItem selectedItem) {
 		println("Choose your style for " + selectedItem.getName() + ":");
 		Stream.of(PizzaStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
 		println();
-		String choice = readConsoleInput();
+		String choice = prompt("Your style: ");
 		return choiceToEnumValue(choice, PizzaStyle.values(), null);
 	}
 
-	static <T extends Enum<T>> Optional<T> choiceToEnumValue(String choice, T[] enumValues, String quit) {
+	<T extends Enum<T>> Optional<T> choiceToEnumValue(String choice, T[] enumValues, String quit) {
 		if (quit != null && quit.equals(choice)) {
-			RUNNING.set(false);
+			running.set(false);
 			return Optional.empty();
 		}
 		try {
@@ -87,42 +106,11 @@ public final class PizzaStoreApp {
 		return Optional.empty();
 	}
 
-	private static String readConsoleInput() {
-		print("Your choice: ");
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			return reader.readLine().trim();
-		} catch (IOException e) {
-			LOGGER.error("Error reading user input", e);
-			System.exit(1);
-			return "";
-		} finally {
-			println();
-		}
-	}
-
-	private static void showBanner() {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-				PizzaStoreApp.class.getClassLoader().getResourceAsStream("banner.txt"), StandardCharsets.UTF_8))) {
-			String line = reader.readLine();
-			while (line != null) {
-				println(line);
-				line = reader.readLine();
-			}
-		} catch (Exception e) {
-			LOGGER.error("Cannot show store banner", e);
-		}
-	}
-
-	private static void print(String output) {
-		OUTPUT.print(output);
-	}
-
-	private static void println() {
-		println("");
-	}
-
-	private static void println(String output) {
-		OUTPUT.println(output);
+	/*
+	 * REST-bezogene Methoden
+	 */
+	private PizzaOrderResponse orderPizza(MenuItem selectedItem, PizzaStyle pizzaStyle) {
+		PizzaOrderRequest request = new PizzaOrderRequest().setMenuItem(selectedItem).setPizzaStyle(pizzaStyle);
+		return restTemplate.postForEntity(serverAddress + orderPizzaRoute, request, PizzaOrderResponse.class).getBody();
 	}
 }

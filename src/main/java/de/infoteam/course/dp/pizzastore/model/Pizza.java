@@ -9,7 +9,14 @@ import java.util.List;
  * @author Thomas Weber
  */
 public interface Pizza {
-	
+
+	/**
+	 * Returns the id of the {@code Pizza}.
+	 * 
+	 * @return the id of the {@code Pizza}
+	 */
+	long getId();
+
 	/**
 	 * Returns the name of the {@code Pizza}.
 	 * 

@@ -17,10 +17,10 @@ public class CheesePizza extends AbstractPizza {
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
-	public CheesePizza(Dough dough, Sauce sauce) {
-		super(dough, sauce);
+	public CheesePizza(long id, Dough dough, Sauce sauce) {
+		super(id, dough, sauce);
 	}
-	
+
 	@Override
 	public void addIngredients() {
 		this.ingredients.add(getDough());
@@ -32,7 +32,6 @@ public class CheesePizza extends AbstractPizza {
 	public List<Ingredient> getIngredients() {
 		return Collections.unmodifiableList(this.ingredients);
 	}
-
 
 	@Override
 	public Duration getBakingDuration() {
@@ -48,5 +47,5 @@ public class CheesePizza extends AbstractPizza {
 	public String name() {
 		return CheesePizza.NAME;
 	}
-	
+
 }
