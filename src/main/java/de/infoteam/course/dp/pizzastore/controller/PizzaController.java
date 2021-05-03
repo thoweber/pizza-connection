@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.infoteam.course.dp.pizzastore.adapter.IngredientLoggerAdapter;
+import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsResponse;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
@@ -32,18 +34,15 @@ public class PizzaController {
 	@PostMapping("/order")
 	public PizzaOrderResponse order(@RequestBody PizzaOrderRequest orderRequest) {
 		LOGGER.info("Received PizzaOrderRequest");
-		
+
 		Pizza pizza = pizzaService.order(orderRequest.getMenuItem(), orderRequest.getPizzaStyle());
-		
+
 		return new PizzaOrderResponse().setId(pizza.getId()).setName(pizza.name())
 				.setPizzaStyle(orderRequest.getPizzaStyle());
 	}
 
 	@GetMapping("/consumed-ingredients")
-	public Object consumedIngredients() {
-		/*
-		 * REST-Schnittstelle zum Abrufen der verbrauchten Zutaten erstellen
-		 */
-		return null;
+	public ConsumedIngredientsResponse consumedIngredients() {
+		return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
 }
