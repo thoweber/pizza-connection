@@ -11,8 +11,10 @@ import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
+import de.infoteam.course.dp.pizzastore.service.model.PizzaStateChange;
+import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 
-public class PizzaService {
+public class PizzaService implements Subscriber<PizzaStateChange> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
@@ -36,13 +38,12 @@ public class PizzaService {
 		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
 		// speicher die Pizza im Repository
 		this.pizzaRepository.saveOrUpdate(pizza);
-		
+
 		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
-		/*
-		 * Pizza wird asynchron in der Pizzaküche fertiggestellt. Klinke hier das
-		 * Observer-Pattern ein, um die Änderungen im PizzaRepository zu speichern.
-		 */
-		pizzaKitchen.submit(new PizzaPreparationTask(pizza, ingredientLogger));
+		
+		PizzaPreparationTask task =	new PizzaPreparationTask(pizza, ingredientLogger);
+		task.subscribe(this);
+		pizzaKitchen.submit(task);
 
 		return pizza;
 	}
@@ -65,6 +66,15 @@ public class PizzaService {
 	public void shutdown() {
 		LOGGER.info("The PizzaKitchen is closing now. Pizza in progress will be finished though...");
 		this.pizzaKitchen.shutdown();
+	}
+
+	@Override
+	public void update(PizzaStateChange context) {
+		LOGGER.info("Receiving update {} {}", context.getPizzaId(), context.getState());
+		this.pizzaRepository.findById(context.getPizzaId()).ifPresent(pizza -> {
+			pizza.updateState(context.getState());
+			this.pizzaRepository.saveOrUpdate(pizza);
+		});
 	}
 
 	public static Builder builder() {

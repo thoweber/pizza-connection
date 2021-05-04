@@ -1,5 +1,8 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
@@ -13,7 +16,9 @@ import de.infoteam.course.dp.pizzastore.adapter.IngredientLoggerAdapter;
 import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsResponse;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
+import de.infoteam.course.dp.pizzastore.controller.dto.PizzaResponse;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.State;
 import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
@@ -34,8 +39,7 @@ public class PizzaController {
 		this.pizzaRepository = new PizzaRepository();
 		this.pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
 				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
-				.pizzaRepository(pizzaRepository).numberOfChefs(2)
-				.build();
+				.pizzaRepository(pizzaRepository).numberOfChefs(2).build();
 	}
 
 	/*
@@ -66,8 +70,21 @@ public class PizzaController {
 	 * Schaffe unter "/queue" eine Schnittstelle für alle in Bearbeitung
 	 * befindlichen Pizzen.
 	 */
+	@GetMapping("/queue")
+	public List<PizzaResponse> queue() {
+		return this.pizzaRepository.findAll().stream().filter(p -> p.getState() != State.READY).map(this::toPizzaResponse)
+				.collect(Collectors.toList());
+	}
 
 	/*
 	 * Schaffe unter "/pick-up" eine Schnittstelle für alle fertigen Bestellungen.
 	 */
+	@GetMapping("/pick-up")
+	public List<PizzaResponse> pickUp() {
+		return this.pizzaRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse).collect(Collectors.toList());
+	}
+	
+	private PizzaResponse toPizzaResponse(Pizza pizza) {
+		return new PizzaResponse().setId(pizza.getId()).setName(pizza.name()).setState(pizza.getState());
+	}
 }
