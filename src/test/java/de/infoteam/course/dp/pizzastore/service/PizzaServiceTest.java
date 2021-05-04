@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.PepperoniPizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
+import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
 import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
@@ -31,7 +33,8 @@ class PizzaServiceTest {
 	IngredientLogger ingredientLogger = new IngredientLogger();
 
 	PizzaService pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-			.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
+			.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
+			.pizzaRepository(new PizzaRepository()).build();
 
 	static Stream<Arguments> menuItemPizzaClassSource() {
 		return Stream.of(Arguments.of(MenuItem.CHEESE_PIZZA, CheesePizza.class),
@@ -80,22 +83,49 @@ class PizzaServiceTest {
 	@Test
 	void test_builder_without_sicilian_factory_throw_IllegalStateException() {
 		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.ingredientLogger(new IngredientLogger());
+				.ingredientLogger(new IngredientLogger()).pizzaRepository(new PizzaRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_gourmet_factory_throw_IllegalStateException() {
 		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.ingredientLogger(new IngredientLogger());
+				.ingredientLogger(new IngredientLogger()).pizzaRepository(new PizzaRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_IngredientLogger_throw_IllegalStateException() {
 		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.gourmetFactory(new GourmetPizzaFactory());
+				.gourmetFactory(new GourmetPizzaFactory()).pizzaRepository(new PizzaRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
+	}
+
+	@Test
+	void test_builder_without_PizzaRepository_throw_IllegalStateException() {
+		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
+				.gourmetFactory(new GourmetPizzaFactory()).ingredientLogger(new IngredientLogger());
+		assertThrows(IllegalStateException.class, () -> builder.build());
+	}
+
+	@Test
+	void test_builder_does_not_accept_numOfChefs_smaller_than_1() {
+		PizzaService.Builder builder = PizzaService.builder();
+		assertThrows(IllegalArgumentException.class, () -> builder.numberOfChefs(0));
+	}
+
+	@Test
+	void test_builder_does_not_accept_numOfChefs_larger_than_8() {
+		PizzaService.Builder builder = PizzaService.builder();
+		assertThrows(IllegalArgumentException.class, () -> builder.numberOfChefs(9));
+	}
+
+	@Test
+	void test_builder_with_acceptable_values_builds() {
+		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(new IngredientLogger())
+				.pizzaRepository(new PizzaRepository()).numberOfChefs(6);
+		assertNotNull(builder.build());
 	}
 
 }

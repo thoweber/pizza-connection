@@ -9,21 +9,21 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 
-public class PizzaChef implements Runnable {
+public class PizzaPreparationTask implements Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaChef.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaPreparationTask.class);
 
 	private Pizza pizza;
 	private IngredientLogger ingredientLogger;
 
 	private boolean simulateProgress = true;
 
-	public PizzaChef(Pizza pizza, IngredientLogger ingredientLogger) {
+	public PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger) {
 		this.pizza = pizza;
 		this.ingredientLogger = ingredientLogger;
 	}
 
-	PizzaChef(Pizza pizza, IngredientLogger ingredientLogger, boolean simulateProgress) {
+	PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger, boolean simulateProgress) {
 		this(pizza, ingredientLogger);
 		this.simulateProgress = simulateProgress;
 	}

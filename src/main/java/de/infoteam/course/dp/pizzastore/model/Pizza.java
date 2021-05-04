@@ -18,6 +18,20 @@ public interface Pizza {
 	long getId();
 
 	/**
+	 * Returns the state of the {@code Pizza}.
+	 * 
+	 * @return the state of the {@code Pizza}
+	 */
+	State getState();
+
+	/**
+	 * Updates the state to the given value.
+	 * 
+	 * @param state the new state
+	 */
+	void updateState(State state);
+
+	/**
 	 * Returns the name of the {@code Pizza}.
 	 * 
 	 * @return the name of the {@code Pizza}

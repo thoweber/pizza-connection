@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 
 public class PizzaService {
 
@@ -18,25 +19,30 @@ public class PizzaService {
 	private final PizzaFactory sicilianPizzaFactory;
 	private final PizzaFactory gourmetPizzaFactory;
 	private final IngredientLogger ingredientLogger;
+	private final PizzaRepository pizzaRepository;
 	private final ExecutorService pizzaKitchen;
 	private final AtomicLong orderIdSequence = new AtomicLong(0);
 
 	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory,
-			IngredientLogger ingredientLogger, int numberOfChefs) {
+			IngredientLogger ingredientLogger, PizzaRepository pizzaRepository, int numberOfChefs) {
 		this.sicilianPizzaFactory = sicilianPizzaFactory;
 		this.gourmetPizzaFactory = gourmetPizzaFactory;
 		this.ingredientLogger = ingredientLogger;
+		this.pizzaRepository = pizzaRepository;
 		this.pizzaKitchen = Executors.newFixedThreadPool(numberOfChefs);
 	}
 
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
 		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
+		// speicher die Pizza im Repository
+		this.pizzaRepository.saveOrUpdate(pizza);
+		
 		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
 		/*
-		 * Pizza wird asynchron in der Pizzaküche fertiggestellt. Klinke hier einen
-		 * Observer ein, der die Nachrichten für die REST-Schnittstellen entgegennimmt.
+		 * Pizza wird asynchron in der Pizzaküche fertiggestellt. Klinke hier das
+		 * Observer-Pattern ein, um die Änderungen im PizzaRepository zu speichern.
 		 */
-		pizzaKitchen.submit(new PizzaChef(pizza, ingredientLogger));
+		pizzaKitchen.submit(new PizzaPreparationTask(pizza, ingredientLogger));
 
 		return pizza;
 	}
@@ -73,6 +79,7 @@ public class PizzaService {
 		private PizzaFactory sicilianFactory;
 		private PizzaFactory gourmetFactory;
 		private IngredientLogger ingredientLogger;
+		private PizzaRepository pizzaRepository;
 		private int numberOfChefs = 1;
 
 		private Builder() {
@@ -94,6 +101,11 @@ public class PizzaService {
 			return this;
 		}
 
+		public Builder pizzaRepository(PizzaRepository pizzaRepository) {
+			this.pizzaRepository = pizzaRepository;
+			return this;
+		}
+
 		public Builder numberOfChefs(int numberOfChefs) {
 			if (numberOfChefs < 1 || numberOfChefs > 8) {
 				throw new IllegalArgumentException("Number of chefs must be between 1 and 8");
@@ -112,7 +124,10 @@ public class PizzaService {
 			if (this.ingredientLogger == null) {
 				throw new IllegalStateException("An IngredientLogger is required");
 			}
-			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger, numberOfChefs);
+			if (this.pizzaRepository == null) {
+				throw new IllegalStateException("A PizzaRepository is required");
+			}
+			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger, pizzaRepository, numberOfChefs);
 		}
 	}
 }

@@ -14,6 +14,7 @@ import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsRespon
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
 import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
@@ -26,18 +27,20 @@ public class PizzaController {
 
 	private PizzaService pizzaService;
 	private IngredientLogger ingredientLogger;
+	private PizzaRepository pizzaRepository;
 
 	public PizzaController() {
 		this.ingredientLogger = new IngredientLogger();
+		this.pizzaRepository = new PizzaRepository();
 		this.pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).numberOfChefs(2)
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
+				.pizzaRepository(pizzaRepository).numberOfChefs(2)
 				.build();
 	}
 
 	/*
 	 * Da wir so wenig Spring wie möglich benutzen, muss hier unser ExecutorService
 	 * "pizzaKitchen" im PizzaService beendet werden.
-	 * 
 	 */
 	@PreDestroy
 	void shutdownPizzaService() {
