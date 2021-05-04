@@ -1,16 +1,9 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -18,9 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
@@ -29,7 +20,7 @@ import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.PepperoniPizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
-import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
+import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
 import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
@@ -41,42 +32,9 @@ class PizzaServiceTest {
 
 	IngredientLogger ingredientLogger = new IngredientLogger();
 
-	@Spy
 	PizzaService pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-			.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
-
-	@Test
-	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
-		// when
-		pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
-		// then
-		InOrder inOrder = inOrder(pizzaService);
-		then(pizzaService).should(inOrder).preparePizza(any());
-		then(pizzaService).should(inOrder).bakePizza(any());
-		then(pizzaService).should(inOrder).servePizza(any());
-	}
-
-	@Test
-	void test_preparePizza_calls_addIngredients() {
-		// given
-		given(pizza.getIngredients()).willReturn(Arrays.asList(new ThinCrustyDough()));
-		// when
-		pizzaService.preparePizza(pizza);
-		// then
-		then(pizza).should().addIngredients();
-	}
-
-	@Test
-	void test_bakePizza_accesses_baking_information_from_pizza() {
-		// given
-		given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
-		given(pizza.getBakingTemperature()).willReturn(250);
-		// when
-		pizzaService.bakePizza(pizza);
-		// then
-		then(pizza).should().getBakingDuration();
-		then(pizza).should().getBakingTemperature();
-	}
+			.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
+			.pizzaRepository(new PizzaRepository()).build();
 
 	static Stream<Arguments> menuItemPizzaClassSource() {
 		return Stream.of(Arguments.of(MenuItem.CHEESE_PIZZA, CheesePizza.class),
@@ -125,33 +83,49 @@ class PizzaServiceTest {
 	@Test
 	void test_builder_without_sicilian_factory_throw_IllegalStateException() {
 		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.ingredientLogger(new IngredientLogger());
+				.ingredientLogger(new IngredientLogger()).pizzaRepository(new PizzaRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_gourmet_factory_throw_IllegalStateException() {
 		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.ingredientLogger(new IngredientLogger());
+				.ingredientLogger(new IngredientLogger()).pizzaRepository(new PizzaRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_IngredientLogger_throw_IllegalStateException() {
 		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.gourmetFactory(new GourmetPizzaFactory());
+				.gourmetFactory(new GourmetPizzaFactory()).pizzaRepository(new PizzaRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
-	void test_consumed_ingredients_are_logged_by_IngredientLogger() {
-		// given
-		IngredientLogger ingredientLoggerMock = mock(IngredientLogger.class);
-		PizzaService methodLocalPizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLoggerMock).build();
-		// when
-		methodLocalPizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.GOURMET);
-		// then
-		then(ingredientLoggerMock).should(times(3)).logIngredient(any());
+	void test_builder_without_PizzaRepository_throw_IllegalStateException() {
+		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
+				.gourmetFactory(new GourmetPizzaFactory()).ingredientLogger(new IngredientLogger());
+		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
+
+	@Test
+	void test_builder_does_not_accept_numOfChefs_smaller_than_1() {
+		PizzaService.Builder builder = PizzaService.builder();
+		assertThrows(IllegalArgumentException.class, () -> builder.numberOfChefs(0));
+	}
+
+	@Test
+	void test_builder_does_not_accept_numOfChefs_larger_than_8() {
+		PizzaService.Builder builder = PizzaService.builder();
+		assertThrows(IllegalArgumentException.class, () -> builder.numberOfChefs(9));
+	}
+
+	@Test
+	void test_builder_with_acceptable_values_builds() {
+		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(new IngredientLogger())
+				.pizzaRepository(new PizzaRepository()).numberOfChefs(6);
+		assertNotNull(builder.build());
+	}
+
 }

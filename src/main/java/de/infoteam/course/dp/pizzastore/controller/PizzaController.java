@@ -1,5 +1,7 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsRespon
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
 import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
@@ -24,11 +27,24 @@ public class PizzaController {
 
 	private PizzaService pizzaService;
 	private IngredientLogger ingredientLogger;
+	private PizzaRepository pizzaRepository;
 
 	public PizzaController() {
 		this.ingredientLogger = new IngredientLogger();
+		this.pizzaRepository = new PizzaRepository();
 		this.pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
+				.pizzaRepository(pizzaRepository).numberOfChefs(2)
+				.build();
+	}
+
+	/*
+	 * Da wir so wenig Spring wie möglich benutzen, muss hier unser ExecutorService
+	 * "pizzaKitchen" im PizzaService beendet werden.
+	 */
+	@PreDestroy
+	void shutdownPizzaService() {
+		this.pizzaService.shutdown();
 	}
 
 	@PostMapping("/order")
@@ -45,4 +61,13 @@ public class PizzaController {
 	public ConsumedIngredientsResponse consumedIngredients() {
 		return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
+
+	/*
+	 * Schaffe unter "/queue" eine Schnittstelle für alle in Bearbeitung
+	 * befindlichen Pizzen.
+	 */
+
+	/*
+	 * Schaffe unter "/pick-up" eine Schnittstelle für alle fertigen Bestellungen.
+	 */
 }
