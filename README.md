@@ -24,8 +24,8 @@ Deshalb verschafft euch erst einmal einen 👓Überblick...
 	* Konsolen IO nach `Console` ausgelagert
 	
 * REST-Schnittstelle `de.infoteam.course.dp.pizzastore.controller.PizzaController`
-		* REST-Mapping zur Bestellungsannahme
-		* Stub einer Abfrage-Schnittstelle der verbrauchten Zutaten
+	* REST-Mapping zur Bestellungsannahme
+	* Stub einer Abfrage-Schnittstelle der verbrauchten Zutaten
 	
 * Pizza:
 	* jede Pizza hat jetzt ein zusätzliches Feld `id: long` mit der Bestellungs-ID
