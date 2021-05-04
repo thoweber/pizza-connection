@@ -9,12 +9,12 @@
 	
 	HTTPS:
 	```
-	git clone https://github.com/thoweber/design-patterns-course.git
+	git clone https://github.com/thoweber/pizza-connection.git
 	```
 
 	SSH:
 	```
-	git clone git@github.com:thoweber/design-patterns-course.git
+	git clone git@github.com:thoweber/pizza-connection.git
 	```
 2. Ins Kapitel 01 wechseln🚪
 	```
