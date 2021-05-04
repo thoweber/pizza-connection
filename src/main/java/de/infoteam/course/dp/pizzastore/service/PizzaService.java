@@ -30,9 +30,6 @@ public class PizzaService {
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
 		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
 		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
-		/*
-		 * Diese Funktion wird ausgelagert
-		 */
 		preparePizza(pizza);
 		logConsumedIngredients(pizza);
 		bakePizza(pizza);
