@@ -14,8 +14,8 @@ Es kam wie es kommen musste: Unser Praktikant wollte eine kleine Verbesserung an
 Um diese Fehler in der Zukunft zu vermeiden, soll das Erzeugen des `PizzaService` auf das Builder-Pattern umgestellt werden.
 
 ### Aufgabe
-* Erstelle einen Builder für den `PizzaService`
-* Stelle sicher, dass zum Erzeugen des `PizzaService` der Builder verwendet werden muss
+* Erstelle einen Builder für den **`PizzaService`**
+* Stelle sicher, dass zum Erzeugen des **`PizzaService`** der Builder verwendet werden muss
 * Passe den Code und die Tests entsprechend an
 
 **Hinweis:** Für diese Aufgabe habe ich _nichts_ vorbereitet😋
