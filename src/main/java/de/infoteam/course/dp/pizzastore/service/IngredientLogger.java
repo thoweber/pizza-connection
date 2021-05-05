@@ -8,7 +8,7 @@ import java.util.List;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 
-public class IngredientLogger {
+public class IngredientLogger implements ShoppingListLogger<Ingredient> {
 
 	private final List<Ingredient> consumedIngredients = new ArrayList<>();
 	
