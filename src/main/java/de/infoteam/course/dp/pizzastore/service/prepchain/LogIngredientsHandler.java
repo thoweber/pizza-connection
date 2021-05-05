@@ -1,8 +1,7 @@
-package de.infoteam.course.dp.pizzastore.service.impl;
+package de.infoteam.course.dp.pizzastore.service.prepchain;
 
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
-import de.infoteam.course.dp.pizzastore.service.prepchain.AbstractObservableDishHandler;
 
 public class LogIngredientsHandler extends AbstractObservableDishHandler {
 

@@ -1,4 +1,4 @@
-package de.infoteam.course.dp.pizzastore.service.impl;
+package de.infoteam.course.dp.pizzastore.service.prepchain;
 
 import java.time.Duration;
 
@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
-import de.infoteam.course.dp.pizzastore.service.prepchain.AbstractObservableDishHandler;
 
 public class BakingHandler extends AbstractObservableDishHandler {
 	

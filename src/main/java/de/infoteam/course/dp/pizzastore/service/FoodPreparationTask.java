@@ -5,14 +5,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
-import de.infoteam.course.dp.pizzastore.service.impl.BakingHandler;
-import de.infoteam.course.dp.pizzastore.service.impl.LogIngredientsHandler;
-import de.infoteam.course.dp.pizzastore.service.impl.ServiceHandler;
 import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
 import de.infoteam.course.dp.pizzastore.service.model.Publisher;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 import de.infoteam.course.dp.pizzastore.service.prepchain.AbstractObservableDishHandler;
+import de.infoteam.course.dp.pizzastore.service.prepchain.BakingHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.FoodPreparationHandler;
+import de.infoteam.course.dp.pizzastore.service.prepchain.LogIngredientsHandler;
+import de.infoteam.course.dp.pizzastore.service.prepchain.ServiceHandler;
 
 public class FoodPreparationTask implements Runnable, Publisher<DishStateChange> {
 
