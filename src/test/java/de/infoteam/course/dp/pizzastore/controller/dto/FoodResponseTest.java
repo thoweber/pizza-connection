@@ -1,18 +1,17 @@
 package de.infoteam.course.dp.pizzastore.controller.dto;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.model.State;
 
-class PizzaResponseTest {
+class FoodResponseTest {
 
 	@Test
 	void test_values_are_stored_as_expected() {
 		// given
-		PizzaResponse response = new PizzaResponse();
+		FoodResponse response = new FoodResponse();
 		// when
 		response.setId(42).setName("test").setState(State.DISH_UP);
 		// then

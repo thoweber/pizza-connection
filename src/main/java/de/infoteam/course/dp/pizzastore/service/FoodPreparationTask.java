@@ -8,51 +8,58 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
-import de.infoteam.course.dp.pizzastore.service.model.PizzaStateChange;
+import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
 import de.infoteam.course.dp.pizzastore.service.model.Publisher;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 
-public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChange> {
+public class FoodPreparationTask implements Runnable, Publisher<DishStateChange> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaPreparationTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FoodPreparationTask.class);
 
-	private Pizza pizza;
+	private Dish dish;
 	private IngredientLogger ingredientLogger;
 
 	private boolean simulateProgress = true;
 
-	private Set<Subscriber<PizzaStateChange>> subscribers = new CopyOnWriteArraySet<>();
+	private Set<Subscriber<DishStateChange>> subscribers = new CopyOnWriteArraySet<>();
 
-	public PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger) {
-		this.pizza = pizza;
+	public FoodPreparationTask(Dish dish, IngredientLogger ingredientLogger) {
+		this.dish = dish;
 		this.ingredientLogger = ingredientLogger;
 	}
 
-	PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger, boolean simulateProgress) {
+	FoodPreparationTask(Pizza pizza, IngredientLogger ingredientLogger, boolean simulateProgress) {
 		this(pizza, ingredientLogger);
 		this.simulateProgress = simulateProgress;
 	}
 
 	@Override
 	public void run() {
-		preparePizza(pizza);
-		logConsumedIngredients(pizza);
-		bakePizza(pizza);
-		servePizza(pizza);
+		/*
+		 * Dieser Code ist zu abhängig vom Essensangebot. Wir werden das Chain of
+		 * Responsibility Pattern implementieren.
+		 */
+		preparePizza(dish);
+		logConsumedIngredients(dish);
+		if (dish instanceof Pizza) {
+			bakePizza((Pizza) dish);
+		}
+		servePizza(dish);
 	}
 
-	void preparePizza(Pizza pizza) {
-		pizza.updateState(State.IN_PREPARATION);
+	void preparePizza(Dish dish) {
+		dish.updateState(State.IN_PREPARATION);
 		notifySubscribers();
-		
-		pizza.addIngredients();
+
+		dish.addIngredients();
 
 		// output ingredients to log
 		StringJoiner joiner = new StringJoiner(", ");
-		pizza.getIngredients().stream().map(Ingredient::name).forEach(joiner::add);
+		dish.getIngredients().stream().map(Ingredient::name).forEach(joiner::add);
 		LOGGER.info(" > adding ingredients: {}", joiner);
 
 		// sleep
@@ -73,7 +80,7 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		}
 	}
 
-	void servePizza(Pizza pizza) {
+	void servePizza(Dish pizza) {
 		pizza.updateState(State.DISH_UP);
 		notifySubscribers();
 		// output serving to log
@@ -86,7 +93,7 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		notifySubscribers();
 	}
 
-	void logConsumedIngredients(Pizza pizza) {
+	void logConsumedIngredients(Dish pizza) {
 		pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
 	}
 
@@ -100,18 +107,18 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 	}
 
 	@Override
-	public void subscribe(Subscriber<PizzaStateChange> subscriber) {
+	public void subscribe(Subscriber<DishStateChange> subscriber) {
 		this.subscribers.add(subscriber);
 	}
 
 	@Override
-	public void unsubscribe(Subscriber<PizzaStateChange> subscriber) {
+	public void unsubscribe(Subscriber<DishStateChange> subscriber) {
 		this.subscribers.remove(subscriber);
 	}
 
 	@Override
 	public void notifySubscribers() {
-		final PizzaStateChange next = PizzaStateChange.of(this.pizza);
+		final DishStateChange next = DishStateChange.of(this.dish);
 		this.subscribers.stream().forEach(s -> s.update(next));
 		// clear all subscriptions when task is done
 		if (next.getState() == State.READY) {

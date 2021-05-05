@@ -3,11 +3,11 @@ package de.infoteam.course.dp.pizzastore.controller;
 import java.util.List;
 
 import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsResponse;
-import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
-import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
-import de.infoteam.course.dp.pizzastore.controller.dto.PizzaResponse;
+import de.infoteam.course.dp.pizzastore.controller.dto.FoodResponse;
+import de.infoteam.course.dp.pizzastore.controller.dto.OrderRequest;
+import de.infoteam.course.dp.pizzastore.controller.dto.OrderResponse;
 
-public interface PizzaController {
+public interface FoodController {
 
 	/**
 	 * Orders a pizza.
@@ -15,7 +15,7 @@ public interface PizzaController {
 	 * @param orderRequest the request describing the desired pizza
 	 * @return a pizza order response
 	 */
-	PizzaOrderResponse order(PizzaOrderRequest orderRequest);
+	OrderResponse order(OrderRequest orderRequest);
 
 	/**
 	 * Returns all consumed ingredients.
@@ -29,13 +29,13 @@ public interface PizzaController {
 	 * 
 	 * @return all pizzas which are not yet ready.
 	 */
-	List<PizzaResponse> queue();
+	List<FoodResponse> queue();
 
 	/**
 	 * Returns all pizzas which are ready to be picked up.
 	 * 
 	 * @return all pizzas which are ready to be picked up
 	 */
-	List<PizzaResponse> pickUp();
+	List<FoodResponse> pickUp();
 
 }

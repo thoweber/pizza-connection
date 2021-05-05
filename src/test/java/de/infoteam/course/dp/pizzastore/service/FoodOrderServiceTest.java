@@ -7,34 +7,28 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import de.infoteam.course.dp.pizzastore.model.Dish;
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.PepperoniPizza;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
-import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
-import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
-import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
+import de.infoteam.course.dp.pizzastore.repository.DishRepository;
+import de.infoteam.course.dp.pizzastore.service.impl.GourmetFoodFactory;
+import de.infoteam.course.dp.pizzastore.service.impl.SicilianFoodFactory;
 
-@ExtendWith(MockitoExtension.class)
-class PizzaServiceTest {
-
-	@Mock
-	Pizza pizza;
+class FoodOrderServiceTest {
 
 	IngredientLogger ingredientLogger = new IngredientLogger();
 
-	PizzaService pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-			.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
-			.pizzaRepository(new PizzaRepository()).build();
+	FoodOrderService foodOrderService = FoodOrderService.builder().gourmetFactory(new GourmetFoodFactory())
+			.sicilianFactory(new SicilianFoodFactory()).ingredientLogger(ingredientLogger)
+			.pizzaRepository(new DishRepository()).build();
 
 	static Stream<Arguments> menuItemPizzaClassSource() {
 		return Stream.of(Arguments.of(MenuItem.CHEESE_PIZZA, CheesePizza.class),
@@ -46,85 +40,85 @@ class PizzaServiceTest {
 	@MethodSource("menuItemPizzaClassSource")
 	void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
 		// when
-		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
+		Dish dish = foodOrderService.order(menuItem, FoodStyle.SICILIAN);
 		// then
-		assertEquals(expectedPizzaKind, pizza.getClass());
+		assertEquals(expectedPizzaKind, dish.getClass());
 	}
 
 	@ParameterizedTest
 	@MethodSource("menuItemPizzaClassSource")
 	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
 		// when
-		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
+		Dish dish = foodOrderService.order(menuItem, FoodStyle.GOURMET);
 		// then
-		assertEquals(expectedPizzaKind, pizza.getClass());
+		assertEquals(expectedPizzaKind, dish.getClass());
 	}
 
 	@Test
 	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_SICILIAN() {
 		// given
-		PizzaStyle style = PizzaStyle.SICILIAN;
+		FoodStyle style = FoodStyle.SICILIAN;
 		// when
-		PizzaFactory factory = pizzaService.chooseFactory(style);
+		FoodFactory factory = foodOrderService.chooseFactory(style);
 		// then
-		assertEquals(SicilianPizzaFactory.class, factory.getClass());
+		assertEquals(SicilianFoodFactory.class, factory.getClass());
 	}
 
 	@Test
 	void test_chooseFactory_returns_the_SicilianPizzaFactory_for_style_GOURMET() {
 		// given
-		PizzaStyle style = PizzaStyle.GOURMET;
+		FoodStyle style = FoodStyle.GOURMET;
 		// when
-		PizzaFactory factory = pizzaService.chooseFactory(style);
+		FoodFactory factory = foodOrderService.chooseFactory(style);
 		// then
-		assertEquals(GourmetPizzaFactory.class, factory.getClass());
+		assertEquals(GourmetFoodFactory.class, factory.getClass());
 	}
 
 	@Test
 	void test_builder_without_sicilian_factory_throw_IllegalStateException() {
-		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.ingredientLogger(new IngredientLogger()).pizzaRepository(new PizzaRepository());
+		FoodOrderService.Builder builder = FoodOrderService.builder().gourmetFactory(new GourmetFoodFactory())
+				.ingredientLogger(new IngredientLogger()).pizzaRepository(new DishRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_gourmet_factory_throw_IllegalStateException() {
-		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.ingredientLogger(new IngredientLogger()).pizzaRepository(new PizzaRepository());
+		FoodOrderService.Builder builder = FoodOrderService.builder().sicilianFactory(new SicilianFoodFactory())
+				.ingredientLogger(new IngredientLogger()).pizzaRepository(new DishRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_IngredientLogger_throw_IllegalStateException() {
-		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.gourmetFactory(new GourmetPizzaFactory()).pizzaRepository(new PizzaRepository());
+		FoodOrderService.Builder builder = FoodOrderService.builder().sicilianFactory(new SicilianFoodFactory())
+				.gourmetFactory(new GourmetFoodFactory()).pizzaRepository(new DishRepository());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_without_PizzaRepository_throw_IllegalStateException() {
-		PizzaService.Builder builder = PizzaService.builder().sicilianFactory(new SicilianPizzaFactory())
-				.gourmetFactory(new GourmetPizzaFactory()).ingredientLogger(new IngredientLogger());
+		FoodOrderService.Builder builder = FoodOrderService.builder().sicilianFactory(new SicilianFoodFactory())
+				.gourmetFactory(new GourmetFoodFactory()).ingredientLogger(new IngredientLogger());
 		assertThrows(IllegalStateException.class, () -> builder.build());
 	}
 
 	@Test
 	void test_builder_does_not_accept_numOfChefs_smaller_than_1() {
-		PizzaService.Builder builder = PizzaService.builder();
+		FoodOrderService.Builder builder = FoodOrderService.builder();
 		assertThrows(IllegalArgumentException.class, () -> builder.numberOfChefs(0));
 	}
 
 	@Test
 	void test_builder_does_not_accept_numOfChefs_larger_than_8() {
-		PizzaService.Builder builder = PizzaService.builder();
+		FoodOrderService.Builder builder = FoodOrderService.builder();
 		assertThrows(IllegalArgumentException.class, () -> builder.numberOfChefs(9));
 	}
 
 	@Test
 	void test_builder_with_acceptable_values_builds() {
-		PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(new IngredientLogger())
-				.pizzaRepository(new PizzaRepository()).numberOfChefs(6);
+		FoodOrderService.Builder builder = FoodOrderService.builder().gourmetFactory(new GourmetFoodFactory())
+				.sicilianFactory(new SicilianFoodFactory()).ingredientLogger(new IngredientLogger())
+				.pizzaRepository(new DishRepository()).numberOfChefs(6);
 		assertNotNull(builder.build());
 	}
 

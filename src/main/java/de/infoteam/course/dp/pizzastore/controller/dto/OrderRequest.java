@@ -1,27 +1,27 @@
 package de.infoteam.course.dp.pizzastore.controller.dto;
 
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 
-public class PizzaOrderRequest {
+public class OrderRequest {
 
 	private MenuItem menuItem;
-	private PizzaStyle pizzaStyle;
+	private FoodStyle pizzaStyle;
 
 	public MenuItem getMenuItem() {
 		return menuItem;
 	}
 
-	public PizzaOrderRequest setMenuItem(MenuItem menuItem) {
+	public OrderRequest setMenuItem(MenuItem menuItem) {
 		this.menuItem = menuItem;
 		return this;
 	}
 
-	public PizzaStyle getPizzaStyle() {
+	public FoodStyle getFoodStyle() {
 		return pizzaStyle;
 	}
 
-	public PizzaOrderRequest setPizzaStyle(PizzaStyle pizzaStyle) {
+	public OrderRequest setFoodStyle(FoodStyle pizzaStyle) {
 		this.pizzaStyle = pizzaStyle;
 		return this;
 	}

@@ -20,7 +20,7 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 
 @ExtendWith(MockitoExtension.class)
-class PizzaPreparationTaskTest {
+class FoodPreparationTaskTest {
 	
 	@Spy
 	Pizza pizza = new VeggiePizza(1, new ThinCrustyDough(), new PlainTomatoSauce());
@@ -28,7 +28,7 @@ class PizzaPreparationTaskTest {
 	IngredientLogger ingredientLogger = new IngredientLogger();
 	
 	@Spy
-	PizzaPreparationTask pizzaChef = new PizzaPreparationTask(pizza, ingredientLogger, false);
+	FoodPreparationTask pizzaChef = new FoodPreparationTask(pizza, ingredientLogger, false);
 
 	@Test
 	void test_run_calls_preparePizza_logIngredients_bakePizza_servePizza_in_order() {

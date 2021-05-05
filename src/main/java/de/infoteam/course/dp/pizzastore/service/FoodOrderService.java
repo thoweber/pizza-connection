@@ -7,49 +7,49 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.infoteam.course.dp.pizzastore.model.Dish;
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.Pizza;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
-import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
-import de.infoteam.course.dp.pizzastore.service.model.PizzaStateChange;
+import de.infoteam.course.dp.pizzastore.repository.DishRepository;
+import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 
-public class PizzaService implements Subscriber<PizzaStateChange> {
+public class FoodOrderService implements Subscriber<DishStateChange> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FoodOrderService.class);
 
-	private final PizzaFactory sicilianPizzaFactory;
-	private final PizzaFactory gourmetPizzaFactory;
+	private final FoodFactory sicilianPizzaFactory;
+	private final FoodFactory gourmetPizzaFactory;
 	private final IngredientLogger ingredientLogger;
-	private final PizzaRepository pizzaRepository;
-	private final ExecutorService pizzaKitchen;
+	private final DishRepository dishRepository;
+	private final ExecutorService kitchen;
 	private final AtomicLong orderIdSequence = new AtomicLong(0);
 
-	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory,
-			IngredientLogger ingredientLogger, PizzaRepository pizzaRepository, int numberOfChefs) {
+	private FoodOrderService(FoodFactory sicilianPizzaFactory, FoodFactory gourmetPizzaFactory,
+			IngredientLogger ingredientLogger, DishRepository pizzaRepository, int numberOfChefs) {
 		this.sicilianPizzaFactory = sicilianPizzaFactory;
 		this.gourmetPizzaFactory = gourmetPizzaFactory;
 		this.ingredientLogger = ingredientLogger;
-		this.pizzaRepository = pizzaRepository;
-		this.pizzaKitchen = Executors.newFixedThreadPool(numberOfChefs);
+		this.dishRepository = pizzaRepository;
+		this.kitchen = Executors.newFixedThreadPool(numberOfChefs);
 	}
 
-	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
+	public Dish order(MenuItem selectedItem, FoodStyle selectedStyle) {
+		Dish dish = chooseFactory(selectedStyle).createDish(selectedItem, orderIdSequence.incrementAndGet());
 		// speicher die Pizza im Repository
-		this.pizzaRepository.saveOrUpdate(pizza);
+		this.dishRepository.saveOrUpdate(dish);
 
-		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), pizza.name());
+		LOGGER.info("Received new order for {} {}", selectedStyle.getName(), dish.name());
 		
-		PizzaPreparationTask task =	new PizzaPreparationTask(pizza, ingredientLogger);
+		FoodPreparationTask task =	new FoodPreparationTask(dish, ingredientLogger);
 		task.subscribe(this);
-		pizzaKitchen.submit(task);
+		kitchen.submit(task);
 
-		return pizza;
+		return dish;
 	}
 
-	PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
-		PizzaFactory factory = null;
+	FoodFactory chooseFactory(FoodStyle selectedStyle) {
+		FoodFactory factory = null;
 		switch (selectedStyle) {
 		case SICILIAN:
 			factory = this.sicilianPizzaFactory;
@@ -65,15 +65,15 @@ public class PizzaService implements Subscriber<PizzaStateChange> {
 
 	public void shutdown() {
 		LOGGER.info("The PizzaKitchen is closing now. Pizza in progress will be finished though...");
-		this.pizzaKitchen.shutdown();
+		this.kitchen.shutdown();
 	}
 
 	@Override
-	public void update(PizzaStateChange context) {
-		LOGGER.info("Receiving update {} {}", context.getPizzaId(), context.getState());
-		this.pizzaRepository.findById(context.getPizzaId()).ifPresent(pizza -> {
+	public void update(DishStateChange context) {
+		LOGGER.info("Receiving update {} {}", context.getDishId(), context.getState());
+		this.dishRepository.findById(context.getDishId()).ifPresent(pizza -> {
 			pizza.updateState(context.getState());
-			this.pizzaRepository.saveOrUpdate(pizza);
+			this.dishRepository.saveOrUpdate(pizza);
 		});
 	}
 
@@ -86,22 +86,22 @@ public class PizzaService implements Subscriber<PizzaStateChange> {
 	 */
 	public static final class Builder {
 
-		private PizzaFactory sicilianFactory;
-		private PizzaFactory gourmetFactory;
+		private FoodFactory sicilianFactory;
+		private FoodFactory gourmetFactory;
 		private IngredientLogger ingredientLogger;
-		private PizzaRepository pizzaRepository;
+		private DishRepository pizzaRepository;
 		private int numberOfChefs = 1;
 
 		private Builder() {
 			super();
 		}
 
-		public Builder sicilianFactory(PizzaFactory sicilianFactory) {
+		public Builder sicilianFactory(FoodFactory sicilianFactory) {
 			this.sicilianFactory = sicilianFactory;
 			return this;
 		}
 
-		public Builder gourmetFactory(PizzaFactory gourmetFactory) {
+		public Builder gourmetFactory(FoodFactory gourmetFactory) {
 			this.gourmetFactory = gourmetFactory;
 			return this;
 		}
@@ -111,7 +111,7 @@ public class PizzaService implements Subscriber<PizzaStateChange> {
 			return this;
 		}
 
-		public Builder pizzaRepository(PizzaRepository pizzaRepository) {
+		public Builder pizzaRepository(DishRepository pizzaRepository) {
 			this.pizzaRepository = pizzaRepository;
 			return this;
 		}
@@ -124,7 +124,7 @@ public class PizzaService implements Subscriber<PizzaStateChange> {
 			return this;
 		}
 
-		public PizzaService build() {
+		public FoodOrderService build() {
 			if (this.sicilianFactory == null) {
 				throw new IllegalStateException("A Sicilian PizzaFactory is required");
 			}
@@ -137,7 +137,7 @@ public class PizzaService implements Subscriber<PizzaStateChange> {
 			if (this.pizzaRepository == null) {
 				throw new IllegalStateException("A PizzaRepository is required");
 			}
-			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger, pizzaRepository, numberOfChefs);
+			return new FoodOrderService(sicilianFactory, gourmetFactory, ingredientLogger, pizzaRepository, numberOfChefs);
 		}
 	}
 }
