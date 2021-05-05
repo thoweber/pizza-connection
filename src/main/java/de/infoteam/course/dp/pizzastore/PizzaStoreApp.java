@@ -16,12 +16,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import de.infoteam.course.dp.pizzastore.controller.PizzaControllerProxy;
+import de.infoteam.course.dp.pizzastore.controller.FoodControllerProxy;
 import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsResponse;
-import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
-import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderResponse;
+import de.infoteam.course.dp.pizzastore.controller.dto.OrderRequest;
+import de.infoteam.course.dp.pizzastore.controller.dto.OrderResponse;
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 
 /**
  * the PizzaStore order console.
@@ -43,15 +43,20 @@ public final class PizzaStoreApp implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		PizzaControllerProxy pizzaControllerProxy = new PizzaControllerProxy();
+		FoodControllerProxy pizzaControllerProxy = new FoodControllerProxy();
 
 		while (running.get()) {
 			showBanner();
 			askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem).ifPresent(pizzaStyle -> {
-				PizzaOrderResponse response = pizzaControllerProxy
-						.order(new PizzaOrderRequest().setMenuItem(selectedItem).setPizzaStyle(pizzaStyle));
+				OrderResponse response = pizzaControllerProxy
+						.order(new OrderRequest().setMenuItem(selectedItem).setFoodStyle(pizzaStyle));
 				println("Received order #" + response.getId() + " " + response.getFullName());
-				println(pizzaControllerProxy.queue().size() + " pizzas are currently in queue");
+				final int queueSize = pizzaControllerProxy.queue().size();
+				if (queueSize > 1) {
+					println(queueSize + " dishes are currently in queue");
+				} else {
+					println("You are first in line!");
+				}
 				println();
 				prompt("Press enter...");
 			}));
@@ -96,12 +101,12 @@ public final class PizzaStoreApp implements CommandLineRunner {
 		return choiceToEnumValue(choice, MenuItem.values(), "q");
 	}
 
-	private Optional<PizzaStyle> chooseStyle(MenuItem selectedItem) {
+	private Optional<FoodStyle> chooseStyle(MenuItem selectedItem) {
 		println("Choose your style for " + selectedItem.getName() + ":");
-		Stream.of(PizzaStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
+		Stream.of(FoodStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
 		println();
 		String choice = prompt("Your style: ");
-		return choiceToEnumValue(choice, PizzaStyle.values(), null);
+		return choiceToEnumValue(choice, FoodStyle.values(), null);
 	}
 
 	<T extends Enum<T>> Optional<T> choiceToEnumValue(String choice, T[] enumValues, String quit) {

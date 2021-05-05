@@ -1,6 +1,8 @@
 package de.infoteam.course.dp.pizzastore.controller.dto;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;

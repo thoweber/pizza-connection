@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import de.infoteam.course.dp.pizzastore.model.State;
 
 @JsonInclude(value = Include.NON_NULL)
-public class PizzaResponse {
+public class FoodResponse {
 
 	private long id;
 	private String name;
@@ -16,7 +16,7 @@ public class PizzaResponse {
 		return id;
 	}
 
-	public PizzaResponse setId(long id) {
+	public FoodResponse setId(long id) {
 		this.id = id;
 		return this;
 	}
@@ -25,7 +25,7 @@ public class PizzaResponse {
 		return name;
 	}
 
-	public PizzaResponse setName(String name) {
+	public FoodResponse setName(String name) {
 		this.name = name;
 		return this;
 	}
@@ -34,7 +34,7 @@ public class PizzaResponse {
 		return state;
 	}
 
-	public PizzaResponse setState(State state) {
+	public FoodResponse setState(State state) {
 		this.state=state;
 		return this;
 	}
