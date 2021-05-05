@@ -32,9 +32,9 @@ public class PizzaController {
 	@PostMapping("/order")
 	public PizzaOrderResponse order(@RequestBody PizzaOrderRequest orderRequest) {
 		LOGGER.info("Received PizzaOrderRequest");
-		
+
 		Pizza pizza = pizzaService.order(orderRequest.getMenuItem(), orderRequest.getPizzaStyle());
-		
+
 		return new PizzaOrderResponse().setId(pizza.getId()).setName(pizza.name())
 				.setPizzaStyle(orderRequest.getPizzaStyle());
 	}
@@ -42,7 +42,8 @@ public class PizzaController {
 	@GetMapping("/consumed-ingredients")
 	public Object consumedIngredients() {
 		/*
-		 * REST-Schnittstelle zum Abrufen der verbrauchten Zutaten erstellen
+		 * REST-Schnittstelle zum Abrufen der verbrauchten Zutaten erstellen. Verwende
+		 * das Adapter-Pattern.
 		 */
 		return null;
 	}
