@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
@@ -12,8 +13,9 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.Dough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.Topping;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
+import de.infoteam.course.dp.pizzastore.service.ShoppingListLogger;
 
-public class IngredientLoggerDecorator {
+public class IngredientLoggerDecorator implements ShoppingListLogger<Ingredient> {
 
 	private final IngredientLogger logger;
 	private Map<String, Integer> consumedDough = new HashMap<>();
@@ -47,6 +49,11 @@ public class IngredientLoggerDecorator {
 
 	public void logIngredient(Ingredient ingredient) {
 		logger.logIngredient(ingredient);
+	}
+
+	@Override
+	public List<Ingredient> getConsumedIngredients() {
+		return Collections.unmodifiableList(this.logger.getConsumedIngredients());
 	}
 
 	public void printShoppingList(OutputStream outputStream) {
