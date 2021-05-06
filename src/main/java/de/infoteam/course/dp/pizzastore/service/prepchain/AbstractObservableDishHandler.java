@@ -12,7 +12,7 @@ import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 
 public abstract class AbstractObservableDishHandler
-		implements Handler<Dish, AbstractObservableDishHandler> {
+		implements Handler<Dish, AbstractObservableDishHandler, DishStateChange> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractObservableDishHandler.class);
 	private AbstractObservableDishHandler next;
@@ -27,7 +27,7 @@ public abstract class AbstractObservableDishHandler
 		this.next = nextHandler;
 	}
 
-	protected final Handler<Dish, AbstractObservableDishHandler> getNext() {
+	protected final Handler<Dish, AbstractObservableDishHandler, DishStateChange> getNext() {
 		return this.next;
 	}
 
