@@ -72,8 +72,8 @@ public class PizzaController {
 	 */
 	@GetMapping("/queue")
 	public List<PizzaResponse> queue() {
-		return this.pizzaRepository.findAll().stream().filter(p -> p.getState() != State.READY).map(this::toPizzaResponse)
-				.collect(Collectors.toList());
+		return this.pizzaRepository.findAll().stream().filter(p -> p.getState() != State.READY)
+				.map(this::toPizzaResponse).sorted(this::comparePizzaResponses).collect(Collectors.toList());
 	}
 
 	/*
@@ -81,10 +81,15 @@ public class PizzaController {
 	 */
 	@GetMapping("/pick-up")
 	public List<PizzaResponse> pickUp() {
-		return this.pizzaRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse).collect(Collectors.toList());
+		return this.pizzaRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse)
+				.sorted(this::comparePizzaResponses).collect(Collectors.toList());
 	}
-	
+
 	private PizzaResponse toPizzaResponse(Pizza pizza) {
 		return new PizzaResponse().setId(pizza.getId()).setName(pizza.name()).setState(pizza.getState());
+	}
+
+	private int comparePizzaResponses(PizzaResponse o1, PizzaResponse o2) {
+		return Long.valueOf(o1.getId()).compareTo(o2.getId());
 	}
 }
