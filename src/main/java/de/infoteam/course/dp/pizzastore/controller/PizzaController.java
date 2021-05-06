@@ -29,13 +29,13 @@ public interface PizzaController {
 	 * 
 	 * @return all pizzas which are not yet ready.
 	 */
-	List<PizzaResponse> queue();
+	public List<PizzaResponse> queue();
 
 	/**
 	 * Returns all pizzas which are ready to be picked up.
 	 * 
 	 * @return all pizzas which are ready to be picked up
 	 */
-	List<PizzaResponse> pickUp();
+	public List<PizzaResponse> pickUp();
 
 }
