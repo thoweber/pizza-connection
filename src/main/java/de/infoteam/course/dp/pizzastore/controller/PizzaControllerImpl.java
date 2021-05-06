@@ -26,7 +26,7 @@ import de.infoteam.course.dp.pizzastore.service.impl.GourmetPizzaFactory;
 import de.infoteam.course.dp.pizzastore.service.impl.SicilianPizzaFactory;
 
 @RestController
-public class PizzaControllerImpl {
+public class PizzaControllerImpl implements PizzaController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaControllerImpl.class);
 
