@@ -15,7 +15,7 @@ import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 public abstract class AbstractDishHandler implements Handler<Dish, AbstractDishHandler, DishStateChange> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDishHandler.class);
-	private Optional<AbstractDishHandler> next;
+	private Optional<AbstractDishHandler> next = Optional.empty();
 	protected boolean simulateProgress;
 
 	protected AbstractDishHandler(boolean simulateProgess) {
