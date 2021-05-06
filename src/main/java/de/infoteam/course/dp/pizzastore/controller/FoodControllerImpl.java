@@ -18,6 +18,7 @@ import de.infoteam.course.dp.pizzastore.controller.dto.FoodResponse;
 import de.infoteam.course.dp.pizzastore.controller.dto.OrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.dto.OrderResponse;
 import de.infoteam.course.dp.pizzastore.model.Dish;
+import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
 import de.infoteam.course.dp.pizzastore.repository.DishRepository;
 import de.infoteam.course.dp.pizzastore.service.FoodOrderService;
@@ -30,14 +31,14 @@ public class FoodControllerImpl implements FoodController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FoodControllerImpl.class);
 
-	private FoodOrderService pizzaService;
+	private FoodOrderService foodOrderService;
 	private IngredientLogger ingredientLogger;
 	private DishRepository dishRepository;
 
 	public FoodControllerImpl() {
 		this.ingredientLogger = new IngredientLogger();
 		this.dishRepository = new DishRepository();
-		this.pizzaService = FoodOrderService.builder().gourmetFactory(new GourmetFoodFactory())
+		this.foodOrderService = FoodOrderService.builder().gourmetFactory(new GourmetFoodFactory())
 				.sicilianFactory(new SicilianFoodFactory()).ingredientLogger(ingredientLogger)
 				.pizzaRepository(dishRepository).numberOfChefs(2).build();
 	}
@@ -48,14 +49,14 @@ public class FoodControllerImpl implements FoodController {
 	 */
 	@PreDestroy
 	void shutdownPizzaService() {
-		this.pizzaService.shutdown();
+		this.foodOrderService.shutdown();
 	}
 
 	@PostMapping("/order")
 	public OrderResponse order(@RequestBody OrderRequest orderRequest) {
 		LOGGER.info("Received OrderRequest");
 
-		Dish dish = pizzaService.order(orderRequest.getMenuItem(), orderRequest.getFoodStyle());
+		Dish dish = foodOrderService.order(orderRequest.getMenuItem(), orderRequest.getFoodStyle());
 
 		return new OrderResponse().setId(dish.getId()).setName(dish.name())
 				.setPizzaStyle(orderRequest.getFoodStyle());
@@ -68,16 +69,22 @@ public class FoodControllerImpl implements FoodController {
 
 	@GetMapping("/queue")
 	public List<FoodResponse> queue() {
-		return this.dishRepository.findAll().stream().filter(p -> p.getState() != State.READY).map(this::toPizzaResponse)
-				.collect(Collectors.toList());
+		return this.dishRepository.findAll().stream().filter(p -> p.getState() != State.READY)
+				.map(this::toPizzaResponse).sorted(this::comparePizzaResponses).collect(Collectors.toList());
 	}
 
 	@GetMapping("/pick-up")
 	public List<FoodResponse> pickUp() {
-		return this.dishRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse).collect(Collectors.toList());
+		return this.dishRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse)
+				.sorted(this::comparePizzaResponses).collect(Collectors.toList());
 	}
-	
+
+
 	private FoodResponse toPizzaResponse(Dish dish) {
 		return new FoodResponse().setId(dish.getId()).setName(dish.name()).setState(dish.getState());
+	}
+	
+	private int comparePizzaResponses(FoodResponse o1, FoodResponse o2) {
+		return Long.valueOf(o1.getId()).compareTo(o2.getId());
 	}
 }
