@@ -21,7 +21,6 @@ public class LogIngredientsHandler extends AbstractObservableDishHandler {
 	@Override
 	protected void doHandle(Dish dish) {
 		dish.getIngredients().forEach(this.ingredientLogger::logIngredient);
-
 	}
 
 }

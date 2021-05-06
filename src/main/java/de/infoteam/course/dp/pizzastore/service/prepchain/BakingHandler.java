@@ -10,7 +10,7 @@ import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
 
 public class BakingHandler extends AbstractObservableDishHandler {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(BakingHandler.class);
 
 	public BakingHandler(boolean simulateProgess) {
@@ -26,7 +26,6 @@ public class BakingHandler extends AbstractObservableDishHandler {
 	protected void doHandle(Dish dish) {
 		Pizza pizza = (Pizza) dish;
 		pizza.updateState(State.IN_OVEN);
-		notifySubscribers(pizza);
 		// output baking procedure to log
 		LOGGER.info(" > baking for {} minutes at {}° Celsius", pizza.getBakingDuration().toMinutes(),
 				pizza.getBakingTemperature());

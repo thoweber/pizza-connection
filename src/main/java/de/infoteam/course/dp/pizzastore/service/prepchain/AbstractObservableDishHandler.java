@@ -2,7 +2,6 @@ package de.infoteam.course.dp.pizzastore.service.prepchain;
 
 import java.time.Duration;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +9,12 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.service.Handler;
 import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
-import de.infoteam.course.dp.pizzastore.service.model.Publisher;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 
 public abstract class AbstractObservableDishHandler
-		implements Handler<Dish, AbstractObservableDishHandler>, Publisher<DishStateChange> {
+		implements Handler<Dish, AbstractObservableDishHandler> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractObservableDishHandler.class);
-	private Set<Subscriber<DishStateChange>> subscribers = new CopyOnWriteArraySet<>();
 	private AbstractObservableDishHandler next;
 	protected boolean simulateProgress;
 
@@ -35,34 +32,22 @@ public abstract class AbstractObservableDishHandler
 	}
 
 	@Override
-	public final void handle(Dish dish) {
+	public final void handle(Dish dish, Set<Subscriber<DishStateChange>> subscribers) {
 		if (canHandle(dish)) {
 			doHandle(dish);
-			notifySubscribers(dish);
+			notifySubscribers(dish, subscribers);
 		}
-		this.subscribers.clear();
-		this.next.handle(dish);
+		this.next.handle(dish, subscribers);
 	}
 
 	protected abstract boolean canHandle(Dish dish);
 
 	protected abstract void doHandle(Dish dish);
 
-	@Override
-	public final void subscribe(Subscriber<DishStateChange> subscriber) {
-		this.subscribers.add(subscriber);
-		this.next.subscribe(subscriber);
-	}
 
-	@Override
-	public final void unsubscribe(Subscriber<DishStateChange> subscriber) {
-		this.subscribers.remove(subscriber);
-		this.next.unsubscribe(subscriber);
-	}
-
-	public final void notifySubscribers(Dish dish) {
+	public final void notifySubscribers(Dish dish, Set<Subscriber<DishStateChange>> subscribers) {
 		final DishStateChange nextState = DishStateChange.of(dish);
-		this.subscribers.stream().forEach(s -> s.update(nextState));
+		subscribers.stream().forEach(s -> s.update(nextState));
 	}
 
 	protected void sleep(Duration duration) {

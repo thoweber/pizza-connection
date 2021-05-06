@@ -10,6 +10,7 @@ import de.infoteam.course.dp.pizzastore.service.model.Publisher;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 import de.infoteam.course.dp.pizzastore.service.prepchain.AbstractObservableDishHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.BakingHandler;
+import de.infoteam.course.dp.pizzastore.service.prepchain.DishUpHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.FoodPreparationHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.LogIngredientsHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.ServiceHandler;
@@ -35,20 +36,19 @@ public class FoodPreparationTask implements Runnable, Publisher<DishStateChange>
 
 	@Override
 	public void run() {
-		/*
-		 * Dieser Code ist zu abhängig vom Essensangebot. Wir werden das Chain of
-		 * Responsibility Pattern implementieren.
-		 */
+		/* prepare handlers */
 		AbstractObservableDishHandler prepHandler = new FoodPreparationHandler(simulateProgress);
 		AbstractObservableDishHandler logHandler = new LogIngredientsHandler(this.ingredientLogger, simulateProgress);
 		AbstractObservableDishHandler bakingHandler = new BakingHandler(simulateProgress);
+		AbstractObservableDishHandler dishUpHandler = new DishUpHandler(simulateProgress);
 		AbstractObservableDishHandler serviceHandler = new ServiceHandler(simulateProgress);
 
 		/* set-up chain */
 		prepHandler.setNext(logHandler);
 		logHandler.setNext(bakingHandler);
-		bakingHandler.setNext(serviceHandler);
-		prepHandler.handle(dish);
+		bakingHandler.setNext(dishUpHandler);
+		dishUpHandler.setNext(serviceHandler);
+		prepHandler.handle(dish, subscribers);
 	}
 
 	@Override

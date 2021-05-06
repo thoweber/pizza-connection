@@ -27,8 +27,6 @@ public class FoodPreparationHandler extends AbstractObservableDishHandler {
 	@Override
 	protected void doHandle(Dish dish) {
 		dish.updateState(State.IN_PREPARATION);
-		notifySubscribers(dish);
-
 		dish.addIngredients();
 
 		// output ingredients to log
@@ -40,8 +38,6 @@ public class FoodPreparationHandler extends AbstractObservableDishHandler {
 		if (simulateProgress) {
 			sleep(Duration.ofSeconds(5));
 		}
-
-		getNext().handle(dish);
 	}
 
 }

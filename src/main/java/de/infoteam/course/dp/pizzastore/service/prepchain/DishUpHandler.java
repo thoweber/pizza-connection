@@ -8,29 +8,29 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.State;
 
-public class ServiceHandler extends AbstractObservableDishHandler {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceHandler.class);
+public class DishUpHandler extends AbstractObservableDishHandler {
 
-	public ServiceHandler(boolean simulateProgess) {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DishUpHandler.class);
+
+	public DishUpHandler(boolean simulateProgess) {
 		super(simulateProgess);
 	}
 
 	@Override
 	protected boolean canHandle(Dish dish) {
-		// servieren geht auch immer
+		// anrichten geht auch immer
 		return true;
 	}
 
 	@Override
 	protected void doHandle(Dish dish) {
+		dish.updateState(State.DISH_UP);
 		// output serving to log
-		LOGGER.info(" > serving...");
+		LOGGER.info(" > dishing up...");
 		// sleep
 		if (simulateProgress) {
 			sleep(Duration.ofSeconds(1));
 		}
-		dish.updateState(State.READY);
 	}
 
 }
