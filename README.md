@@ -18,6 +18,10 @@ Es steht also ein Refactoring an. Der REST-Code zum Zugriff auf den `PizzaContro
 * verwende den `PizzaServiceProxy` in der `PizzaStoreApp` und entferne sämtlichen REST-basierten Code
 * da du mit dem Proxy auch die länge der Warteschlange abfragen kannst, wird nach jeder Bestellung ausgegeben, wie lange die Schlange gerade ist
 
+# Wichtiger Tipp:
+ℹ Der Umgang mit einer Liste an Objekten/einem JSON-Array im Spring `RestTemplate` ist nicht sofort selbsterklären. Deshalb habe ich euch noch einen hilfreichen Link bereitgestellt:
+
+**Informationen zum [Arbeiten mit einer Liste von Objekten](https://www.baeldung.com/spring-rest-template-list) im Spring `RestTemplate`.**
 
 ----
 
