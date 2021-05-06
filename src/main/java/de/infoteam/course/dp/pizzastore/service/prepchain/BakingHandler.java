@@ -9,7 +9,7 @@ import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
 
-public class BakingHandler extends AbstractObservableDishHandler {
+public class BakingHandler extends AbstractDishHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BakingHandler.class);
 

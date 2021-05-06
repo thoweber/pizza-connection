@@ -3,7 +3,7 @@ package de.infoteam.course.dp.pizzastore.service.prepchain;
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
 
-public class LogIngredientsHandler extends AbstractObservableDishHandler {
+public class LogIngredientsHandler extends AbstractDishHandler {
 
 	private final IngredientLogger ingredientLogger;
 

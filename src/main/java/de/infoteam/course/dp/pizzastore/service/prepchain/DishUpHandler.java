@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.State;
 
-public class DishUpHandler extends AbstractObservableDishHandler {
+public class DishUpHandler extends AbstractDishHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DishUpHandler.class);
 

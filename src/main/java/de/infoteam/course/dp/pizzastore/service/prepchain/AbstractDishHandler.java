@@ -11,23 +11,23 @@ import de.infoteam.course.dp.pizzastore.service.Handler;
 import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
 
-public abstract class AbstractObservableDishHandler
-		implements Handler<Dish, AbstractObservableDishHandler, DishStateChange> {
+public abstract class AbstractDishHandler
+		implements Handler<Dish, AbstractDishHandler, DishStateChange> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractObservableDishHandler.class);
-	private AbstractObservableDishHandler next;
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDishHandler.class);
+	private AbstractDishHandler next;
 	protected boolean simulateProgress;
 
-	protected AbstractObservableDishHandler(boolean simulateProgess) {
+	protected AbstractDishHandler(boolean simulateProgess) {
 		this.simulateProgress = simulateProgess;
 	}
 
 	@Override
-	public final void setNext(AbstractObservableDishHandler nextHandler) {
+	public final void setNext(AbstractDishHandler nextHandler) {
 		this.next = nextHandler;
 	}
 
-	protected final Handler<Dish, AbstractObservableDishHandler, DishStateChange> getNext() {
+	protected final Handler<Dish, AbstractDishHandler, DishStateChange> getNext() {
 		return this.next;
 	}
 

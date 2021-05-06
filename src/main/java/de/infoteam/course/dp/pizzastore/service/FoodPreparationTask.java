@@ -8,7 +8,7 @@ import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.service.model.DishStateChange;
 import de.infoteam.course.dp.pizzastore.service.model.Publisher;
 import de.infoteam.course.dp.pizzastore.service.model.Subscriber;
-import de.infoteam.course.dp.pizzastore.service.prepchain.AbstractObservableDishHandler;
+import de.infoteam.course.dp.pizzastore.service.prepchain.AbstractDishHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.BakingHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.DishUpHandler;
 import de.infoteam.course.dp.pizzastore.service.prepchain.FoodPreparationHandler;
@@ -37,11 +37,11 @@ public class FoodPreparationTask implements Runnable, Publisher<DishStateChange>
 	@Override
 	public void run() {
 		/* prepare handlers */
-		AbstractObservableDishHandler prepHandler = new FoodPreparationHandler(simulateProgress);
-		AbstractObservableDishHandler logHandler = new LogIngredientsHandler(this.ingredientLogger, simulateProgress);
-		AbstractObservableDishHandler bakingHandler = new BakingHandler(simulateProgress);
-		AbstractObservableDishHandler dishUpHandler = new DishUpHandler(simulateProgress);
-		AbstractObservableDishHandler serviceHandler = new ServiceHandler(simulateProgress);
+		AbstractDishHandler prepHandler = new FoodPreparationHandler(simulateProgress);
+		AbstractDishHandler logHandler = new LogIngredientsHandler(this.ingredientLogger, simulateProgress);
+		AbstractDishHandler bakingHandler = new BakingHandler(simulateProgress);
+		AbstractDishHandler dishUpHandler = new DishUpHandler(simulateProgress);
+		AbstractDishHandler serviceHandler = new ServiceHandler(simulateProgress);
 
 		/* set-up chain */
 		prepHandler.setNext(logHandler);
