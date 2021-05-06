@@ -18,7 +18,6 @@ import de.infoteam.course.dp.pizzastore.controller.dto.FoodResponse;
 import de.infoteam.course.dp.pizzastore.controller.dto.OrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.dto.OrderResponse;
 import de.infoteam.course.dp.pizzastore.model.Dish;
-import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
 import de.infoteam.course.dp.pizzastore.repository.DishRepository;
 import de.infoteam.course.dp.pizzastore.service.FoodOrderService;
