@@ -16,6 +16,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import de.infoteam.course.dp.pizzastore.controller.PizzaController;
 import de.infoteam.course.dp.pizzastore.controller.PizzaControllerProxy;
 import de.infoteam.course.dp.pizzastore.controller.dto.ConsumedIngredientsResponse;
 import de.infoteam.course.dp.pizzastore.controller.dto.PizzaOrderRequest;
@@ -43,7 +44,7 @@ public final class PizzaStoreApp implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		PizzaControllerProxy pizzaControllerProxy = new PizzaControllerProxy();
+		PizzaController pizzaControllerProxy = new PizzaControllerProxy();
 
 		while (running.get()) {
 			showBanner();
