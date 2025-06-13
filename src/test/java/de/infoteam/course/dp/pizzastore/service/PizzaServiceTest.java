@@ -156,7 +156,7 @@ class PizzaServiceTest {
         PizzaService.builder()
             .sicilianFactory(new SicilianPizzaFactory())
             .gourmetFactory(new GourmetPizzaFactory());
-    assertThrows(IllegalStateException.class, () -> builder.build());
+    assertThrows(IllegalStateException.class, builder::build);
   }
 
   @Test
