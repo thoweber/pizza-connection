@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
+import de.infoteam.course.dp.pizzastore.service.ConcretePizzaFactory;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,12 +28,12 @@ public final class PizzaStoreApp {
   private static PizzaService pizzaService;
 
   public static void main(String[] args) {
-    pizzaService = new PizzaService();
+    pizzaService = new PizzaService(new ConcretePizzaFactory());
 
     while (RUNNING.get()) {
       showBanner();
       printMenu();
-      askForOrder().ifPresent(menuItem -> pizzaService.order());
+      askForOrder().ifPresent(pizzaService::order);
     }
 
     println("Store is closed.");

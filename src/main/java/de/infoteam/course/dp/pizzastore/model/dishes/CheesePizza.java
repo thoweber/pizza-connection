@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DefaultPizza implements Pizza {
+public class CheesePizza implements Pizza {
 
-  private static final String NAME = "default pizza";
+	private static final String NAME = "cheese pizza (formerly known as default)";
 
   private final List<Ingredient> ingredients = new ArrayList<>();
 
@@ -38,8 +38,9 @@ public class DefaultPizza implements Pizza {
     return 337;
   }
 
-  @Override
-  public String name() {
-    return DefaultPizza.NAME;
-  }
+	@Override
+	public String name() {
+		return CheesePizza.NAME;
+	}
+	
 }

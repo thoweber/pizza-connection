@@ -1,15 +1,16 @@
 package de.infoteam.course.dp.pizzastore.model;
 
 public enum MenuItem {
-  DEFAULT_PIZZA("default pizza");
 
-  private final String name;
+	CHEESE_PIZZA("cheese pizza"), PEPERONI_PIZZA("peperoni pizza"), VEGGIE_PIZZA("veggie pizza");
 
-  MenuItem(String name) {
-    this.name = name;
-  }
+	private final String name;
 
-  public String getName() {
-    return name;
-  }
+	MenuItem(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
 }

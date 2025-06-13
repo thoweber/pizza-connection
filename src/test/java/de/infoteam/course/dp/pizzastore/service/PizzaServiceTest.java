@@ -1,15 +1,24 @@
 package de.infoteam.course.dp.pizzastore.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.inOrder;
 
+import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
+import de.infoteam.course.dp.pizzastore.model.dishes.PeperoniPizza;
+import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -20,38 +29,54 @@ class PizzaServiceTest {
 
   @Mock Pizza pizza;
 
-  @Spy PizzaService pizzaService = new PizzaService();
+  @Spy PizzaService pizzaService = new PizzaService(new ConcretePizzaFactory());
 
-  @Test
-  void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
-    // when
-    var pizza = pizzaService.order();
-    // then
-    InOrder inOrder = inOrder(pizzaService);
-    then(pizzaService).should(inOrder).preparePizza(pizza);
-    then(pizzaService).should(inOrder).bakePizza(pizza);
-    then(pizzaService).should(inOrder).servePizza(pizza);
-  }
+	@Test
+	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
+		// when
+		var pizza = pizzaService.order(MenuItem.CHEESE_PIZZA);
+		// then
+		InOrder inOrder = inOrder(pizzaService);
+		then(pizzaService).should(inOrder).preparePizza(pizza);
+		then(pizzaService).should(inOrder).bakePizza(pizza);
+		then(pizzaService).should(inOrder).servePizza(pizza);
+	}
 
-  @Test
-  void test_preparePizza_calls_addIngredients() {
-    // given
-    given(pizza.getIngredients()).willReturn(List.of(new ThinCrustyDough()));
-    // when
-    pizzaService.preparePizza(pizza);
-    // then
-    then(pizza).should().addIngredients();
-  }
+	@Test
+	void test_preparePizza_calls_addIngredients() {
+		// given
+		given(pizza.getIngredients()).willReturn(List.of(new ThinCrustyDough()));
+		// when
+		pizzaService.preparePizza(pizza);
+		// then
+		then(pizza).should().addIngredients();
+	}
 
-  @Test
-  void test_bakePizza_accesses_baking_information_from_pizza() {
-    // given
-    given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
-    given(pizza.getBakingTemperature()).willReturn(250);
-    // when
-    pizzaService.bakePizza(pizza);
-    // then
-    then(pizza).should().getBakingDuration();
-    then(pizza).should().getBakingTemperature();
-  }
+	@Test
+	void test_bakePizza_accesses_baking_information_from_pizza() {
+		// given
+		given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
+		given(pizza.getBakingTemperature()).willReturn(250);
+		// when
+		pizzaService.bakePizza(pizza);
+		// then
+		then(pizza).should().getBakingDuration();
+		then(pizza).should().getBakingTemperature();
+	}
+
+	static Stream<Arguments> menuItemPizzaClassSource() {
+		return Stream.of(Arguments.of(MenuItem.CHEESE_PIZZA, CheesePizza.class),
+				Arguments.of(MenuItem.PEPERONI_PIZZA, PeperoniPizza.class),
+				Arguments.of(MenuItem.VEGGIE_PIZZA, VeggiePizza.class));
+	}
+
+	@ParameterizedTest
+	@MethodSource("menuItemPizzaClassSource")
+	void test_order_returns_the_right_kind_of_pizza(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+		// when
+		var pizza = pizzaService.order(menuItem);
+		// then
+		assertEquals(expectedPizzaKind, pizza.getClass());
+	}
+
 }
