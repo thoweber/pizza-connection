@@ -37,4 +37,4 @@ public class PizzaController {
 	public ConsumedIngredientsResponse consumedIngredients() {
 	    return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
-	}
+}
