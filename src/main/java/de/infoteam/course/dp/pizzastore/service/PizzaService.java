@@ -21,16 +21,19 @@ public class PizzaService {
 	}
 
 	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-		/*
-		 * Richtige Factory für bestellte Pizza auswählen und Pizza erzeugen
-		 */
-		Pizza pizza = null;
-		
+		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);;
 		LOGGER.info("Received new order for {}", pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
 		return pizza;
+	}
+
+	private PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
+		return switch (selectedStyle) {
+			case SICILIAN -> this.sicilianPizzaFactory;
+			case GOURMET -> this.gourmetPizzaFactory;
+		};
 	}
 	
 	void preparePizza(Pizza pizza) {

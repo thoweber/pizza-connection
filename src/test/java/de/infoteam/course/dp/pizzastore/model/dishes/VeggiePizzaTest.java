@@ -16,10 +16,14 @@ import org.junit.jupiter.api.Test;
 
 class VeggiePizzaTest {
 
+	private static VeggiePizza pizzaFixture() {
+		return new VeggiePizza(new ThinCrustyDough(), new PlainTomatoSauce());
+	}
+
 	@Test
 	void test_VeggiePizza_has_the_correct_ingredients() {
 		// given
-		VeggiePizza pizza = new VeggiePizza();
+		VeggiePizza pizza = pizzaFixture();
 		// when
 		pizza.addIngredients();
 		// then
@@ -37,7 +41,7 @@ class VeggiePizzaTest {
 	@Test
 	void test_VeggiePizza_has_the_correct_baking_duration() {
 		// given
-		VeggiePizza pizza = new VeggiePizza();
+		VeggiePizza pizza = pizzaFixture();
 		// when
 		Duration bakingDuration = pizza.getBakingDuration();
 		// then
@@ -47,7 +51,7 @@ class VeggiePizzaTest {
 	@Test
 	void test_VeggiePizza_has_the_correct_baking_temperature() {
 		// given
-		VeggiePizza pizza = new VeggiePizza();
+		VeggiePizza pizza = pizzaFixture();
 		// when
 		int temperature = pizza.getBakingTemperature();
 		// then

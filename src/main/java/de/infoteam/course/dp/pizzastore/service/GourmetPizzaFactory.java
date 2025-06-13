@@ -2,15 +2,31 @@ package de.infoteam.course.dp.pizzastore.service;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
+import de.infoteam.course.dp.pizzastore.model.dishes.PeperoniPizza;
+import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
+import de.infoteam.course.dp.pizzastore.model.ingredients.dough.Dough;
+import de.infoteam.course.dp.pizzastore.model.ingredients.dough.HandTossedDough;
+import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PremiumTomatoSauce;
+import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 
 public class GourmetPizzaFactory implements PizzaFactory {
 
 	@Override
 	public Pizza createPizza(MenuItem selectedItem) {
-		/*
-		 * Ersetze den Code dieser Methode durch deine Factory-Implementierung
-		 */
-		return null;
+		return switch (selectedItem) {
+			case CHEESE_PIZZA -> new CheesePizza(prepareDough(), prepareSauce());
+			case PEPERONI_PIZZA -> new PeperoniPizza(prepareDough(), prepareSauce());
+			case VEGGIE_PIZZA -> new VeggiePizza(prepareDough(), prepareSauce());
+		};
+	}
+
+	private Dough prepareDough() {
+		return new HandTossedDough();
+	}
+
+	private Sauce prepareSauce() {
+		return new PremiumTomatoSauce();
 	}
 
 }
