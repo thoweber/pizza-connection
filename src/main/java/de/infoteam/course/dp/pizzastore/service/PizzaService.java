@@ -3,6 +3,7 @@ package de.infoteam.course.dp.pizzastore.service;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import java.util.StringJoiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,21 +12,27 @@ public class PizzaService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	private final PizzaFactory pizzaFactory;
+	private final PizzaFactory sicilianPizzaFactory;
+	private final PizzaFactory gourmetPizzaFactory;
 
-	public PizzaService(PizzaFactory pizzaFactory) {
-		this.pizzaFactory = pizzaFactory;
+	public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
+		this.sicilianPizzaFactory = sicilianPizzaFactory;
+		this.gourmetPizzaFactory = gourmetPizzaFactory;
 	}
 
-	public Pizza order(MenuItem selectedItem) {
-		Pizza pizza = pizzaFactory.createPizza(selectedItem);
+	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
+		/*
+		 * Richtige Factory für bestellte Pizza auswählen und Pizza erzeugen
+		 */
+		Pizza pizza = null;
+		
 		LOGGER.info("Received new order for {}", pizza.name());
 		preparePizza(pizza);
 		bakePizza(pizza);
 		servePizza(pizza);
 		return pizza;
 	}
-
+	
 	void preparePizza(Pizza pizza) {
 		pizza.addIngredients();
 

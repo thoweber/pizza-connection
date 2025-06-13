@@ -1,8 +1,7 @@
 package de.infoteam.course.dp.pizzastore.model.ingredients.toppings;
 
-import de.infoteam.course.dp.pizzastore.model.Ingredient;
 
-public class PeperoniTopping implements Ingredient {
+public class PeperoniTopping implements Topping {
 
 	private static final String NAME = "hot peperoni";
 

@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CheesePizza implements Pizza {
-	
+
 	private static final String NAME = "cheese pizza (formerly known as default)";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();

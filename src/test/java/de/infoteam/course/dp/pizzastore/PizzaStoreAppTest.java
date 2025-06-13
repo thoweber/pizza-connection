@@ -12,7 +12,7 @@ import de.infoteam.course.dp.pizzastore.model.MenuItem;
 
 class PizzaStoreAppTest {
 
-	static Stream<Arguments> menuItemForChoiceValueSource() {
+	static Stream<Arguments> choiceToEnumValueSource() {
 		return Stream
 				.concat(Stream.of(MenuItem.values()).map(mi -> Arguments.of(Integer.toString(mi.ordinal() + 1), mi)),
 						Stream.of(Arguments.of("bogus", null), Arguments.of("q", null), Arguments.of(null, null),
@@ -21,9 +21,9 @@ class PizzaStoreAppTest {
 	}
 
 	@ParameterizedTest
-	@MethodSource("menuItemForChoiceValueSource")
-	void test_menuItemForChoice(String choice, MenuItem expected) {
-		assertEquals(expected, PizzaStoreApp.menuItemForChoice(choice).orElse(null));
+	@MethodSource("choiceToEnumValueSource")
+	void test_choiceToEnumValue(String choice, MenuItem expected) {
+		assertEquals(expected, PizzaStoreApp.choiceToEnumValue(choice, MenuItem.values(), "q").orElse(null));
 	}
 
 }
