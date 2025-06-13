@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * the PizzaStore order console.
- * 
+ *
  * @author Thomas Weber
  */
 @Component
