@@ -30,7 +30,11 @@ public final class PizzaStoreApp {
   private static PizzaService pizzaService;
 
   public static void main(String[] args) {
-    pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
+    pizzaService =
+        PizzaService.builder()
+            .gourmetFactory(new GourmetPizzaFactory())
+            .sicilianFactory(new SicilianPizzaFactory())
+            .build();
 
     while (RUNNING.get()) {
       showBanner();

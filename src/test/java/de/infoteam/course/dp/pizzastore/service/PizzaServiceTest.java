@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -38,7 +39,12 @@ class PizzaServiceTest {
 
   @BeforeEach
   void setup() {
-    pizzaService = spy(new PizzaService(sicilianPizzaFactory, gourmetPizzaFactory));
+    pizzaService =
+        spy(
+            PizzaService.builder()
+                .gourmetFactory(gourmetPizzaFactory)
+                .sicilianFactory(sicilianPizzaFactory)
+                .build());
   }
 
   @Test
@@ -84,7 +90,7 @@ class PizzaServiceTest {
   @ParameterizedTest
   @MethodSource("menuItemPizzaClassSource")
   void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(
-      MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+    MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
     // when
     var pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
     // then
@@ -94,9 +100,9 @@ class PizzaServiceTest {
   @ParameterizedTest
   @MethodSource("menuItemPizzaClassSource")
   void test_order_returns_the_right_kind_of_pizza_GOURMET_style(
-      MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+    MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
     // when
-    Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
+    var pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
     // then
     assertEquals(expectedPizzaKind, pizza.getClass());
   }
@@ -104,8 +110,8 @@ class PizzaServiceTest {
   @Test
   void test_chooseFactory_uses_the_SicilianPizzaFactory_for_style_SICILIAN() {
     // given
-    PizzaStyle style = PizzaStyle.SICILIAN;
-    MenuItem menuItem = MenuItem.VEGGIE_PIZZA;
+    var style = PizzaStyle.SICILIAN;
+    var menuItem = MenuItem.VEGGIE_PIZZA;
     // when
     pizzaService.order(menuItem, style);
     // then
@@ -116,12 +122,25 @@ class PizzaServiceTest {
   @Test
   void test_chooseFactory_uses_the_GourmetPizzaFactory_for_style_GOURMET() {
     // given
-    PizzaStyle style = PizzaStyle.GOURMET;
-    MenuItem menuItem = MenuItem.PEPERONI_PIZZA;
+    var style = PizzaStyle.GOURMET;
+    var menuItem = MenuItem.PEPERONI_PIZZA;
     // when
     pizzaService.order(menuItem, style);
     // then
     verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
     verify(sicilianPizzaFactory, never()).createPizza(any());
+  }
+
+  @Test
+  void test_builder_without_sicilian_factory_throw_IllegalStateException() {
+    var builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory());
+    assertThrows(IllegalStateException.class, builder::build);
+  }
+
+  @Test
+  void test_builder_without_gourmet_factory_throw_IllegalStateException() {
+    var builder =
+        PizzaService.builder().sicilianFactory(new SicilianPizzaFactory());
+    assertThrows(IllegalStateException.class, builder::build);
   }
 }
