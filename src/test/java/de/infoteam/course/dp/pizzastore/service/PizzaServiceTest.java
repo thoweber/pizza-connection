@@ -45,6 +45,7 @@ class PizzaServiceTest {
             PizzaService.builder()
                 .gourmetFactory(gourmetPizzaFactory)
                 .sicilianFactory(sicilianPizzaFactory)
+                .ingredientLogger(ingredientLogger)
                 .build());
   }
 
