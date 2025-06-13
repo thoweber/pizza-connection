@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -15,7 +16,6 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,77 +30,82 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PizzaServiceTest {
 
-	@Mock
-	Pizza pizza;
+  @Mock Pizza pizza;
 
-  	@Spy
-	SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
-  	@Spy
-	GourmetPizzaFactory gourmetPizzaFactory = new GourmetPizzaFactory();
+  @Spy SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
+  @Spy GourmetPizzaFactory gourmetPizzaFactory = new GourmetPizzaFactory();
 
-	PizzaService pizzaService;
+  PizzaService pizzaService;
 
-	@BeforeEach
-	void setup() {
-		pizzaService = spy(new PizzaService(sicilianPizzaFactory, gourmetPizzaFactory));
-	}
+  @BeforeEach
+  void setup() {
+    pizzaService =
+        spy(
+            PizzaService.builder()
+                .gourmetFactory(gourmetPizzaFactory)
+                .sicilianFactory(sicilianPizzaFactory)
+                .build());
+  }
 
-	@Test
-	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
-		// when
-		var pizza = pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
-		// then
-		InOrder inOrder = inOrder(pizzaService);
-		then(pizzaService).should(inOrder).preparePizza(pizza);
-		then(pizzaService).should(inOrder).bakePizza(pizza);
-		then(pizzaService).should(inOrder).servePizza(pizza);
-	}
+  @Test
+  void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
+    // when
+    var pizza = pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
+    // then
+    InOrder inOrder = inOrder(pizzaService);
+    then(pizzaService).should(inOrder).preparePizza(pizza);
+    then(pizzaService).should(inOrder).bakePizza(pizza);
+    then(pizzaService).should(inOrder).servePizza(pizza);
+  }
 
-	@Test
-	void test_preparePizza_calls_addIngredients() {
-		// given
-		given(pizza.getIngredients()).willReturn(List.of(new ThinCrustyDough()));
-		// when
-		pizzaService.preparePizza(pizza);
-		// then
-		then(pizza).should().addIngredients();
-	}
+  @Test
+  void test_preparePizza_calls_addIngredients() {
+    // given
+    given(pizza.getIngredients()).willReturn(List.of(new ThinCrustyDough()));
+    // when
+    pizzaService.preparePizza(pizza);
+    // then
+    then(pizza).should().addIngredients();
+  }
 
-	@Test
-	void test_bakePizza_accesses_baking_information_from_pizza() {
-		// given
-		given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
-		given(pizza.getBakingTemperature()).willReturn(250);
-		// when
-		pizzaService.bakePizza(pizza);
-		// then
-		then(pizza).should().getBakingDuration();
-		then(pizza).should().getBakingTemperature();
-	}
+  @Test
+  void test_bakePizza_accesses_baking_information_from_pizza() {
+    // given
+    given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
+    given(pizza.getBakingTemperature()).willReturn(250);
+    // when
+    pizzaService.bakePizza(pizza);
+    // then
+    then(pizza).should().getBakingDuration();
+    then(pizza).should().getBakingTemperature();
+  }
 
-	static Stream<Arguments> menuItemPizzaClassSource() {
-		return Stream.of(Arguments.of(MenuItem.CHEESE_PIZZA, CheesePizza.class),
-				Arguments.of(MenuItem.PEPERONI_PIZZA, PeperoniPizza.class),
-				Arguments.of(MenuItem.VEGGIE_PIZZA, VeggiePizza.class));
-	}
+  static Stream<Arguments> menuItemPizzaClassSource() {
+    return Stream.of(
+        Arguments.of(MenuItem.CHEESE_PIZZA, CheesePizza.class),
+        Arguments.of(MenuItem.PEPERONI_PIZZA, PeperoniPizza.class),
+        Arguments.of(MenuItem.VEGGIE_PIZZA, VeggiePizza.class));
+  }
 
-	@ParameterizedTest
-	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
-		// when
-		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
-		// then
-		assertEquals(expectedPizzaKind, pizza.getClass());
-	}
+  @ParameterizedTest
+  @MethodSource("menuItemPizzaClassSource")
+  void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(
+      MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+    // when
+    Pizza pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
+    // then
+    assertEquals(expectedPizzaKind, pizza.getClass());
+  }
 
-	@ParameterizedTest
-	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
-		// when
-		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
-		// then
-		assertEquals(expectedPizzaKind, pizza.getClass());
-	}
+  @ParameterizedTest
+  @MethodSource("menuItemPizzaClassSource")
+  void test_order_returns_the_right_kind_of_pizza_GOURMET_style(
+      MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+    // when
+    Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
+    // then
+    assertEquals(expectedPizzaKind, pizza.getClass());
+  }
 
 	@Test
 	void test_chooseFactory_uses_the_SicilianPizzaFactory_for_style_SICILIAN() {
@@ -126,4 +131,16 @@ class PizzaServiceTest {
 		verify(sicilianPizzaFactory, never()).createPizza(any());
 	}
 
+  @Test
+  void test_builder_without_sicilian_factory_throw_IllegalStateException() {
+    PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory());
+    assertThrows(IllegalStateException.class, builder::build);
+  }
+
+  @Test
+  void test_builder_without_gourmet_factory_throw_IllegalStateException() {
+    PizzaService.Builder builder =
+        PizzaService.builder().sicilianFactory(new SicilianPizzaFactory());
+    assertThrows(IllegalStateException.class, builder::build);
+  }
 }
