@@ -5,6 +5,8 @@ import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +17,7 @@ public class PizzaService {
   private final PizzaFactory sicilianPizzaFactory;
   private final PizzaFactory gourmetPizzaFactory;
   private final IngredientLogger ingredientLogger;
+  private final AtomicLong orderIdSequence = new AtomicLong(0);
 
   private PizzaService(
       PizzaFactory sicilianPizzaFactory,
@@ -26,12 +29,12 @@ public class PizzaService {
   }
 
   public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-    Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
+    Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
     LOGGER.info("Received new order for {}", pizza.name());
     preparePizza(pizza);
+    logConsumedIngredients(pizza);
     bakePizza(pizza);
     servePizza(pizza);
-    logConsumedIngredients(pizza);
     return pizza;
   }
 

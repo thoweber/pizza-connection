@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 class CheesePizzaTest {
 
 	private static CheesePizza pizzaFixture() {
-		return new CheesePizza(new ThinCrustyDough(), new PlainTomatoSauce());
+		return new CheesePizza(1, new ThinCrustyDough(), new PlainTomatoSauce());
 	}
 
 	@Test

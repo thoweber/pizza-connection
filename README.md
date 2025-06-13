@@ -1,55 +1,40 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 05 - Decorator
+## Kapitel 06 - eine neue Herausforderung
 ### Szenario
-🥳Das Geschäft boomt... Aber unser Einkauf hat immer größere Schwierigkeiten rechtzeitig die benötigten Waren nachzukaufen.
+Der Rubel rollt💰, aber mit mehr Verkäufen steigen auch die Anforderungen.
 
-Deshalb wurde bereits vor einiger Zeit unser `PizzaService` erweitert. Nach dem Ausliefern jeder Bestellung, werden die verbrauchten Zutaten in einem `IngredientLogger` aufgezeichnet und beim Beenden der `PizzaStoreApp` einmal ausgegeben👏
+Das Management hat beschlossen, dass es Zeit wird zu skalieren📈 und hat den Auftrag gegeben, unseren Pizza-Store in eine Client-Server-Anwendung umzubauen👷‍♂️ Die Wahl viel dabei auf _Spring Boot_ ❤
 
-Das kannst Du auch gerne einmal ausprobieren💻
+Außerdem sind neue Anforderungen vom Einkauf🛒 hinzugekommen: Weil wir an manchen Tagen so viel 🍕 verkaufen, muss der Einkauf jederzeit einen Überblick über die verbrauchten Zutaten erhalten können, damit schnell reagiert werden kann.
 
-Nun hat der Einkauf angemerkt, dass das zwar hilft, aber für eine schnelle Bearbeitung eine geordnetere List von Nöten wäre. Unglücklicherweise wurde der `IngredientLogger` schnell eingeführt, besitzt kein Interface und lässt sich damit schlecht austauschen🤔
+Und es kam wie es kommen musste: einiges hat beim Umbau nicht geklappt🤦‍♀️, und deshalb müssen jetzt Experten ran😁
 
-Unser Chef-Entwickler hatte dazu eine Idee💡: "Lasst uns das Decorator-Pattern nutzten. Die Ausgabe erfolgt nur beim Beenden der App. Wir können das so mit wenig Aufwand lösen und den Einkauf glücklich machen..."
+Deshalb verschafft euch erst einmal einen 👓Überblick...
+
+### Was ist neu?
+
+* Logausgaben landen in der Datei `pizza-store.log`
+
+* PizzaStoreApp:
+    * Läuft jetzt als Spring `CommandLineRunner`
+    * Erstellt eine Bestellung via REST und nutzt nicht mehr den PizzaService
+    * Empfangene Bestellung wird mit ID ausgegeben
+    * Konsolen IO nach `Console` ausgelagert
+
+* REST-Schnittstelle `de.infoteam.course.dp.pizzastore.controller.PizzaController`
+    * REST-Mapping zur Bestellungsannahme
+    * Stub einer Abfrage-Schnittstelle der verbrauchten Zutaten
+
+* Pizza:
+    * jede Pizza hat jetzt ein zusätzliches Feld `id: long` mit der Bestellungs-ID
+
+Ihr kennt euch nicht mit Spring Boot aus? Keine Panik, ich habe bewusst soweit wie möglich auf Spring spezifische Konstruktionen verzichtet.
 
 ### Aufgabe
-* Erstelle einen Decorator für `IngredientLogger`
-* Verwende den neuen Decorator anstelle des `IngredientLogger` für die Ausgabe der verbrauchten Zutaten (`PizzaStoreApp`: Zeile 50)
-* Passe die Ausgabe nach den Wünschen des Einkaufs an
 
-**Anforderungen des Einkaufs:**
-
-Die ausgegebene Einkaufsliste soll in 4 Teile unterteilt sein:
-* Dough
-* Sauce
-* Cheese
-* Toppings
-
-Für jeden Teil soll eine verbrauchte Zutat nur einmal in der Liste erscheinen und mit der verbrauchten Menge ergänzt werden💪
-
-_Beispiel:_
-```
-Dough:
-    2x  thin crusty dough
-    1x  hand tossed dough
-Sauce:
-    2x  plain tomato sauce
-    1x  premium tomato sauce
-Cheese:
-    2x  mozzarella
-    1x  Monterey Jack
-Toppings:
-    2x  artichoke hearts
-    2x  black Kalamata olives
-    2x  freshly sliced tomato
-    1x  hot pepperoni
-```
-
-***Hinweis:*** Es wurde kein weiterer Code vorbereitet😢
-
-### Das Pattern als UML
-![UML](pattern-uml.png)
+Schaut euch die umgebaute Anwendung an und erstellt eine Liste mit den noch zu lösenden Problemen.
 
 ----
 
