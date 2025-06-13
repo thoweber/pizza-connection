@@ -3,7 +3,7 @@ package de.infoteam.course.dp.pizzastore.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.*;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
@@ -15,12 +15,15 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,8 +33,17 @@ class PizzaServiceTest {
 
   @Mock Pizza pizza;
 
-	@Spy
-	PizzaService pizzaService = new PizzaService(new SicilianPizzaFactory(), new GourmetPizzaFactory());
+  	@Spy
+	SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
+  	@Spy
+	GourmetPizzaFactory gourmetPizzaFactory = new GourmetPizzaFactory();
+
+	PizzaService pizzaService;
+
+	@BeforeEach
+	void setup() {
+		pizzaService = spy(new PizzaService(sicilianPizzaFactory, gourmetPizzaFactory));
+	}
 
 	@Test
 	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
@@ -75,11 +87,44 @@ class PizzaServiceTest {
 
 	@ParameterizedTest
 	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+	void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
 		// when
 		var pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
 		// then
 		assertEquals(expectedPizzaKind, pizza.getClass());
+	}
+
+	@ParameterizedTest
+	@MethodSource("menuItemPizzaClassSource")
+	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+		// when
+		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
+		// then
+		assertEquals(expectedPizzaKind, pizza.getClass());
+	}
+
+	@Test
+	void test_chooseFactory_uses_the_SicilianPizzaFactory_for_style_SICILIAN() {
+		// given
+		PizzaStyle style = PizzaStyle.SICILIAN;
+		MenuItem menuItem = MenuItem.VEGGIE_PIZZA;
+		// when
+		pizzaService.order(menuItem, style);
+		// then
+		verify(sicilianPizzaFactory, times(1)).createPizza(menuItem);
+		verifyZeroInteractions(gourmetPizzaFactory);
+	}
+
+	@Test
+	void test_chooseFactory_uses_the_GourmetPizzaFactory_for_style_GOURMET() {
+		// given
+		PizzaStyle style = PizzaStyle.GOURMET;
+		MenuItem menuItem = MenuItem.PEPERONI_PIZZA;
+		// when
+		pizzaService.order(menuItem, style);
+		// then
+		verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
+		verifyZeroInteractions(sicilianPizzaFactory);
 	}
 
 }
