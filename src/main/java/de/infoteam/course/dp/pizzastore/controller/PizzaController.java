@@ -37,9 +37,10 @@ public class PizzaController {
 	}
 
 	@GetMapping("/consumed-ingredients")
-	public Object consumedIngredients() {
+	public ConsumedIngredientsResponse consumedIngredients() {
 		/*
-		 * REST-Schnittstelle zum Abrufen der verbrauchten Zutaten erstellen
+		 * REST-Schnittstelle zum Abrufen der verbrauchten Zutaten erstellen.
+		 * Verwende das Adapter-Pattern
 		 */
 		return null;
 	}
