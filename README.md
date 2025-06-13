@@ -1,40 +1,24 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 03 - Abstract Factory
+## Kapitel 04 - Builder
 ### Szenario
-Unser Pizza-Business läuft besser als gedacht🎉. Statt unserer normalen Pizza bieten wir jetzt eine Gourmet Pizza und eine Sicilian Pizza an, die es jeweils in den Sorten Cheese, Peperoni und Veggie gibt.
+Wir haben im vorangegangenen Kapitel unseren `PizzaService` erweitert, so dass er Pizzen in den Stilen `SICILIAN` und `GOURMET` erzeugen kann. Dafür haben wir folgenden Konstruktor erstellt, der zwei Instanzen von `PizzaService` entgegennimmt:
+```
+public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory)
+```
+Das ist für die Zukunft sehr flexibel, weil wir uns nicht auf konkrete `PizzaFactory`-Implementierungen festlegen, aber leider auch fehleranfällig.
 
-Sie unterscheiden sich im Teig und der verwendeten Tomatensoße.
+Es kam wie es kommen musste: Unser Praktikant wollte eine kleine Verbesserung an der `PizzaServiceApp` vornehmen und hat die Factories falsch zugewiesen. Die Kunden waren nicht erfreut🤦‍♂️
 
-* Sicilian
-    * `ThinCrustyDough`
-    * `PlainTomatoSauce`
-* Gourmet
-    * `HandTossedDough`
-    * `PremiumTomatoSauce`
+Um diese Fehler in der Zukunft zu vermeiden, soll das Erzeugen des `PizzaService` auf das Builder-Pattern umgestellt werden.
 
 ### Aufgabe
-* Wende das Abstract-Factory-Pattern an, um unseren `PizzaService` in die Lage zu versetzen, das neue Angebot produzieren zu können.
+* Erstelle einen Builder für den **`PizzaService`**
+* Stelle sicher, dass zum Erzeugen des **`PizzaService`** der Builder verwendet werden muss
+* Passe den Code und die Tests entsprechend an
 
-* Ergänze alle noch fehlenden Testfälle.
-
-**Wichtig:**
-Einiges an Code habe ich bereits für dich angepasst und erstellt.
-* neue Interfaces für `Ingredients`:
-    * `Dough`, `Sauce`, `Cheese`, `Topping`
-    * Die entsprechenden Klassen implementieren jetzt diese Interfaces
-* die neuen Zutaten sind bereits vorhanden
-* eine neue Enum `PizzaStyle`, die zwischen Sicilian und Gourmet unterscheidet
-    * Im Bestellprozess kann der Kunde den Stil auswählen
-* Es gibt bereits `SicilianPizzaFactory` und `GourmetPizzaFactory` als leere Rumpf-Implementierungen
-* `PizzaService` enthält bereits die beiden neune Factories
-* `PizzaService.order()` nimmt jetzt neben `MenuItem` auch `PizzaStyle` entgegen
-
-***Hinweis:*** diese Aufgabe ist ein größerer Umbau, nehme dir Zeit.
-
-### Das Pattern als UML
-![UML](pattern-uml.png)
+***Hinweis:*** Für diese Aufgabe habe ich _nichts_ vorbereitet😋
 
 ----
 
