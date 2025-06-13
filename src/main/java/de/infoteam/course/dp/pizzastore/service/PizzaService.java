@@ -100,4 +100,45 @@ public class PizzaService {
 		}
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	/**
+	 * Builder für {@code PizzaService}
+	 */
+	public static final class Builder {
+
+		private PizzaFactory sicilianFactory;
+		private PizzaFactory gourmetFactory;
+
+		/*
+		 * sicherstellen, dass der Builder nur über die statische Methode in {@code
+		 * PizzaService} erzeugt wird.
+		 */
+		private Builder() {
+			super();
+		}
+
+		public Builder sicilianFactory(SicilianPizzaFactory sicilianFactory) {
+			this.sicilianFactory = sicilianFactory;
+			return this;
+		}
+
+		public Builder gourmetFactory(GourmetPizzaFactory gourmetFactory) {
+			this.gourmetFactory = gourmetFactory;
+			return this;
+		}
+
+		public PizzaService build() {
+			if (this.sicilianFactory == null) {
+				throw new IllegalStateException("A Sicilian PizzaFactory is required");
+			}
+			if (this.gourmetFactory == null) {
+				throw new IllegalStateException("A Gourmet PizzaFactory is required");
+			}
+			return new PizzaService(sicilianFactory, gourmetFactory);
+		}
+	}
+
 }
