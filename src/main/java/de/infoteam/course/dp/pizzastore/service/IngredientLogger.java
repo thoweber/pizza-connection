@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class IngredientLogger {
+public class IngredientLogger implements ShoppingListLogger<Ingredient> {
 
 	private final List<Ingredient> consumedIngredients = new ArrayList<>();
 	

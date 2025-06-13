@@ -2,10 +2,8 @@ package de.infoteam.course.dp.pizzastore;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
-import de.infoteam.course.dp.pizzastore.service.GourmetPizzaFactory;
-import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
-import de.infoteam.course.dp.pizzastore.service.PizzaService;
-import de.infoteam.course.dp.pizzastore.service.SicilianPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -52,7 +50,7 @@ public final class PizzaStoreApp {
 
     println("===================================");
     println("Consumed Ingredients:");
-    ingredientLogger.printShoppingList(OUTPUT);
+    new IngredientLoggerDecorator(ingredientLogger).printShoppingList(OUTPUT);
   }
 
   private static Optional<MenuItem> askForOrder() {
