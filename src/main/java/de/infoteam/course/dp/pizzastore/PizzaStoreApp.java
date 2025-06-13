@@ -30,10 +30,12 @@ public final class PizzaStoreApp {
   private static PizzaService pizzaService;
 
   public static void main(String[] args) {
+    var ingredientLogger = new IngredientLogger();
     pizzaService =
         PizzaService.builder()
             .gourmetFactory(new GourmetPizzaFactory())
             .sicilianFactory(new SicilianPizzaFactory())
+            .ingredientLogger(ingredientLogger)
             .build();
 
     while (RUNNING.get()) {
@@ -46,6 +48,10 @@ public final class PizzaStoreApp {
     }
 
     println("Store is closed.");
+
+    println("===================================");
+    println("Consumed Ingredients:");
+    ingredientLogger.printShoppingList(OUTPUT);
   }
 
   private static Optional<MenuItem> askForOrder() {
