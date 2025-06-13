@@ -1,20 +1,28 @@
 package de.infoteam.course.dp.pizzastore.model.dishes;
 
+import de.infoteam.course.dp.pizzastore.model.AbstractPizza;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
+import de.infoteam.course.dp.pizzastore.model.ingredients.dough.Dough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
+import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CheesePizza implements Pizza {
+public class CheesePizza extends AbstractPizza {
 
   private static final String NAME = "cheese pizza (formerly known as default)";
 
   private final List<Ingredient> ingredients = new ArrayList<>();
+
+	public CheesePizza(Dough dough, Sauce sauce) {
+		super(dough, sauce);
+	}
 
   @Override
   public void addIngredients() {

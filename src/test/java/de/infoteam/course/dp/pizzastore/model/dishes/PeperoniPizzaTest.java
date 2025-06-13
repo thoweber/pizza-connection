@@ -14,10 +14,14 @@ import org.junit.jupiter.api.Test;
 
 class PeperoniPizzaTest {
 
+	private static PeperoniPizza pizzaFixture() {
+		return new PeperoniPizza(new ThinCrustyDough(), new PlainTomatoSauce());
+	}
+
   @Test
   void test_PeperoniPizza_has_the_correct_ingredients() {
     // given
-    PeperoniPizza pizza = new PeperoniPizza();
+    PeperoniPizza pizza = pizzaFixture();
     // when
     pizza.addIngredients();
     // then
@@ -29,24 +33,24 @@ class PeperoniPizzaTest {
     assertEquals(MontereyJackCheese.class, ingredients.get(2).getClass());
     assertEquals(PeperoniTopping.class, ingredients.get(3).getClass());
   }
+	@Test
+	void test_PeperoniPizza_has_the_correct_baking_duration() {
+		// given
+		PeperoniPizza pizza = pizzaFixture();
+		// when
+		Duration bakingDuration = pizza.getBakingDuration();
+		// then
+		assertEquals(7, bakingDuration.toMinutes());
+	}
 
-  @Test
-  void test_PeperoniPizza_has_the_correct_baking_duration() {
-    // given
-    PeperoniPizza pizza = new PeperoniPizza();
-    // when
-    Duration bakingDuration = pizza.getBakingDuration();
-    // then
-    assertEquals(7, bakingDuration.toMinutes());
-  }
+	@Test
+	void test_PeperoniPizza_has_the_correct_baking_temperature() {
+		// given
+		PeperoniPizza pizza = pizzaFixture();
+		// when
+		int temperature = pizza.getBakingTemperature();
+		// then
+		assertEquals(315, temperature);
+	}
 
-  @Test
-  void test_PeperoniPizza_has_the_correct_baking_temperature() {
-    // given
-    PeperoniPizza pizza = new PeperoniPizza();
-    // when
-    int temperature = pizza.getBakingTemperature();
-    // then
-    assertEquals(315, temperature);
-  }
 }
