@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class PeperoniPizzaTest {
 
   @Test
-  void test_PepperoniPizza_has_the_correct_ingredients() {
+  void test_PeperoniPizza_has_the_correct_ingredients() {
     // given
     PeperoniPizza pizza = new PeperoniPizza();
     // when
@@ -31,7 +31,7 @@ class PeperoniPizzaTest {
   }
 
   @Test
-  void test_PepperoniPizza_has_the_correct_baking_duration() {
+  void test_PeperoniPizza_has_the_correct_baking_duration() {
     // given
     PeperoniPizza pizza = new PeperoniPizza();
     // when
@@ -41,7 +41,7 @@ class PeperoniPizzaTest {
   }
 
   @Test
-  void test_PepperoniPizza_has_the_correct_baking_temperature() {
+  void test_PeperoniPizza_has_the_correct_baking_temperature() {
     // given
     PeperoniPizza pizza = new PeperoniPizza();
     // when
