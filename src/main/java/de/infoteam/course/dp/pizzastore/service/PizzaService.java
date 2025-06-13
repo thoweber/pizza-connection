@@ -10,91 +10,110 @@ import org.slf4j.LoggerFactory;
 
 public class PizzaService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	private final PizzaFactory sicilianPizzaFactory;
-	private final PizzaFactory gourmetPizzaFactory;
+  private final PizzaFactory sicilianPizzaFactory;
+  private final PizzaFactory gourmetPizzaFactory;
+  private final IngredientLogger ingredientLogger;
 
-	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
-		this.sicilianPizzaFactory = sicilianPizzaFactory;
-		this.gourmetPizzaFactory = gourmetPizzaFactory;
-	}
+  private PizzaService(
+      PizzaFactory sicilianPizzaFactory,
+      PizzaFactory gourmetPizzaFactory,
+      IngredientLogger ingredientLogger) {
+    this.sicilianPizzaFactory = sicilianPizzaFactory;
+    this.gourmetPizzaFactory = gourmetPizzaFactory;
+    this.ingredientLogger = ingredientLogger;
+  }
 
-	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-		Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);;
-		LOGGER.info("Received new order for {}", pizza.name());
-		preparePizza(pizza);
-		bakePizza(pizza);
-		servePizza(pizza);
-		return pizza;
-	}
+  public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
+    Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
+    ;
+    LOGGER.info("Received new order for {}", pizza.name());
+    preparePizza(pizza);
+    bakePizza(pizza);
+    servePizza(pizza);
+    logConsumedIngredients(pizza);
+    return pizza;
+  }
 
-	private PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
-		return switch (selectedStyle) {
-			case SICILIAN -> this.sicilianPizzaFactory;
-			case GOURMET -> this.gourmetPizzaFactory;
-		};
-	}
-	
-	void preparePizza(Pizza pizza) {
-		pizza.addIngredients();
+  private void logConsumedIngredients(Pizza pizza) {
+    pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
+  }
 
-		// output ingredients to log
-		StringJoiner joiner = new StringJoiner(", ");
-		pizza.getIngredients().stream().map(Ingredient::name).forEach(joiner::add);
-		LOGGER.info(" > adding ingredients: {}", joiner);
-	}
+  private PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
+    return switch (selectedStyle) {
+      case SICILIAN -> this.sicilianPizzaFactory;
+      case GOURMET -> this.gourmetPizzaFactory;
+    };
+  }
 
-	void bakePizza(Pizza pizza) {
-		// output baking procedure to log
-		LOGGER.info(" > baking for {} minutes at {}° Celsius", pizza.getBakingDuration().toMinutes(),
-				pizza.getBakingTemperature());
-	}
+  void preparePizza(Pizza pizza) {
+    pizza.addIngredients();
 
-	void servePizza(Pizza pizza) {
-		// output serving to log
-		LOGGER.info(" > serving...");
-	}
+    // output ingredients to log
+    StringJoiner joiner = new StringJoiner(", ");
+    pizza.getIngredients().stream().map(Ingredient::name).forEach(joiner::add);
+    LOGGER.info(" > adding ingredients: {}", joiner);
+  }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+  void bakePizza(Pizza pizza) {
+    // output baking procedure to log
+    LOGGER.info(
+        " > baking for {} minutes at {}° Celsius",
+        pizza.getBakingDuration().toMinutes(),
+        pizza.getBakingTemperature());
+  }
 
-	/**
-	 * Builder für {@code PizzaService}
-	 */
-	public static final class Builder {
+  void servePizza(Pizza pizza) {
+    // output serving to log
+    LOGGER.info(" > serving...");
+  }
 
-		private PizzaFactory sicilianFactory;
-		private PizzaFactory gourmetFactory;
+  public static Builder builder() {
+    return new Builder();
+  }
 
-		/*
-		 * sicherstellen, dass der Builder nur über die statische Methode in {@code
-		 * PizzaService} erzeugt wird.
-		 */
-		private Builder() {
-			super();
-		}
+  /** Builder für {@code PizzaService} */
+  public static final class Builder {
 
-		public Builder sicilianFactory(SicilianPizzaFactory sicilianFactory) {
-			this.sicilianFactory = sicilianFactory;
-			return this;
-		}
+    private PizzaFactory sicilianFactory;
+    private PizzaFactory gourmetFactory;
+    private IngredientLogger ingredientLogger;
 
-		public Builder gourmetFactory(GourmetPizzaFactory gourmetFactory) {
-			this.gourmetFactory = gourmetFactory;
-			return this;
-		}
+    /*
+     * sicherstellen, dass der Builder nur über die statische Methode in {@code
+     * PizzaService} erzeugt wird.
+     */
+    private Builder() {
+      super();
+    }
 
-		public PizzaService build() {
-			if (this.sicilianFactory == null) {
-				throw new IllegalStateException("A Sicilian PizzaFactory is required");
-			}
-			if (this.gourmetFactory == null) {
-				throw new IllegalStateException("A Gourmet PizzaFactory is required");
-			}
-			return new PizzaService(sicilianFactory, gourmetFactory);
-		}
-	}
+    public Builder sicilianFactory(SicilianPizzaFactory sicilianFactory) {
+      this.sicilianFactory = sicilianFactory;
+      return this;
+    }
 
+    public Builder gourmetFactory(GourmetPizzaFactory gourmetFactory) {
+      this.gourmetFactory = gourmetFactory;
+      return this;
+    }
+
+    public Builder ingredientLogger(IngredientLogger ingredientLogger) {
+      this.ingredientLogger = ingredientLogger;
+      return this;
+    }
+
+    public PizzaService build() {
+      if (this.sicilianFactory == null) {
+        throw new IllegalStateException("A Sicilian PizzaFactory is required");
+      }
+      if (this.gourmetFactory == null) {
+        throw new IllegalStateException("A Gourmet PizzaFactory is required");
+      }
+      if (this.ingredientLogger == null) {
+        throw new IllegalStateException("An IngredientLogger is required");
+      }
+      return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger);
+    }
+  }
 }

@@ -1,24 +1,55 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 04 - Builder
+## Kapitel 05 - Decorator
 ### Szenario
-Wir haben im vorangegangenen Kapitel unseren `PizzaService` erweitert, so dass er Pizzen in den Stilen `SICILIAN` und `GOURMET` erzeugen kann. Dafür haben wir folgenden Konstruktor erstellt, der zwei Instanzen von `PizzaService` entgegennimmt:
-```
-public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory)
-```
-Das ist für die Zukunft sehr flexibel, weil wir uns nicht auf konkrete `PizzaFactory`-Implementierungen festlegen, aber leider auch fehleranfällig.
+🥳Das Geschäft boomt... Aber unser Einkauf hat immer größere Schwierigkeiten rechtzeitig die benötigten Waren nachzukaufen.
 
-Es kam wie es kommen musste: Unser Praktikant wollte eine kleine Verbesserung an der `PizzaServiceApp` vornehmen und hat die Factories falsch zugewiesen. Die Kunden waren nicht erfreut🤦‍♂️
+Deshalb wurde bereits vor einiger Zeit unser `PizzaService` erweitert. Nach dem Ausliefern jeder Bestellung, werden die verbrauchten Zutaten in einem `IngredientLogger` aufgezeichnet und beim Beenden der `PizzaStoreApp` einmal ausgegeben👏
 
-Um diese Fehler in der Zukunft zu vermeiden, soll das Erzeugen des `PizzaService` auf das Builder-Pattern umgestellt werden.
+Das kannst Du auch gerne einmal ausprobieren💻
+
+Nun hat der Einkauf angemerkt, dass das zwar hilft, aber für eine schnelle Bearbeitung eine geordnetere List von Nöten wäre. Unglücklicherweise wurde der `IngredientLogger` schnell eingeführt, besitzt kein Interface und lässt sich damit schlecht austauschen🤔
+
+Unser Chef-Entwickler hatte dazu eine Idee💡: "Lasst uns das Decorator-Pattern nutzten. Die Ausgabe erfolgt nur beim Beenden der App. Wir können das so mit wenig Aufwand lösen und den Einkauf glücklich machen..."
 
 ### Aufgabe
-* Erstelle einen Builder für den **`PizzaService`**
-* Stelle sicher, dass zum Erzeugen des **`PizzaService`** der Builder verwendet werden muss
-* Passe den Code und die Tests entsprechend an
+* Erstelle einen Decorator für `IngredientLogger`
+* Verwende den neuen Decorator anstelle des `IngredientLogger` für die Ausgabe der verbrauchten Zutaten (`PizzaStoreApp`: Zeile 50)
+* Passe die Ausgabe nach den Wünschen des Einkaufs an
 
-***Hinweis:*** Für diese Aufgabe habe ich _nichts_ vorbereitet😋
+**Anforderungen des Einkaufs:**
+
+Die ausgegebene Einkaufsliste soll in 4 Teile unterteilt sein:
+* Dough
+* Sauce
+* Cheese
+* Toppings
+
+Für jeden Teil soll eine verbrauchte Zutat nur einmal in der Liste erscheinen und mit der verbrauchten Menge ergänzt werden💪
+
+_Beispiel:_
+```
+Dough:
+    2x  thin crusty dough
+    1x  hand tossed dough
+Sauce:
+    2x  plain tomato sauce
+    1x  premium tomato sauce
+Cheese:
+    2x  mozzarella
+    1x  Monterey Jack
+Toppings:
+    2x  artichoke hearts
+    2x  black Kalamata olives
+    2x  freshly sliced tomato
+    1x  hot pepperoni
+```
+
+***Hinweis:*** Es wurde kein weiterer Code vorbereitet😢
+
+### Das Pattern als UML
+![UML](pattern-uml.png)
 
 ----
 

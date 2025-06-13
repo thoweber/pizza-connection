@@ -30,6 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PizzaServiceTest {
 
+  @Mock IngredientLogger ingredientLogger;
+
   @Mock Pizza pizza;
 
   @Spy SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
@@ -44,6 +46,7 @@ class PizzaServiceTest {
             PizzaService.builder()
                 .gourmetFactory(gourmetPizzaFactory)
                 .sicilianFactory(sicilianPizzaFactory)
+                .ingredientLogger(ingredientLogger)
                 .build());
   }
 
@@ -133,14 +136,44 @@ class PizzaServiceTest {
 
   @Test
   void test_builder_without_sicilian_factory_throw_IllegalStateException() {
-    PizzaService.Builder builder = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory());
+    PizzaService.Builder builder =
+        PizzaService.builder()
+            .gourmetFactory(new GourmetPizzaFactory())
+            .ingredientLogger(new IngredientLogger());
     assertThrows(IllegalStateException.class, builder::build);
   }
 
   @Test
   void test_builder_without_gourmet_factory_throw_IllegalStateException() {
     PizzaService.Builder builder =
-        PizzaService.builder().sicilianFactory(new SicilianPizzaFactory());
+        PizzaService.builder()
+            .sicilianFactory(new SicilianPizzaFactory())
+            .ingredientLogger(new IngredientLogger());
     assertThrows(IllegalStateException.class, builder::build);
+  }
+
+  @Test
+  void test_builder_without_IngredientLogger_throw_IllegalStateException() {
+    PizzaService.Builder builder =
+        PizzaService.builder()
+            .sicilianFactory(new SicilianPizzaFactory())
+            .gourmetFactory(new GourmetPizzaFactory());
+    assertThrows(IllegalStateException.class, () -> builder.build());
+  }
+
+  @Test
+  void test_consumed_ingredients_are_logged_by_IngredientLogger() {
+    // given
+    IngredientLogger ingredientLoggerMock = mock(IngredientLogger.class);
+    PizzaService methodLocalPizzaService =
+        PizzaService.builder()
+            .gourmetFactory(new GourmetPizzaFactory())
+            .sicilianFactory(new SicilianPizzaFactory())
+            .ingredientLogger(ingredientLoggerMock)
+            .build();
+    // when
+    methodLocalPizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.GOURMET);
+    // then
+    then(ingredientLoggerMock).should(times(3)).logIngredient(any());
   }
 }
