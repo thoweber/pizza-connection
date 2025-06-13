@@ -30,9 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PizzaServiceTest {
 
-  @Mock IngredientLogger ingredientLogger;
-
   @Mock Pizza pizza;
+  @Mock IngredientLogger ingredientLogger;
 
   @Spy SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
   @Spy GourmetPizzaFactory gourmetPizzaFactory = new GourmetPizzaFactory();
@@ -46,7 +45,6 @@ class PizzaServiceTest {
             PizzaService.builder()
                 .gourmetFactory(gourmetPizzaFactory)
                 .sicilianFactory(sicilianPizzaFactory)
-                .ingredientLogger(ingredientLogger)
                 .build());
   }
 
