@@ -2,13 +2,13 @@ package de.infoteam.course.dp.pizzastore.model.ingredients.cheese;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 
-public class MozzarellaCheese implements Ingredient {
+public class MontereyJackCheese implements Ingredient {
 
-	private static final String NAME = "mozzarella";
+	private static final String NAME = "Monterey Jack";
 
 	@Override
 	public String name() {
-		return MozzarellaCheese.NAME;
+		return MontereyJackCheese.NAME;
 	}
 
 }

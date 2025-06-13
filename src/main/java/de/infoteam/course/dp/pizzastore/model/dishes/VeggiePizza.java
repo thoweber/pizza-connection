@@ -5,14 +5,17 @@ import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
+import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.ArtichokeTopping;
+import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.OliveTopping;
+import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.TomatoTopping;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DefaultPizza implements Pizza {
+public class VeggiePizza implements Pizza {
 	
-	private static final String NAME = "default pizza";
+	private static final String NAME = "veggie pizza";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
@@ -21,6 +24,9 @@ public class DefaultPizza implements Pizza {
 		this.ingredients.add(new ThinCrustyDough());
 		this.ingredients.add(new PlainTomatoSauce());
 		this.ingredients.add(new MozzarellaCheese());
+		this.ingredients.add(new TomatoTopping());
+		this.ingredients.add(new ArtichokeTopping());
+		this.ingredients.add(new OliveTopping());
 	}
 
 	@Override
@@ -31,17 +37,17 @@ public class DefaultPizza implements Pizza {
 
 	@Override
 	public Duration getBakingDuration() {
-		return Duration.ofMinutes(6);
+		return Duration.ofMinutes(8);
 	}
 
 	@Override
 	public int getBakingTemperature() {
-		return 337;
+		return 300;
 	}
 
 	@Override
 	public String name() {
-		return DefaultPizza.NAME;
+		return VeggiePizza.NAME;
 	}
 	
 }
