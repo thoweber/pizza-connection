@@ -4,10 +4,13 @@ import static de.infoteam.course.dp.pizzastore.Console.println;
 import static de.infoteam.course.dp.pizzastore.Console.prompt;
 import static de.infoteam.course.dp.pizzastore.Console.showBanner;
 
+import de.infoteam.course.dp.pizzastore.controller.ConsumedIngredientsResponse;
 import de.infoteam.course.dp.pizzastore.controller.PizzaOrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.PizzaOrderResponse;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -34,9 +37,10 @@ public final class PizzaStoreApp implements CommandLineRunner {
 	private ApplicationContext appContext;
 
 	/* REST Konstanten */
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 	private final String serverAddress = "http://localhost:8080";
 	private final String orderPizzaRoute = "/order";
+	private final String consumedIngredientsRoute = "/consumed-ingredients";
 
 	public PizzaStoreApp(ApplicationContext appContext) {
 		this.appContext = appContext;
@@ -59,13 +63,29 @@ public final class PizzaStoreApp implements CommandLineRunner {
 
 		println("===================================");
 		println("Consumed Ingredients:");
-
-		/*
-		 * Hier müssen wir noch die verbrauchten Zutaten vom Server holen
-		 */
+		printShoppingList(consumedIngredients());
 
 		// Stoppt die Spring Anwendung
 		SpringApplication.exit(appContext, () -> 0);
+	}
+
+	private void printShoppingList(ConsumedIngredientsResponse cir) {
+		if (cir == null) {
+			println("Error: no consumed ingredients retrieved");
+			return;
+		}
+		println("Dough:");
+		outputAggregation(cir.dough());
+		println("Sauce:");
+		outputAggregation(cir.sauce());
+		println("Cheese:");
+		outputAggregation(cir.cheese());
+		println("Toppings:");
+		outputAggregation(cir.toppings());
+	}
+
+	private void outputAggregation(Map<String, Integer> consumed) {
+		consumed.forEach((key, value) -> println("\t" + value + "x\t" + key));
 	}
 
 	private Optional<MenuItem> askForOrder() {
@@ -110,5 +130,10 @@ public final class PizzaStoreApp implements CommandLineRunner {
 	private PizzaOrderResponse orderPizza(MenuItem selectedItem, PizzaStyle pizzaStyle) {
 		PizzaOrderRequest request = new PizzaOrderRequest().setMenuItem(selectedItem).setPizzaStyle(pizzaStyle);
 		return restTemplate.postForEntity(serverAddress + orderPizzaRoute, request, PizzaOrderResponse.class).getBody();
+	}
+
+	private ConsumedIngredientsResponse consumedIngredients() {
+		return restTemplate.getForEntity(serverAddress + consumedIngredientsRoute, ConsumedIngredientsResponse.class)
+				.getBody();
 	}
 }
