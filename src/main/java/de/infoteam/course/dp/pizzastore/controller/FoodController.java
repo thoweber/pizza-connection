@@ -6,20 +6,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-public interface PizzaController {
+public interface FoodController {
 
   @PostMapping("/close-kitchen")
   void closeKitchen();
 
   @PostMapping("/order")
-  PizzaOrderResponse order(@RequestBody PizzaOrderRequest orderRequest);
+  OrderResponse order(@RequestBody OrderRequest orderRequest);
 
   @GetMapping("/consumed-ingredients")
   ConsumedIngredientsResponse consumedIngredients();
 
   @GetMapping("/queue")
-  List<PizzaResponse> queue();
+  List<FoodResponse> queue();
 
   @GetMapping("/pick-up")
-  List<PizzaResponse> pickUp();
+  List<FoodResponse> pickUp();
 }

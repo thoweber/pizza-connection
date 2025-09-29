@@ -12,13 +12,14 @@ class MenuItemTest {
 
 	@Test
 	void test_MenuItem_has_exactly_one_value() {
-		assertEquals(3, MenuItem.values().length);
+		assertEquals(4, MenuItem.values().length);
 	}
 
 	static Stream<Arguments> menuItemValues() {
 		return Stream.of(Arguments.of(MenuItem.CHEESE_PIZZA, "cheese pizza"),
 				Arguments.of(MenuItem.PEPERONI_PIZZA, "peperoni pizza"),
-				Arguments.of(MenuItem.VEGGIE_PIZZA, "veggie pizza"));
+				Arguments.of(MenuItem.VEGGIE_PIZZA, "veggie pizza"),
+				Arguments.of(MenuItem.TOMATO_SALAD, "tomato salad"));
 	}
 
 	@ParameterizedTest

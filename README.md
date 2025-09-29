@@ -1,31 +1,53 @@
 # Hands-on Design Patterns
 ***The Pizza Connection***
 
-## Kapitel 09 - Proxy-Pattern
+## Kapitel 10 - Chain of Responsibility Pattern
 
 ### Szenario
-Der Code unseres Pizza-Store ist gewuchert☠ und muss dringend aufgeräumt werden.
+Neben Pizza🍕 wollen wir in unserem Geschäft jetzt auch Salate🥗 für die figurbewussten Kunden anbieten. Den Anfang macht ein leckerer Tomaten-Salat🍅, den es wie unsere Pizzen in den Stilrichtungen _sicilian_ und _gourmet_ gibt.
 
-Es steht also ein Refactoring an. Der REST-Code zum Zugriff auf den `PizzaController` soll aus der `PizzaStoreApp` entfernt werden. Dazu verwenden wir das Proxy-Pattern.
+Tatsächlich kann unsere Software das neue Gericht bereits produzieren🏭, nur die Architektur macht nicht glücklich😪
 
 ### Was ist neu?
+So einiges😁...
 
-* der ursprüngliche `PizzaController` wurde in `PizzaControllerImpl` umbenannt
-* `PizzaController` ist jetzt ein Interface, welches die Funktion des alten `PizzaController`s beschreibt
+#### Ganz neu
+* `Dish`: übergeordnetes Interface aller Gerichte
+* `AbstractDish`: abstrakte Klasse, die alle Eigenschaften von `AbstractPizza` enthält, die für sämtliche Speisen gültig sind
+* `Salad`: Interface für Salate
+* `TomatoSalad`: Implementierung des Tomatensalats
+
+#### Umbennungen:
+* `PizzaController` -> `FoodController`
+* `PizzaControllerImpl` -> `FoodControllerImpl`
+* `PizzaControllerProxy` -> `FoodControllerProxy`
+* `PizzaResponse` -> `FoodResponse`
+* `PizzaOrderRequest` -> `OrderRequest`
+* `PizzaOrderResponse` -> `OrderResponse`
+* `PizzaStyle` -> `FoodStyle`
+* `PizzaRepository` -> `DishRepository`
+* `PizzaFactory` -> `FoodFactory`
+* `PizzaService` -> `FoodOrderService`
+* `PizzaPreparationTask` -> `FoodPreparationTask`
+* `GourmetPizzaFactory` -> `GourmetFoodFactory`
+* `SicilianPizzaFactory` -> `SicilianFoodFactory`
+* `PizzaStateChange` -> `DishStateChange`
+* `PizzaResponseTest` -> `FoodResponseTest`
+* `PizzaOrderRequestTest` -> `OrderRequestTest`
+* `PizzaOrderResponseTest` -> `OrderResponseTest`
+* `PizzaStyleTest` -> `FoodStyleTest`
+* `PizzaRepositoryTest` -> `DishRepositoryTest`
+* `PizzaServiceTest` -> `FoodOrderServiceTest`
+* `PizzaPreparationTaskTest` -> `FoodPreparationTaskTest`
+
+Und viele weitere Anpassungen, die sich aus den Umbennenungen und den neuen Elementen ergeben haben.
 
 ### Aufgabe
-* erstelle einen `PizzaControllerProxy`, der die Funktionen des `PizzaController`s zur Verfügung stellt. Der Proxy soll mit dem Controller über REST kommunizieren
-* verwende den `PizzaControllerProxy` in der `PizzaStoreApp` und entferne sämtlichen REST-basierten Code in `PizzaStoreApp`
-* da du mit dem Proxy auch die länge der Warteschlange abfragen kannst, wird nach jeder Bestellung ausgegeben, wie lange die Schlange gerade ist
+Unser Schwachpunkt ist noch `FoodPreparationTask` (ehemals PizzaPreparationTask). Zwar konnten wir uns zunächst einmal mit einem If-Block behelfen und so den Betrieb aufrecht erhalten, aber diese Lösung skaliert nicht👎
 
-# Wichtige Tipps:
-* ℹ Der Umgang mit einer Liste an Objekten/einem JSON-Array im Spring `RestTemplate` ist nicht sofort selbsterklären. Deshalb habe ich euch noch einen hilfreichen Link bereitgestellt:  
-  **Informationen zum [Arbeiten mit einer Liste von Objekten](https://www.baeldung.com/spring-rest-template-list) im Spring `RestTemplate`.**
-* Der `PizzaControllerProxy` benötigt die `@Component`-Annotation, damit er für die Dependency Injection von Spring verfügbar ist.
-* Den Aufruf des Endpunkts `/close-kitchen` kannst du wie folgt umsetzen:
-  ```java
-  restTemplate.postForLocation(uri, null);
-  ```
+Wir haben etwas Recherche betrieben und möchten das Problem mit dem _Chain of Responsibility Pattern_ lösen: Jede einzelne Zubereitungsaufgabe soll dabei einen eigenen `Handler` verschoben werden.
+
+Viel Erfolg beim Anwenden des Patterns🍀
 
 ----
 

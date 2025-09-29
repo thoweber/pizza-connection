@@ -18,7 +18,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PizzaPreparationTaskTest {
+class FoodPreparationTaskTest {
 	
 	@Spy
 	Pizza pizza = new VeggiePizza(1, new ThinCrustyDough(), new PlainTomatoSauce());
@@ -26,26 +26,26 @@ class PizzaPreparationTaskTest {
 	IngredientLogger ingredientLogger = new IngredientLogger();
 	
 	@Spy
-	PizzaPreparationTask pizzaChef = new PizzaPreparationTask(pizza, ingredientLogger, false);
+	FoodPreparationTask pizzaChef = new FoodPreparationTask(pizza, ingredientLogger, false);
 
 	@Test
-	void test_run_calls_preparePizza_logIngredients_bakePizza_servePizza_in_order() {
+	void test_run_calls_preparePizza_logIngredients_bakePizza_serveDish_in_order() {
 		// when
 		pizzaChef.run();
 		// then
 		InOrder inOrder = inOrder(pizzaChef);
-		then(pizzaChef).should(inOrder).preparePizza(any());
+		then(pizzaChef).should(inOrder).prepareDish(any());
 		then(pizzaChef).should(inOrder).logConsumedIngredients(any());
 		then(pizzaChef).should(inOrder).bakePizza(any());
-		then(pizzaChef).should(inOrder).servePizza(any());
+		then(pizzaChef).should(inOrder).serveDish(any());
 	}
 
 	@Test
-	void test_preparePizza_calls_addIngredients() {
+	void test_prepareDish_calls_addIngredients() {
 		// given
 		given(pizza.getIngredients()).willReturn(Arrays.asList(new ThinCrustyDough()));
 		// when
-		pizzaChef.preparePizza(pizza);
+		pizzaChef.prepareDish(pizza);
 		// then
 		then(pizza).should().addIngredients();
 	}

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class PizzaControllerProxy implements PizzaController {
+public class FoodControllerProxy implements FoodController {
 
 	private RestTemplate restTemplate;
 	private final String serverAddress = "http://localhost:8080";
@@ -16,7 +16,7 @@ public class PizzaControllerProxy implements PizzaController {
 	private final String consumedIngredientsRoute = "/consumed-ingredients";
 	private final String queueRoute = "/queue";
 
-	public PizzaControllerProxy() {
+	public FoodControllerProxy() {
 		this.restTemplate = new RestTemplate();
 	}
 
@@ -26,8 +26,8 @@ public class PizzaControllerProxy implements PizzaController {
 	}
 
 	@Override
-	public PizzaOrderResponse order(PizzaOrderRequest orderRequest) {
-		return restTemplate.postForEntity(serverAddress + orderPizzaRoute, orderRequest, PizzaOrderResponse.class)
+	public OrderResponse order(OrderRequest orderRequest) {
+		return restTemplate.postForEntity(serverAddress + orderPizzaRoute, orderRequest, OrderResponse.class)
 				.getBody();
 	}
 
@@ -38,13 +38,13 @@ public class PizzaControllerProxy implements PizzaController {
 	}
 
 	@Override
-	public List<PizzaResponse> queue() {
-		return Arrays.asList(restTemplate.getForEntity(serverAddress + queueRoute, PizzaResponse[].class).getBody());
+	public List<FoodResponse> queue() {
+		return Arrays.asList(restTemplate.getForEntity(serverAddress + queueRoute, FoodResponse[].class).getBody());
 	}
 
 	@Override
-	public List<PizzaResponse> pickUp() {
-		return Arrays.asList(restTemplate.getForEntity(serverAddress + queueRoute, PizzaResponse[].class).getBody());
+	public List<FoodResponse> pickUp() {
+		return Arrays.asList(restTemplate.getForEntity(serverAddress + queueRoute, FoodResponse[].class).getBody());
 	}
 
 }

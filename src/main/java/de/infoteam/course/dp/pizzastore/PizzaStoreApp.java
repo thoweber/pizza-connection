@@ -6,7 +6,7 @@ import static de.infoteam.course.dp.pizzastore.Console.showBanner;
 
 import de.infoteam.course.dp.pizzastore.controller.*;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 
 import java.util.Map;
 import java.util.Optional;
@@ -30,12 +30,12 @@ public final class PizzaStoreApp implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaStoreApp.class);
 	private final AtomicBoolean running = new AtomicBoolean(true);
-	private final PizzaControllerProxy pizzaControllerProxy;
+	private final FoodControllerProxy pizzaControllerProxy;
 
 	// Spring Application Context --> wird zum Stoppen der Anwendung benötigt
 	private ApplicationContext appContext;
 
-	public PizzaStoreApp(ApplicationContext appContext, PizzaControllerProxy pizzaControllerProxy) {
+	public PizzaStoreApp(ApplicationContext appContext, FoodControllerProxy pizzaControllerProxy) {
 		this.appContext = appContext;
 		this.pizzaControllerProxy = pizzaControllerProxy;
 	}
@@ -46,7 +46,7 @@ public final class PizzaStoreApp implements CommandLineRunner {
 		while (running.get()) {
 			showBanner();
 			askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem).ifPresent(pizzaStyle -> {
-				PizzaOrderResponse response = pizzaControllerProxy.order(new PizzaOrderRequest()
+				OrderResponse response = pizzaControllerProxy.order(new OrderRequest()
 						.setMenuItem(selectedItem).setPizzaStyle(pizzaStyle));
 				println("Received order #" + response.getId() + " " + response.getFullName());
 				println(pizzaControllerProxy.queue().size() + " pizzas are currently in queue");
@@ -97,12 +97,12 @@ public final class PizzaStoreApp implements CommandLineRunner {
 		return choiceToEnumValue(choice, MenuItem.values(), "q");
 	}
 
-	private Optional<PizzaStyle> chooseStyle(MenuItem selectedItem) {
+	private Optional<FoodStyle> chooseStyle(MenuItem selectedItem) {
 		println("Choose your style for " + selectedItem.getName() + ":");
-		Stream.of(PizzaStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
+		Stream.of(FoodStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
 		println();
 		String choice = prompt("Your style: ");
-		return choiceToEnumValue(choice, PizzaStyle.values(), null);
+		return choiceToEnumValue(choice, FoodStyle.values(), null);
 	}
 
 	<T extends Enum<T>> Optional<T> choiceToEnumValue(String choice, T[] enumValues, String quit) {

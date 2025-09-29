@@ -3,6 +3,7 @@ package de.infoteam.course.dp.pizzastore.repository;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.State;
 import de.infoteam.course.dp.pizzastore.model.dishes.CheesePizza;
@@ -15,13 +16,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PizzaRepositoryTest {
+class DishRepositoryTest {
 
-	PizzaRepository repository;
+	DishRepository repository;
 
 	@BeforeEach
 	void initRepository() {
-		this.repository = new PizzaRepository();
+		this.repository = new DishRepository();
 	}
 
 	@Test
@@ -31,7 +32,7 @@ class PizzaRepositoryTest {
 		// when
 		repository.saveOrUpdate(pizza);
 		// then
-		Optional<Pizza> fetchedPizza = repository.findById(1);
+		Optional<Dish> fetchedPizza = repository.findById(1);
 		assertTrue(fetchedPizza.isPresent());
 	}
 
@@ -45,7 +46,7 @@ class PizzaRepositoryTest {
 		// when
 		repository.saveOrUpdate(pizza2);
 		// then
-		Optional<Pizza> fetchedPizza = repository.findById(1);
+		Optional<Dish> fetchedPizza = repository.findById(1);
 		assertTrue(fetchedPizza.isPresent());
 		assertEquals(State.IN_PREPARATION, fetchedPizza.get().getState());
 	}
@@ -56,11 +57,11 @@ class PizzaRepositoryTest {
 		repository.saveOrUpdate(new CheesePizza(1, new ThinCrustyDough(), new PlainTomatoSauce()));
 		repository.saveOrUpdate(new VeggiePizza(2, new ThinCrustyDough(), new PlainTomatoSauce()));
 		// when
-		Collection<Pizza> allPizzas = repository.findAll();
+		Collection<Dish> allPizzas = repository.findAll();
 		// then
 		assertEquals(2, allPizzas.size());
-		assertTrue(allPizzas.stream().filter(p -> p.getClass().equals(VeggiePizza.class)).findAny().isPresent());
-		assertTrue(allPizzas.stream().filter(p -> p.getClass().equals(CheesePizza.class)).findAny().isPresent());
+		assertTrue(allPizzas.stream().anyMatch(p -> p.getClass().equals(VeggiePizza.class)));
+		assertTrue(allPizzas.stream().anyMatch(p -> p.getClass().equals(CheesePizza.class)));
 	}
 
 	@Test
@@ -71,9 +72,9 @@ class PizzaRepositoryTest {
 		repository.saveOrUpdate(pizza1);
 		repository.saveOrUpdate(new VeggiePizza(2, new ThinCrustyDough(), new PlainTomatoSauce()));
 		// when
-		Collection<Pizza> pizzas = repository.findAllByState();
+		Collection<Dish> dishes = repository.findAllByState();
 		// then
-		assertTrue(pizzas.isEmpty());
+		assertTrue(dishes.isEmpty());
 	}
 
 	@Test
@@ -87,13 +88,11 @@ class PizzaRepositoryTest {
 		repository.saveOrUpdate(pizza2);
 		repository.saveOrUpdate(new VeggiePizza(7, new ThinCrustyDough(), new PlainTomatoSauce()));
 		// when
-		Collection<Pizza> pizzas = repository.findAllByState(State.IN_PREPARATION, State.READY);
+		Collection<Dish> dishes = repository.findAllByState(State.IN_PREPARATION, State.READY);
 		// then
-		assertEquals(2, pizzas.size());
-		assertTrue(pizzas.stream().filter(p -> p.getClass().equals(CheesePizza.class)).filter(p -> p.getId() == 1)
-				.findAny().isPresent());
-		assertTrue(pizzas.stream().filter(p -> p.getClass().equals(PeperoniPizza.class)).filter(p -> p.getId() == 3)
-				.findAny().isPresent());
+		assertEquals(2, dishes.size());
+		assertTrue(dishes.stream().filter(p -> p.getClass().equals(CheesePizza.class)).anyMatch(p -> p.getId() == 1));
+		assertTrue(dishes.stream().filter(p -> p.getClass().equals(PeperoniPizza.class)).anyMatch(p -> p.getId() == 3));
 	}
 
 	@Test
@@ -102,7 +101,7 @@ class PizzaRepositoryTest {
 		repository.saveOrUpdate(new CheesePizza(1, new ThinCrustyDough(), new PlainTomatoSauce()));
 		repository.saveOrUpdate(new VeggiePizza(2, new ThinCrustyDough(), new PlainTomatoSauce()));
 		// when
-		Optional<Pizza> deleted = repository.deleteById(2);
+		Optional<Dish> deleted = repository.deleteById(2);
 		// then
 		assertTrue(deleted.isPresent());
 		assertEquals(2, deleted.get().getId());

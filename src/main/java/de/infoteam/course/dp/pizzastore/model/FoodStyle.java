@@ -1,12 +1,12 @@
 package de.infoteam.course.dp.pizzastore.model;
 
-public enum PizzaStyle {
+public enum FoodStyle {
 
 	SICILIAN("sicilian"), GOURMET("gourmet");
 	
 	private final String name;
 	
-	PizzaStyle(String name) {
+	FoodStyle(String name) {
 		this.name = name;
 	}
 	

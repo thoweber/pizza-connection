@@ -3,20 +3,20 @@ package de.infoteam.course.dp.pizzastore.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 import org.junit.jupiter.api.Test;
 
-class PizzaOrderRequestTest {
+class OrderRequestTest {
 
 	@Test
 	void test_values_are_stored_as_expected() {
 		// given
-		PizzaOrderRequest request = new PizzaOrderRequest();
+		OrderRequest request = new OrderRequest();
 		// when
-		request.setMenuItem(MenuItem.VEGGIE_PIZZA).setPizzaStyle(PizzaStyle.GOURMET);
+		request.setMenuItem(MenuItem.VEGGIE_PIZZA).setPizzaStyle(FoodStyle.GOURMET);
 		// then
 		assertEquals(MenuItem.VEGGIE_PIZZA, request.getMenuItem());
-		assertEquals(PizzaStyle.GOURMET, request.getPizzaStyle());
+		assertEquals(FoodStyle.GOURMET, request.getPizzaStyle());
 	}
 
 }

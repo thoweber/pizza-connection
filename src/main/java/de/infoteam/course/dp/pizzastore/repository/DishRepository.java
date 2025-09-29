@@ -1,6 +1,6 @@
 package de.infoteam.course.dp.pizzastore.repository;
 
-import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.State;
 import org.springframework.stereotype.Component;
 
@@ -14,46 +14,46 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Component
-public class PizzaRepository {
+public class DishRepository {
 
-	private final Map<Long, Pizza> storage = new ConcurrentHashMap<>();
+	private final Map<Long, Dish> storage = new ConcurrentHashMap<>();
 
 	/**
-	 * Saves or updates the given {@code Pizza}.
+	 * Saves or updates the given {@code Dish}.
 	 * 
 	 * @param pizza the pizza to be saved or updated
 	 */
-	public void saveOrUpdate(Pizza pizza) {
+	public void saveOrUpdate(Dish pizza) {
 		storage.put(pizza.getId(), pizza);
 	}
 
 	/**
-	 * Fetches the {@code Pizza} with the given ID from this repository.
+	 * Fetches the {@code Dish} with the given ID from this repository.
 	 * 
 	 * @param id the ID of the pizza to be fetched
 	 * @return the pizza as an optional, or an empty optional, if no pizza
 	 *         with the given ID exists within the repository
 	 */
-	public Optional<Pizza> findById(long id) {
+	public Optional<Dish> findById(long id) {
 		return Optional.ofNullable(storage.get(id));
 	}
 	
 	/**
-	 * Returns all {@code Pizza} of the repository.
+	 * Returns all {@code Dish} of the repository.
 	 * 
-	 * @return all {@code Pizza} of the repository
+	 * @return all {@code Dish} of the repository
 	 */
-	public Collection<Pizza> findAll() {
+	public Collection<Dish> findAll() {
 		return storage.values();
 	}
 
 	/**
-	 * Returns all {@code Pizza} of the repository matching the given state.
+	 * Returns all {@code Dish} of the repository matching the given state.
 	 * 
 	 * @param state the state to be matched
-	 * @return all {@code Pizza} of the repository matching the given state
+	 * @return all {@code Dish} of the repository matching the given state
 	 */
-	public Collection<Pizza> findAllByState(State... state) {
+	public Collection<Dish> findAllByState(State... state) {
 		if (state.length == 0) {
 			return Collections.emptyList();
 		}
@@ -63,13 +63,13 @@ public class PizzaRepository {
 	}
 
 	/**
-	 * Deletes the {@code Pizza} with the given ID.
+	 * Deletes the {@code Dish} with the given ID.
 	 * 
 	 * @param id the ID of the pizza to be deleted
 	 * @return the deleted pizza as an optional, or an empty optional, if no pizza
 	 *         with the given ID exists within the repository
 	 */
-	public Optional<Pizza> deleteById(long id) {
+	public Optional<Dish> deleteById(long id) {
 		return Optional.ofNullable(storage.remove(id));
 	}
 

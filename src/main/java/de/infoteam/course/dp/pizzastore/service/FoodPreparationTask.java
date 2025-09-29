@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,36 +13,42 @@ import org.slf4j.LoggerFactory;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 
-public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChange> {
+public class FoodPreparationTask implements Runnable, Publisher<DishStateChange> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaPreparationTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FoodPreparationTask.class);
 
-	private final Pizza pizza;
+	private final Dish dish;
 	private final IngredientLogger ingredientLogger;
 
 	private boolean simulateProgress = true;
 
-	private Set<Subscriber<PizzaStateChange>> subscribers = new CopyOnWriteArraySet<>();
+	private Set<Subscriber<DishStateChange>> subscribers = new CopyOnWriteArraySet<>();
 
-	public PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger) {
-		this.pizza = pizza;
+	public FoodPreparationTask(Dish dish, IngredientLogger ingredientLogger) {
+		this.dish = dish;
 		this.ingredientLogger = ingredientLogger;
 	}
 
-	PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger, boolean simulateProgress) {
-		this(pizza, ingredientLogger);
+	FoodPreparationTask(Pizza dish, IngredientLogger ingredientLogger, boolean simulateProgress) {
+		this(dish, ingredientLogger);
 		this.simulateProgress = simulateProgress;
 	}
 
 	@Override
 	public void run() {
-		preparePizza(pizza);
-		logConsumedIngredients(pizza);
-		bakePizza(pizza);
-		servePizza(pizza);
+		/*
+		 * Dieser Code ist zu abhängig vom Essensangebot. Wir werden das Chain of
+		 * Responsibility Pattern implementieren.
+		 */
+		prepareDish(dish);
+		logConsumedIngredients(dish);
+		if (dish instanceof Pizza) {
+			bakePizza((Pizza) dish);
+		}
+		serveDish(dish);
 	}
 
-	void preparePizza(Pizza pizza) {
+	void prepareDish(Dish pizza) {
 		pizza.updateState(State.IN_PREPARATION);
 		notifySubscribers();
 
@@ -71,7 +78,7 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		}
 	}
 
-	void servePizza(Pizza pizza) {
+	void serveDish(Dish pizza) {
 		pizza.updateState(State.DISH_UP);
 		notifySubscribers();
 		// output serving to log
@@ -84,7 +91,7 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		notifySubscribers();
 	}
 
-	void logConsumedIngredients(Pizza pizza) {
+	void logConsumedIngredients(Dish pizza) {
 		pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
 	}
 
@@ -98,18 +105,18 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 	}
 
 	@Override
-	public void subscribe(Subscriber<PizzaStateChange> subscriber) {
+	public void subscribe(Subscriber<DishStateChange> subscriber) {
 		this.subscribers.add(subscriber);
 	}
 
 	@Override
-	public void unsubscribe(Subscriber<PizzaStateChange> subscriber) {
+	public void unsubscribe(Subscriber<DishStateChange> subscriber) {
 		this.subscribers.remove(subscriber);
 	}
 
 	@Override
 	public void notifySubscribers() {
-		final PizzaStateChange next = PizzaStateChange.of(this.pizza);
+		final DishStateChange next = DishStateChange.of(this.dish);
 		this.subscribers.forEach(s -> s.update(next));
 		// clear all subscriptions when task is done
 		if (next.getState() == State.READY) {

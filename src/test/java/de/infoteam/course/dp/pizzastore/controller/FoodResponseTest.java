@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.infoteam.course.dp.pizzastore.model.State;
 import org.junit.jupiter.api.Test;
 
-class PizzaResponseTest {
+class FoodResponseTest {
 
 	@Test
 	void test_values_are_stored_as_expected() {
 		// given
-		PizzaResponse response = new PizzaResponse();
+		FoodResponse response = new FoodResponse();
 		// when
 		response.setId(42).setName("test").setState(State.DISH_UP);
 		// then

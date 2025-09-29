@@ -1,22 +1,22 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.model.FoodStyle;
 import de.infoteam.course.dp.pizzastore.model.State;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class PizzaOrderResponse {
+public class OrderResponse {
 
 	private long id;
 	private String name;
-	private PizzaStyle pizzaStyle;
+	private FoodStyle foodStyle;
 	private State state;
 
 	public long getId() {
 		return id;
 	}
 
-	public PizzaOrderResponse setId(long id) {
+	public OrderResponse setId(long id) {
 		this.id = id;
 		return this;
 	}
@@ -25,29 +25,29 @@ public class PizzaOrderResponse {
 		return name;
 	}
 
-	public PizzaOrderResponse setName(String name) {
+	public OrderResponse setName(String name) {
 		this.name = name;
 		return this;
 	}
 
-	public PizzaStyle getPizzaStyle() {
-		return pizzaStyle;
+	public FoodStyle getPizzaStyle() {
+		return foodStyle;
 	}
 
-	public PizzaOrderResponse setPizzaStyle(PizzaStyle pizzaStyle) {
-		this.pizzaStyle = pizzaStyle;
+	public OrderResponse setPizzaStyle(FoodStyle foodStyle) {
+		this.foodStyle = foodStyle;
 		return this;
 	}
 
 	public String getFullName() {
-		return pizzaStyle.getName() + " " + name;
+		return foodStyle.getName() + " " + name;
 	}
 
 	public State getState() {
 		return state;
 	}
 
-	public PizzaOrderResponse setState(State state) {
+	public OrderResponse setState(State state) {
 		this.state=state;
 		return this;
 	}
