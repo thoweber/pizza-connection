@@ -15,11 +15,13 @@ public class PizzaController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaController.class);
 
-	private PizzaService pizzaService;
-	private IngredientLogger ingredientLogger;
+	private final PizzaService pizzaService;
+	private final IngredientLogger ingredientLogger;
+	private final PizzaRepository pizzaRepository; // wird für die neuen REST-Endpunkte benötigt
 
 	public PizzaController(PizzaRepository pizzaRepository) {
 		this.ingredientLogger = new IngredientLogger();
+		this.pizzaRepository = pizzaRepository;
 		this.pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
 				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
 				.pizzaRepository(pizzaRepository).numberOfChefs(2)
@@ -48,9 +50,11 @@ public class PizzaController {
 	/*
 	 * Schaffe unter "/queue" eine Schnittstelle für alle in Bearbeitung
 	 * befindlichen Pizzen.
+	 * Die relevanten Informationen erhältst du aus dem PizzaRepository.
 	 */
 
 	/*
 	 * Schaffe unter "/pick-up" eine Schnittstelle für alle fertigen Bestellungen.
+	 * Die relevanten Informationen erhältst du aus dem PizzaRepository.
 	 */
 }
