@@ -62,7 +62,7 @@ public class PizzaService {
     LOGGER.info("The PizzaKitchen is closing now. Pizza in progress will be finished though...");
     pizzaKitchen.shutdown();
     try {
-      if (!pizzaKitchen.awaitTermination(60, TimeUnit.SECONDS)) {
+      if (!pizzaKitchen.awaitTermination(300, TimeUnit.SECONDS)) {
         pizzaKitchen.shutdownNow();
       }
     } catch (InterruptedException ex) {
