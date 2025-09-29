@@ -1,27 +1,22 @@
 package de.infoteam.course.dp.pizzastore.service;
 
 import java.time.Duration;
-import java.util.Set;
 import java.util.StringJoiner;
-import java.util.concurrent.CopyOnWriteArraySet;
 
-import de.infoteam.course.dp.pizzastore.model.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 
-public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChange> {
+public class PizzaPreparationTask implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaPreparationTask.class);
 
-	private final Pizza pizza;
-	private final IngredientLogger ingredientLogger;
+	private Pizza pizza;
+	private IngredientLogger ingredientLogger;
 
 	private boolean simulateProgress = true;
-
-	private Set<Subscriber<PizzaStateChange>> subscribers = new CopyOnWriteArraySet<>();
 
 	public PizzaPreparationTask(Pizza pizza, IngredientLogger ingredientLogger) {
 		this.pizza = pizza;
@@ -42,9 +37,6 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 	}
 
 	void preparePizza(Pizza pizza) {
-		pizza.updateState(State.IN_PREPARATION);
-		notifySubscribers();
-
 		pizza.addIngredients();
 
 		// output ingredients to log
@@ -56,12 +48,13 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		if (simulateProgress) {
 			sleep(Duration.ofSeconds(5));
 		}
+
+		/*
+		 * Hier Observer benachrichtigen
+		 */
 	}
 
 	void bakePizza(Pizza pizza) {
-		pizza.updateState(State.IN_OVEN);
-		notifySubscribers();
-
 		// output baking procedure to log
 		LOGGER.info(" > baking for {} minutes at {}° Celsius", pizza.getBakingDuration().toMinutes(),
 				pizza.getBakingTemperature());
@@ -69,19 +62,23 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		if (simulateProgress) {
 			sleep(Duration.ofSeconds(pizza.getBakingDuration().toMinutes() * 3));
 		}
+
+		/*
+		 * Hier Observer benachrichtigen
+		 */
 	}
 
 	void servePizza(Pizza pizza) {
-		pizza.updateState(State.DISH_UP);
-		notifySubscribers();
 		// output serving to log
 		LOGGER.info(" > serving...");
 		// sleep
 		if (simulateProgress) {
 			sleep(Duration.ofSeconds(1));
 		}
-		pizza.updateState(State.READY);
-		notifySubscribers();
+
+		/*
+		 * Hier Observer benachrichtigen
+		 */
 	}
 
 	void logConsumedIngredients(Pizza pizza) {
@@ -97,23 +94,4 @@ public class PizzaPreparationTask implements Runnable, Publisher<PizzaStateChang
 		}
 	}
 
-	@Override
-	public void subscribe(Subscriber<PizzaStateChange> subscriber) {
-		this.subscribers.add(subscriber);
-	}
-
-	@Override
-	public void unsubscribe(Subscriber<PizzaStateChange> subscriber) {
-		this.subscribers.remove(subscriber);
-	}
-
-	@Override
-	public void notifySubscribers() {
-		final PizzaStateChange next = PizzaStateChange.of(this.pizza);
-		this.subscribers.forEach(s -> s.update(next));
-		// clear all subscriptions when task is done
-		if (next.getState() == State.READY) {
-			this.subscribers.clear();
-		}
-	}
 }
