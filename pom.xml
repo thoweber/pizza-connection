@@ -121,7 +121,10 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.2.5</version>
 				<configuration>
-					<argLine>${surefireArgLine}</argLine>
+					<argLine>
+						${surefireArgLine}
+						-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+					</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -136,7 +139,10 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
-							<argLine>${failsafeArgLine}</argLine>
+							<argLine>
+								${failsafeArgLine}
+								-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+							</argLine>
 						</configuration>
 					</execution>
 				</executions>
