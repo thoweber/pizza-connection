@@ -23,7 +23,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InOrder;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -112,7 +111,7 @@ class PizzaServiceTest {
 		pizzaService.order(menuItem, style);
 		// then
 		verify(sicilianPizzaFactory, times(1)).createPizza(menuItem);
-		verifyZeroInteractions(gourmetPizzaFactory);
+		verify(gourmetPizzaFactory, never()).createPizza(any());
 	}
 
 	@Test
@@ -124,7 +123,7 @@ class PizzaServiceTest {
 		pizzaService.order(menuItem, style);
 		// then
 		verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
-		verifyZeroInteractions(sicilianPizzaFactory);
+		verify(gourmetPizzaFactory, never()).createPizza(any());
 	}
 
 }
