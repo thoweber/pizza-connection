@@ -4,7 +4,7 @@ public enum FoodStyle {
 
 	SICILIAN("sicilian"),
   GOURMET("gourmet");
-	
+
 	private final String name;
 	
 	FoodStyle(String name) {
