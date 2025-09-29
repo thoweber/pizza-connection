@@ -6,6 +6,7 @@ import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
@@ -39,7 +40,7 @@ public class PizzaService {
   public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
     Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
     // speicher die Pizza im Repository
-    this.pizzaRepository.saveOrUpdate(pizza);
+    pizzaRepository.saveOrUpdate(pizza);
 
     LOGGER.info("Received new order for {}", pizza.name());
     /*
@@ -59,7 +60,15 @@ public class PizzaService {
 
   public void shutdown() {
     LOGGER.info("The PizzaKitchen is closing now. Pizza in progress will be finished though...");
-    this.pizzaKitchen.shutdown();
+    pizzaKitchen.shutdown();
+    try {
+      if (!pizzaKitchen.awaitTermination(60, TimeUnit.SECONDS)) {
+        pizzaKitchen.shutdownNow();
+      }
+    } catch (InterruptedException ex) {
+      pizzaKitchen.shutdownNow();
+      Thread.currentThread().interrupt();
+    }
   }
 
   public static Builder builder() {

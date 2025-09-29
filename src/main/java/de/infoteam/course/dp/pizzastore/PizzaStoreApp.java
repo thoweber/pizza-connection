@@ -5,6 +5,7 @@ import static de.infoteam.course.dp.pizzastore.Console.prompt;
 import static de.infoteam.course.dp.pizzastore.Console.showBanner;
 
 import de.infoteam.course.dp.pizzastore.controller.ConsumedIngredientsResponse;
+import de.infoteam.course.dp.pizzastore.controller.PizzaController;
 import de.infoteam.course.dp.pizzastore.controller.PizzaOrderRequest;
 import de.infoteam.course.dp.pizzastore.controller.PizzaOrderResponse;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -32,6 +34,7 @@ public final class PizzaStoreApp implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaStoreApp.class);
 	private final AtomicBoolean running = new AtomicBoolean(true);
+	private final PizzaController pizzaController;
 
 	// Spring Application Context --> wird zum Stoppen der Anwendung benötigt
 	private ApplicationContext appContext;
@@ -42,8 +45,9 @@ public final class PizzaStoreApp implements CommandLineRunner {
 	private final String orderPizzaRoute = "/order";
 	private final String consumedIngredientsRoute = "/consumed-ingredients";
 
-	public PizzaStoreApp(ApplicationContext appContext) {
+	public PizzaStoreApp(ApplicationContext appContext, PizzaController pizzaController) {
 		this.appContext = appContext;
+		this.pizzaController = pizzaController;
 		this.restTemplate = new RestTemplate();
 	}
 
@@ -58,6 +62,9 @@ public final class PizzaStoreApp implements CommandLineRunner {
 				prompt("Press enter...");
 			}));
 		}
+
+		println("The kitchen is now closing... Pending orders will be finished...");
+		this.pizzaController.closeKitchen();
 
 		println("Store is closed.");
 
