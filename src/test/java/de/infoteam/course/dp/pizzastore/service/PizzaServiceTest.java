@@ -123,7 +123,7 @@ class PizzaServiceTest {
 		pizzaService.order(menuItem, style);
 		// then
 		verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
-		verify(gourmetPizzaFactory, never()).createPizza(any());
+		verify(sicilianPizzaFactory, never()).createPizza(any());
 	}
 
 }
