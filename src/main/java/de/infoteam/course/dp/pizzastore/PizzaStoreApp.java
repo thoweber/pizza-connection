@@ -19,7 +19,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * the PizzaStore order console.
@@ -31,21 +30,14 @@ public final class PizzaStoreApp implements CommandLineRunner {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PizzaStoreApp.class);
 	private final AtomicBoolean running = new AtomicBoolean(true);
-	private final PizzaController pizzaController;
+	private final PizzaControllerProxy pizzaControllerProxy;
 
 	// Spring Application Context --> wird zum Stoppen der Anwendung benötigt
 	private ApplicationContext appContext;
 
-	/* REST Konstanten */
-	private final RestTemplate restTemplate;
-	private final String serverAddress = "http://localhost:8080";
-	private final String orderPizzaRoute = "/order";
-	private final String consumedIngredientsRoute = "/consumed-ingredients";
-
-	public PizzaStoreApp(ApplicationContext appContext, PizzaController pizzaController) {
+	public PizzaStoreApp(ApplicationContext appContext, PizzaControllerProxy pizzaControllerProxy) {
 		this.appContext = appContext;
-		this.pizzaController = pizzaController;
-		this.restTemplate = new RestTemplate();
+		this.pizzaControllerProxy = pizzaControllerProxy;
 	}
 
 	@Override
@@ -54,20 +46,23 @@ public final class PizzaStoreApp implements CommandLineRunner {
 		while (running.get()) {
 			showBanner();
 			askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem).ifPresent(pizzaStyle -> {
-				PizzaOrderResponse response = orderPizza(selectedItem, pizzaStyle);
+				PizzaOrderResponse response = pizzaControllerProxy.order(new PizzaOrderRequest()
+						.setMenuItem(selectedItem).setPizzaStyle(pizzaStyle));
 				println("Received order #" + response.getId() + " " + response.getFullName());
+				println(pizzaControllerProxy.queue().size() + " pizzas are currently in queue");
+				println();
 				prompt("Press enter...");
 			}));
 		}
 
 		println("The kitchen is now closing... Pending orders will be finished...");
-		this.pizzaController.closeKitchen();
+		this.pizzaControllerProxy.closeKitchen();
 
 		println("Store is closed.");
 
 		println("===================================");
 		println("Consumed Ingredients:");
-		printShoppingList(consumedIngredients());
+		printShoppingList(pizzaControllerProxy.consumedIngredients());
 
 		// Stoppt die Spring Anwendung
 		SpringApplication.exit(appContext, () -> 0);
@@ -128,16 +123,4 @@ public final class PizzaStoreApp implements CommandLineRunner {
 		return Optional.empty();
 	}
 
-	/*
-	 * REST-bezogene Methoden
-	 */
-	private PizzaOrderResponse orderPizza(MenuItem selectedItem, PizzaStyle pizzaStyle) {
-		PizzaOrderRequest request = new PizzaOrderRequest().setMenuItem(selectedItem).setPizzaStyle(pizzaStyle);
-		return restTemplate.postForEntity(serverAddress + orderPizzaRoute, request, PizzaOrderResponse.class).getBody();
-	}
-
-	private ConsumedIngredientsResponse consumedIngredients() {
-		return restTemplate.getForEntity(serverAddress + consumedIngredientsRoute, ConsumedIngredientsResponse.class)
-				.getBody();
-	}
 }
