@@ -117,8 +117,8 @@ class PizzaServiceTest {
 		// when
 		pizzaService.order(menuItem, style);
 		// then
-		verify(sicilianPizzaFactory, times(1)).createPizza(menuItem);
-		verify(gourmetPizzaFactory, never()).createPizza(any());
+		verify(sicilianPizzaFactory, times(1)).createPizza(eq(menuItem), anyLong());
+		verify(gourmetPizzaFactory, never()).createPizza(any(), anyLong());
 	}
 
 	@Test
@@ -129,8 +129,8 @@ class PizzaServiceTest {
 		// when
 		pizzaService.order(menuItem, style);
 		// then
-		verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
-		verify(sicilianPizzaFactory, never()).createPizza(any());
+		verify(gourmetPizzaFactory, times(1)).createPizza(eq(menuItem), anyLong());
+		verify(sicilianPizzaFactory, never()).createPizza(any(), anyLong());
 	}
 
   @Test
