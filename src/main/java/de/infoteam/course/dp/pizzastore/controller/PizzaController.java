@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.State;
 import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.*;
 import org.slf4j.Logger;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class PizzaController {
@@ -47,14 +51,18 @@ public class PizzaController {
 	    return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
 
-	/*
-	 * Schaffe unter "/queue" eine Schnittstelle für alle in Bearbeitung
-	 * befindlichen Pizzen.
-	 * Die relevanten Informationen erhältst du aus dem PizzaRepository.
-	 */
+	@GetMapping("/queue")
+	public List<PizzaResponse> queue() {
+		return this.pizzaRepository.findAll().stream().filter(p -> p.getState() != State.READY).map(this::toPizzaResponse)
+				.collect(Collectors.toList());
+	}
 
-	/*
-	 * Schaffe unter "/pick-up" eine Schnittstelle für alle fertigen Bestellungen.
-	 * Die relevanten Informationen erhältst du aus dem PizzaRepository.
-	 */
+	@GetMapping("/pick-up")
+	public List<PizzaResponse> pickUp() {
+		return this.pizzaRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse).collect(Collectors.toList());
+	}
+
+	private PizzaResponse toPizzaResponse(Pizza pizza) {
+		return new PizzaResponse().setId(pizza.getId()).setName(pizza.name()).setState(pizza.getState());
+	}
 }

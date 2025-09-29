@@ -13,7 +13,7 @@ import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PizzaService {
+public class PizzaService implements Subscriber<PizzaStateChange> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
@@ -39,15 +39,13 @@ public class PizzaService {
 
   public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
     Pizza pizza = chooseFactory(selectedStyle).createPizza(selectedItem, orderIdSequence.incrementAndGet());
-    // speicher die Pizza im Repository
     pizzaRepository.saveOrUpdate(pizza);
 
     LOGGER.info("Received new order for {}", pizza.name());
-    /*
-     * Pizza wird asynchron in der Pizzaküche fertiggestellt. Klinke hier einen
-     * Observer ein, der die Nachrichten für die REST-Schnittstellen entgegennimmt.
-     */
-    pizzaKitchen.submit(new PizzaPreparationTask(pizza, ingredientLogger));
+
+    PizzaPreparationTask task =	new PizzaPreparationTask(pizza, ingredientLogger);
+    task.subscribe(this);
+    pizzaKitchen.submit(task);
     return pizza;
   }
 
@@ -56,6 +54,15 @@ public class PizzaService {
       case SICILIAN -> this.sicilianPizzaFactory;
       case GOURMET -> this.gourmetPizzaFactory;
     };
+  }
+
+  @Override
+  public void update(PizzaStateChange context) {
+    LOGGER.info("Receiving update {} {}", context.getPizzaId(), context.getState());
+    this.pizzaRepository.findById(context.getPizzaId()).ifPresent(pizza -> {
+      pizza.updateState(context.getState());
+      this.pizzaRepository.saveOrUpdate(pizza);
+    });
   }
 
   public void shutdown() {
