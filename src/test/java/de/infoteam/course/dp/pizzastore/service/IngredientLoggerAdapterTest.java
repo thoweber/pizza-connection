@@ -1,4 +1,4 @@
-package de.infoteam.course.dp.pizzastore.adapter;
+package de.infoteam.course.dp.pizzastore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,8 +7,6 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MontereyJackChe
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.HandTossedDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
-import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
-import de.infoteam.course.dp.pizzastore.service.IngredientLoggerAdapter;
 import org.junit.jupiter.api.Test;
 
 class IngredientLoggerAdapterTest {
