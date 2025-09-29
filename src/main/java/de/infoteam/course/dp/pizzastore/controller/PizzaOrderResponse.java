@@ -1,12 +1,16 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.model.State;
 
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class PizzaOrderResponse {
 
 	private long id;
 	private String name;
 	private PizzaStyle pizzaStyle;
+	private State state;
 
 	public long getId() {
 		return id;
@@ -39,4 +43,12 @@ public class PizzaOrderResponse {
 		return pizzaStyle.getName() + " " + name;
 	}
 
+	public State getState() {
+		return state;
+	}
+
+	public PizzaOrderResponse setState(State state) {
+		this.state=state;
+		return this;
+	}
 }

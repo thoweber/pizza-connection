@@ -3,6 +3,7 @@ package de.infoteam.course.dp.pizzastore.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.model.State;
 import org.junit.jupiter.api.Test;
 
 class PizzaOrderResponseTest {
@@ -12,12 +13,13 @@ class PizzaOrderResponseTest {
 		// given
 		PizzaOrderResponse response = new PizzaOrderResponse();
 		// when
-		response.setId(42).setName("test").setPizzaStyle(PizzaStyle.GOURMET);
+		response.setId(42).setName("test").setPizzaStyle(PizzaStyle.GOURMET).setState(State.DISH_UP);
 		// then
 		assertEquals(42, response.getId());
 		assertEquals("test", response.getName());
 		assertEquals(PizzaStyle.GOURMET, response.getPizzaStyle());
 		assertEquals("gourmet test", response.getFullName());
+		assertEquals(State.DISH_UP, response.getState());
 	}
 
 }
