@@ -5,9 +5,10 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 
 public abstract class AbstractPizza implements Pizza {
 
-  private final long id;
-  private Dough dough;
-  private Sauce sauce;
+	private final long id;
+	private State state = State.QUEUED;
+	private Dough dough;
+	private Sauce sauce;
 
   protected AbstractPizza(long id, Dough dough, Sauce sauce) {
     this.id = id;
@@ -19,11 +20,23 @@ public abstract class AbstractPizza implements Pizza {
     return this.id;
   }
 
-  protected Dough getDough() {
-    return dough;
-  }
+	public State getState() {
+		return this.state;
+	}
 
-  protected Sauce getSauce() {
-    return sauce;
-  }
+	public void updateState(State newState) {
+		if (newState == null || newState.ordinal() < state.ordinal()) {
+			throw new IllegalArgumentException("State " + state + " cannot be updated to " + newState);
+		}
+		this.state = newState;
+	}
+
+	protected Dough getDough() {
+		return dough;
+	}
+	
+	protected Sauce getSauce() {
+		return sauce;
+	}
+	
 }

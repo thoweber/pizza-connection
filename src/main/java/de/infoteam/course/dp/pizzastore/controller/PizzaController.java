@@ -37,4 +37,13 @@ public class PizzaController {
 	public ConsumedIngredientsResponse consumedIngredients() {
 	    return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
+
+	/*
+	 * Schaffe unter "/queue" eine Schnittstelle für alle in Bearbeitung
+	 * befindlichen Pizzen.
+	 */
+
+	/*
+	 * Schaffe unter "/pick-up" eine Schnittstelle für alle fertigen Bestellungen.
+	 */
 }
