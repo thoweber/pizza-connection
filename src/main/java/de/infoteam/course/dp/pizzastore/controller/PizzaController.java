@@ -1,10 +1,7 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
 import de.infoteam.course.dp.pizzastore.model.Pizza;
-import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
-import de.infoteam.course.dp.pizzastore.service.PizzaService;
-import de.infoteam.course.dp.pizzastore.service.GourmetPizzaFactory;
-import de.infoteam.course.dp.pizzastore.service.SicilianPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +35,6 @@ public class PizzaController {
 
 	@GetMapping("/consumed-ingredients")
 	public ConsumedIngredientsResponse consumedIngredients() {
-		/*
-		 * REST-Schnittstelle zum Abrufen der verbrauchten Zutaten erstellen.
-		 * Verwende das Adapter-Pattern
-		 */
-		return null;
+	    return ConsumedIngredientsResponse.of(new IngredientLoggerAdapter(ingredientLogger));
 	}
-}
+	}
