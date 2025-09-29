@@ -1,6 +1,7 @@
 package de.infoteam.course.dp.pizzastore.controller;
 
 import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.repository.PizzaRepository;
 import de.infoteam.course.dp.pizzastore.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,16 @@ public class PizzaController {
 	private PizzaService pizzaService;
 	private IngredientLogger ingredientLogger;
 
-	public PizzaController() {
+	public PizzaController(PizzaRepository pizzaRepository) {
 		this.ingredientLogger = new IngredientLogger();
 		this.pizzaService = PizzaService.builder().gourmetFactory(new GourmetPizzaFactory())
-				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger).build();
+				.sicilianFactory(new SicilianPizzaFactory()).ingredientLogger(ingredientLogger)
+				.pizzaRepository(pizzaRepository).numberOfChefs(2)
+				.build();
+	}
+
+	public void closeKitchen() {
+		this.pizzaService.shutdown();
 	}
 
 	@PostMapping("/order")
