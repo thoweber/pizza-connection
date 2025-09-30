@@ -4,41 +4,41 @@ import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.Pizza;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
-import java.util.StringJoiner;
-import org.slf4j.Logger;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PizzaService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	private final PizzaFactory sicilianPizzaFactory;
-	private final PizzaFactory gourmetPizzaFactory;
+  private final PizzaFactory sicilianPizzaFactory;
+  private final PizzaFactory gourmetPizzaFactory;
 
-	public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
-		this.sicilianPizzaFactory = sicilianPizzaFactory;
-		this.gourmetPizzaFactory = gourmetPizzaFactory;
-	}
+  public PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
+    this.sicilianPizzaFactory = sicilianPizzaFactory;
+    this.gourmetPizzaFactory = gourmetPizzaFactory;
+  }
 
-	public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
-		var pizza = chooseFactory(selectedStyle).createPizza(selectedItem);;
-		LOGGER.info("Received new order for {}", pizza.name());
-		preparePizza(pizza);
-		bakePizza(pizza);
-		servePizza(pizza);
-		return pizza;
-	}
+  public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
+    var pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
+    ;
+    LOGGER.info("Received new order for {}", pizza.name());
+    preparePizza(pizza);
+    bakePizza(pizza);
+    servePizza(pizza);
+    return pizza;
+  }
 
-	private PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
-		return switch (selectedStyle) {
-			case SICILIAN -> this.sicilianPizzaFactory;
-			case GOURMET -> this.gourmetPizzaFactory;
-		};
-	}
+  private PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
+    return switch (selectedStyle) {
+      case SICILIAN -> this.sicilianPizzaFactory;
+      case GOURMET -> this.gourmetPizzaFactory;
+    };
+  }
 
-	void preparePizza(Pizza pizza) {
-		pizza.addIngredients();
+  void preparePizza(Pizza pizza) {
+    pizza.addIngredients();
 
     // output ingredients to log
     var ingredients =

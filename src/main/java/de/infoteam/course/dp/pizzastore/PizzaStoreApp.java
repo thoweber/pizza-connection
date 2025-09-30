@@ -1,5 +1,10 @@
 package de.infoteam.course.dp.pizzastore;
 
+import de.infoteam.course.dp.pizzastore.model.MenuItem;
+import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
+import de.infoteam.course.dp.pizzastore.service.GourmetPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.PizzaService;
+import de.infoteam.course.dp.pizzastore.service.SicilianPizzaFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,15 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
-
-import de.infoteam.course.dp.pizzastore.service.GourmetPizzaFactory;
-import de.infoteam.course.dp.pizzastore.service.SicilianPizzaFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.infoteam.course.dp.pizzastore.model.MenuItem;
-import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
-import de.infoteam.course.dp.pizzastore.service.PizzaService;
 
 /**
  * the PizzaStore application.
@@ -36,8 +34,11 @@ public final class PizzaStoreApp {
 
     while (RUNNING.get()) {
       showBanner();
-      askForOrder().ifPresent(selectedItem -> chooseStyle(selectedItem)
-              .ifPresent(pizzaStyle -> pizzaService.order(selectedItem, pizzaStyle)));
+      askForOrder()
+          .ifPresent(
+              selectedItem ->
+                  chooseStyle(selectedItem)
+                      .ifPresent(pizzaStyle -> pizzaService.order(selectedItem, pizzaStyle)));
     }
 
     println("Store is closed.");
@@ -46,7 +47,8 @@ public final class PizzaStoreApp {
   private static Optional<MenuItem> askForOrder() {
     println();
     println("Our menu for today:");
-    Stream.of(MenuItem.values()).forEach(menu -> println((menu.ordinal() + 1) + "\t" + menu.getName()));
+    Stream.of(MenuItem.values())
+        .forEach(menu -> println((menu.ordinal() + 1) + "\t" + menu.getName()));
     println("q\tto quit the app");
     println();
     String choice = readConsoleInput();
@@ -55,13 +57,15 @@ public final class PizzaStoreApp {
 
   private static Optional<PizzaStyle> chooseStyle(MenuItem selectedItem) {
     println("Choose your style for " + selectedItem.getName() + ":");
-    Stream.of(PizzaStyle.values()).forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
+    Stream.of(PizzaStyle.values())
+        .forEach(style -> println((style.ordinal() + 1) + "\t" + style.getName()));
     println();
     String choice = readConsoleInput();
     return choiceToEnumValue(choice, PizzaStyle.values(), null);
   }
 
-  static <T extends Enum<T>> Optional<T> choiceToEnumValue(String choice, T[] enumValues, String quit) {
+  static <T extends Enum<T>> Optional<T> choiceToEnumValue(
+      String choice, T[] enumValues, String quit) {
     if (quit != null && quit.equals(choice)) {
       RUNNING.set(false);
       return Optional.empty();

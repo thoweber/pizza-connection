@@ -5,13 +5,13 @@ public enum MenuItem {
   PEPERONI_PIZZA("peperoni pizza"),
   VEGGIE_PIZZA("veggie pizza");
 
-	private final String name;
+  private final String name;
 
-	MenuItem(String name) {
-		this.name = name;
-	}
+  MenuItem(String name) {
+    this.name = name;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 }

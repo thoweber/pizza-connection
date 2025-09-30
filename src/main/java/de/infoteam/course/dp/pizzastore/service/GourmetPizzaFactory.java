@@ -12,21 +12,20 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 
 public class GourmetPizzaFactory implements PizzaFactory {
 
-	@Override
-	public Pizza createPizza(MenuItem selectedItem) {
-		return switch (selectedItem) {
-			case CHEESE_PIZZA -> new CheesePizza(prepareDough(), prepareSauce());
-			case PEPERONI_PIZZA -> new PeperoniPizza(prepareDough(), prepareSauce());
-			case VEGGIE_PIZZA -> new VeggiePizza(prepareDough(), prepareSauce());
-		};
-	}
+  @Override
+  public Pizza createPizza(MenuItem selectedItem) {
+    return switch (selectedItem) {
+      case CHEESE_PIZZA -> new CheesePizza(prepareDough(), prepareSauce());
+      case PEPERONI_PIZZA -> new PeperoniPizza(prepareDough(), prepareSauce());
+      case VEGGIE_PIZZA -> new VeggiePizza(prepareDough(), prepareSauce());
+    };
+  }
 
-	private Dough prepareDough() {
-		return new HandTossedDough();
-	}
+  private Dough prepareDough() {
+    return new HandTossedDough();
+  }
 
-	private Sauce prepareSauce() {
-		return new PremiumTomatoSauce();
-	}
-
+  private Sauce prepareSauce() {
+    return new PremiumTomatoSauce();
+  }
 }

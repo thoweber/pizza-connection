@@ -15,6 +15,7 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,28 +31,26 @@ class PizzaServiceTest {
 
   @Mock Pizza pizza;
 
-  	@Spy
-	SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
-  	@Spy
-	GourmetPizzaFactory gourmetPizzaFactory = new GourmetPizzaFactory();
+  @Spy SicilianPizzaFactory sicilianPizzaFactory = new SicilianPizzaFactory();
+  @Spy GourmetPizzaFactory gourmetPizzaFactory = new GourmetPizzaFactory();
 
-	PizzaService pizzaService;
+  PizzaService pizzaService;
 
-	@BeforeEach
-	void setup() {
-		pizzaService = spy(new PizzaService(sicilianPizzaFactory, gourmetPizzaFactory));
-	}
+  @BeforeEach
+  void setup() {
+    pizzaService = spy(new PizzaService(sicilianPizzaFactory, gourmetPizzaFactory));
+  }
 
-	@Test
-	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
-		// when
-		var pizza = pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
-		// then
-		InOrder inOrder = inOrder(pizzaService);
-		then(pizzaService).should(inOrder).preparePizza(pizza);
-		then(pizzaService).should(inOrder).bakePizza(pizza);
-		then(pizzaService).should(inOrder).servePizza(pizza);
-	}
+  @Test
+  void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
+    // when
+    var pizza = pizzaService.order(MenuItem.CHEESE_PIZZA, PizzaStyle.SICILIAN);
+    // then
+    InOrder inOrder = inOrder(pizzaService);
+    then(pizzaService).should(inOrder).preparePizza(pizza);
+    then(pizzaService).should(inOrder).bakePizza(pizza);
+    then(pizzaService).should(inOrder).servePizza(pizza);
+  }
 
   @Test
   void test_preparePizza_calls_addIngredients() {
@@ -82,46 +81,47 @@ class PizzaServiceTest {
         Arguments.of(MenuItem.VEGGIE_PIZZA, VeggiePizza.class));
   }
 
-	@ParameterizedTest
-	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
-		// when
-		var pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
-		// then
-		assertEquals(expectedPizzaKind, pizza.getClass());
-	}
+  @ParameterizedTest
+  @MethodSource("menuItemPizzaClassSource")
+  void test_order_returns_the_right_kind_of_pizza_SICILIAN_style(
+      MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+    // when
+    var pizza = pizzaService.order(menuItem, PizzaStyle.SICILIAN);
+    // then
+    assertEquals(expectedPizzaKind, pizza.getClass());
+  }
 
-	@ParameterizedTest
-	@MethodSource("menuItemPizzaClassSource")
-	void test_order_returns_the_right_kind_of_pizza_GOURMET_style(MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
-		// when
-		Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
-		// then
-		assertEquals(expectedPizzaKind, pizza.getClass());
-	}
+  @ParameterizedTest
+  @MethodSource("menuItemPizzaClassSource")
+  void test_order_returns_the_right_kind_of_pizza_GOURMET_style(
+      MenuItem menuItem, Class<Pizza> expectedPizzaKind) {
+    // when
+    Pizza pizza = pizzaService.order(menuItem, PizzaStyle.GOURMET);
+    // then
+    assertEquals(expectedPizzaKind, pizza.getClass());
+  }
 
-	@Test
-	void test_chooseFactory_uses_the_SicilianPizzaFactory_for_style_SICILIAN() {
-		// given
-		PizzaStyle style = PizzaStyle.SICILIAN;
-		MenuItem menuItem = MenuItem.VEGGIE_PIZZA;
-		// when
-		pizzaService.order(menuItem, style);
-		// then
-		verify(sicilianPizzaFactory, times(1)).createPizza(menuItem);
-		verify(gourmetPizzaFactory, never()).createPizza(any());
-	}
+  @Test
+  void test_chooseFactory_uses_the_SicilianPizzaFactory_for_style_SICILIAN() {
+    // given
+    PizzaStyle style = PizzaStyle.SICILIAN;
+    MenuItem menuItem = MenuItem.VEGGIE_PIZZA;
+    // when
+    pizzaService.order(menuItem, style);
+    // then
+    verify(sicilianPizzaFactory, times(1)).createPizza(menuItem);
+    verify(gourmetPizzaFactory, never()).createPizza(any());
+  }
 
-	@Test
-	void test_chooseFactory_uses_the_GourmetPizzaFactory_for_style_GOURMET() {
-		// given
-		PizzaStyle style = PizzaStyle.GOURMET;
-		MenuItem menuItem = MenuItem.PEPERONI_PIZZA;
-		// when
-		pizzaService.order(menuItem, style);
-		// then
-		verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
-		verify(sicilianPizzaFactory, never()).createPizza(any());
-	}
-
+  @Test
+  void test_chooseFactory_uses_the_GourmetPizzaFactory_for_style_GOURMET() {
+    // given
+    PizzaStyle style = PizzaStyle.GOURMET;
+    MenuItem menuItem = MenuItem.PEPERONI_PIZZA;
+    // when
+    pizzaService.order(menuItem, style);
+    // then
+    verify(gourmetPizzaFactory, times(1)).createPizza(menuItem);
+    verify(sicilianPizzaFactory, never()).createPizza(any());
+  }
 }
