@@ -4,8 +4,6 @@ import de.infoteam.course.dp.pizzastore.model.AbstractPizza;
 import de.infoteam.course.dp.pizzastore.model.Ingredient;
 import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.Dough;
-import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
-import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -24,8 +22,8 @@ public class CheesePizza extends AbstractPizza {
 
   @Override
   public void addIngredients() {
-    ingredients.add(new ThinCrustyDough());
-    ingredients.add(new PlainTomatoSauce());
+    ingredients.add(getDough());
+    ingredients.add(getSauce());
     ingredients.add(new MozzarellaCheese());
   }
 
