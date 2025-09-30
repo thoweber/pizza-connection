@@ -29,7 +29,7 @@ public class FoodPreparationTask implements Runnable, Publisher<DishStateChange>
 		this.ingredientLogger = ingredientLogger;
 	}
 
-	FoodPreparationTask(Pizza dish, IngredientLogger ingredientLogger, boolean simulateProgress) {
+	FoodPreparationTask(Dish dish, IngredientLogger ingredientLogger, boolean simulateProgress) {
 		this(dish, ingredientLogger);
 		this.simulateProgress = simulateProgress;
 	}
