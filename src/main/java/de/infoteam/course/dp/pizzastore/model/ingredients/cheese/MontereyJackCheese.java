@@ -4,11 +4,10 @@ import de.infoteam.course.dp.pizzastore.model.Ingredient;
 
 public class MontereyJackCheese implements Ingredient {
 
-	private static final String NAME = "Monterey Jack";
+  private static final String NAME = "Monterey Jack";
 
-	@Override
-	public String name() {
-		return MontereyJackCheese.NAME;
-	}
-
+  @Override
+  public String name() {
+    return MontereyJackCheese.NAME;
+  }
 }

@@ -14,40 +14,38 @@ import java.util.Collections;
 import java.util.List;
 
 public class VeggiePizza implements Pizza {
-	
-	private static final String NAME = "veggie pizza";
 
-	private final List<Ingredient> ingredients = new ArrayList<>();
+  private static final String NAME = "veggie pizza";
 
-	@Override
-	public void addIngredients() {
-		this.ingredients.add(new ThinCrustyDough());
-		this.ingredients.add(new PlainTomatoSauce());
-		this.ingredients.add(new MozzarellaCheese());
-		this.ingredients.add(new TomatoTopping());
-		this.ingredients.add(new ArtichokeTopping());
-		this.ingredients.add(new OliveTopping());
-	}
+  private final List<Ingredient> ingredients = new ArrayList<>();
 
-	@Override
-	public List<Ingredient> getIngredients() {
-		return Collections.unmodifiableList(this.ingredients);
-	}
+  @Override
+  public void addIngredients() {
+    ingredients.add(new ThinCrustyDough());
+    ingredients.add(new PlainTomatoSauce());
+    ingredients.add(new MozzarellaCheese());
+    ingredients.add(new TomatoTopping());
+    ingredients.add(new ArtichokeTopping());
+    ingredients.add(new OliveTopping());
+  }
 
+  @Override
+  public List<Ingredient> getIngredients() {
+    return Collections.unmodifiableList(this.ingredients);
+  }
 
-	@Override
-	public Duration getBakingDuration() {
-		return Duration.ofMinutes(8);
-	}
+  @Override
+  public Duration getBakingDuration() {
+    return Duration.ofMinutes(8);
+  }
 
-	@Override
-	public int getBakingTemperature() {
-		return 300;
-	}
+  @Override
+  public int getBakingTemperature() {
+    return 300;
+  }
 
-	@Override
-	public String name() {
-		return VeggiePizza.NAME;
-	}
-	
+  @Override
+  public String name() {
+    return VeggiePizza.NAME;
+  }
 }

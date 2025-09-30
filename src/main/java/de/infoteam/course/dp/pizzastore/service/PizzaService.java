@@ -11,20 +11,20 @@ public class PizzaService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PizzaService.class);
 
-	private final PizzaFactory pizzaFactory;
+  private final PizzaFactory pizzaFactory;
 
-	public PizzaService(PizzaFactory pizzaFactory) {
-		this.pizzaFactory = pizzaFactory;
-	}
+  public PizzaService(PizzaFactory pizzaFactory) {
+    this.pizzaFactory = pizzaFactory;
+  }
 
-	public Pizza order(MenuItem selectedItem) {
-		Pizza pizza = pizzaFactory.createPizza(selectedItem);
-		LOGGER.info("Received new order for {}", pizza.name());
-		preparePizza(pizza);
-		bakePizza(pizza);
-		servePizza(pizza);
-		return pizza;
-	}
+  public Pizza order(MenuItem selectedItem) {
+    var pizza = pizzaFactory.createPizza(selectedItem);
+    LOGGER.info("Received new order for {}", pizza.name());
+    preparePizza(pizza);
+    bakePizza(pizza);
+    servePizza(pizza);
+    return pizza;
+  }
 
   void preparePizza(Pizza pizza) {
     pizza.addIngredients();

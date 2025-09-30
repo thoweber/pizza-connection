@@ -12,38 +12,36 @@ import java.util.Collections;
 import java.util.List;
 
 public class PeperoniPizza implements Pizza {
-	
-	private static final String NAME = "peperoni pizza";
 
-	private final List<Ingredient> ingredients = new ArrayList<>();
+  private static final String NAME = "peperoni pizza";
 
-	@Override
-	public void addIngredients() {
-		this.ingredients.add(new ThinCrustyDough());
-		this.ingredients.add(new PlainTomatoSauce());
-		this.ingredients.add(new MontereyJackCheese());
-		this.ingredients.add(new PeperoniTopping());
-	}
+  private final List<Ingredient> ingredients = new ArrayList<>();
 
-	@Override
-	public List<Ingredient> getIngredients() {
-		return Collections.unmodifiableList(this.ingredients);
-	}
+  @Override
+  public void addIngredients() {
+    ingredients.add(new ThinCrustyDough());
+    ingredients.add(new PlainTomatoSauce());
+    ingredients.add(new MontereyJackCheese());
+    ingredients.add(new PeperoniTopping());
+  }
 
+  @Override
+  public List<Ingredient> getIngredients() {
+    return Collections.unmodifiableList(ingredients);
+  }
 
-	@Override
-	public Duration getBakingDuration() {
-		return Duration.ofMinutes(7);
-	}
+  @Override
+  public Duration getBakingDuration() {
+    return Duration.ofMinutes(7);
+  }
 
-	@Override
-	public int getBakingTemperature() {
-		return 315;
-	}
+  @Override
+  public int getBakingTemperature() {
+    return 315;
+  }
 
-	@Override
-	public String name() {
-		return PeperoniPizza.NAME;
-	}
-	
+  @Override
+  public String name() {
+    return PeperoniPizza.NAME;
+  }
 }
