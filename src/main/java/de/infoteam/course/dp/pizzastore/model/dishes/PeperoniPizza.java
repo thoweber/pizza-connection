@@ -17,8 +17,8 @@ public class PeperoniPizza extends AbstractPizza {
 
   private final List<Ingredient> ingredients = new ArrayList<>();
 
-  public PeperoniPizza(Dough dough, Sauce sauce) {
-    super(dough, sauce);
+  public PeperoniPizza(long id, Dough dough, Sauce sauce) {
+    super(id, dough, sauce);
   }
 
   @Override

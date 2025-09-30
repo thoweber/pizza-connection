@@ -16,5 +16,5 @@ public interface PizzaFactory {
    * @param selectedItem the selected {@code MenuItem}
    * @return the {@code Pizza}
    */
-  Pizza createPizza(MenuItem selectedItem);
+  Pizza createPizza(MenuItem selectedItem, long id);
 }

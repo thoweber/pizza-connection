@@ -26,6 +26,6 @@ class PizzaStoreAppTest {
   @MethodSource("choiceToEnumValueSource")
   void test_choiceToEnumValue(String choice, MenuItem expected) {
     assertEquals(
-        expected, PizzaStoreApp.choiceToEnumValue(choice, MenuItem.values(), "q").orElse(null));
+        expected, new PizzaStoreApp(null).choiceToEnumValue(choice, MenuItem.values(), "q").orElse(null));
   }
 }

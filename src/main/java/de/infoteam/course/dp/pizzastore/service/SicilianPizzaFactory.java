@@ -13,11 +13,11 @@ import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.Sauce;
 public class SicilianPizzaFactory implements PizzaFactory {
 
   @Override
-  public Pizza createPizza(MenuItem selectedItem) {
+  public Pizza createPizza(MenuItem selectedItem, long id) {
     return switch (selectedItem) {
-      case CHEESE_PIZZA -> new CheesePizza(prepareDough(), prepareSauce());
-      case PEPERONI_PIZZA -> new PeperoniPizza(prepareDough(), prepareSauce());
-      case VEGGIE_PIZZA -> new VeggiePizza(prepareDough(), prepareSauce());
+      case CHEESE_PIZZA -> new CheesePizza(id, prepareDough(), prepareSauce());
+      case PEPERONI_PIZZA -> new PeperoniPizza(id, prepareDough(), prepareSauce());
+      case VEGGIE_PIZZA -> new VeggiePizza(id, prepareDough(), prepareSauce());
     };
   }
 
