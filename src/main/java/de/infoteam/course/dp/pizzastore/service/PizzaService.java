@@ -14,10 +14,12 @@ public class PizzaService {
 
   private final PizzaFactory sicilianPizzaFactory;
   private final PizzaFactory gourmetPizzaFactory;
+	private final IngredientLogger ingredientLogger;
 
-	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory) {
+	private PizzaService(PizzaFactory sicilianPizzaFactory, PizzaFactory gourmetPizzaFactory, IngredientLogger ingredientLogger) {
 		this.sicilianPizzaFactory = sicilianPizzaFactory;
 		this.gourmetPizzaFactory = gourmetPizzaFactory;
+		this.ingredientLogger = ingredientLogger;
 	}
 
   public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
@@ -27,8 +29,13 @@ public class PizzaService {
     preparePizza(pizza);
     bakePizza(pizza);
     servePizza(pizza);
+		logConsumedIngredients(pizza);
     return pizza;
   }
+
+	private void logConsumedIngredients(Pizza pizza) {
+		pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
+	}
 
   private PizzaFactory chooseFactory(PizzaStyle selectedStyle) {
     return switch (selectedStyle) {
@@ -70,6 +77,7 @@ public class PizzaService {
 
 		private PizzaFactory sicilianFactory;
 		private PizzaFactory gourmetFactory;
+		private IngredientLogger ingredientLogger;
 
 		/*
 		 * sicherstellen, dass der Builder nur über die statische Methode in {@code
@@ -89,44 +97,8 @@ public class PizzaService {
 			return this;
 		}
 
-		public PizzaService build() {
-			if (this.sicilianFactory == null) {
-				throw new IllegalStateException("A Sicilian PizzaFactory is required");
-			}
-			if (this.gourmetFactory == null) {
-				throw new IllegalStateException("A Gourmet PizzaFactory is required");
-			}
-			return new PizzaService(sicilianFactory, gourmetFactory);
-		}
-	}
-
-	public static Builder builder() {
-		return new Builder();
-	}
-
-	/**
-	 * Builder für {@code PizzaService}
-	 */
-	public static final class Builder {
-
-		private PizzaFactory sicilianFactory;
-		private PizzaFactory gourmetFactory;
-
-		/*
-		 * sicherstellen, dass der Builder nur über die statische Methode in {@code
-		 * PizzaService} erzeugt wird.
-		 */
-		private Builder() {
-			super();
-		}
-
-		public Builder sicilianFactory(SicilianPizzaFactory sicilianFactory) {
-			this.sicilianFactory = sicilianFactory;
-			return this;
-		}
-
-		public Builder gourmetFactory(GourmetPizzaFactory gourmetFactory) {
-			this.gourmetFactory = gourmetFactory;
+		public Builder ingredientLogger(IngredientLogger ingredientLogger) {
+			this.ingredientLogger = ingredientLogger;
 			return this;
 		}
 
@@ -137,7 +109,10 @@ public class PizzaService {
 			if (this.gourmetFactory == null) {
 				throw new IllegalStateException("A Gourmet PizzaFactory is required");
 			}
-			return new PizzaService(sicilianFactory, gourmetFactory);
+			if (this.ingredientLogger == null) {
+				throw new IllegalStateException("An IngredientLogger is required");
+			}
+			return new PizzaService(sicilianFactory, gourmetFactory, ingredientLogger);
 		}
 	}
 

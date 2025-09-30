@@ -3,6 +3,7 @@ package de.infoteam.course.dp.pizzastore;
 import de.infoteam.course.dp.pizzastore.model.MenuItem;
 import de.infoteam.course.dp.pizzastore.model.PizzaStyle;
 import de.infoteam.course.dp.pizzastore.service.GourmetPizzaFactory;
+import de.infoteam.course.dp.pizzastore.service.IngredientLogger;
 import de.infoteam.course.dp.pizzastore.service.PizzaService;
 import de.infoteam.course.dp.pizzastore.service.SicilianPizzaFactory;
 import java.io.BufferedReader;
