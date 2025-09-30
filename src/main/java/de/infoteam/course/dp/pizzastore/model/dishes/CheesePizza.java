@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CheesePizza extends AbstractPizza {
 
-	private static final String NAME = "cheese pizza (formerly known as default)";
+  private static final String NAME = "cheese pizza (formerly known as default)";
 
 	private final List<Ingredient> ingredients = new ArrayList<>();
 
@@ -47,9 +47,8 @@ public class CheesePizza extends AbstractPizza {
 		return 337;
 	}
 
-	@Override
-	public String name() {
-		return CheesePizza.NAME;
-	}
-	
+  @Override
+  public String name() {
+    return CheesePizza.NAME;
+  }
 }

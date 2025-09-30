@@ -5,12 +5,12 @@ import de.infoteam.course.dp.pizzastore.model.Pizza;
 
 public class ConcretePizzaFactory implements PizzaFactory {
 
-	@Override
-	public Pizza createPizza(MenuItem selectedItem) {
-		/*
-		 * Ersetze den Code dieser Methode durch deine Factory-Implementierung
-		 */
-		return null;
-	}
-
+  @Override
+  public Pizza createPizza(MenuItem selectedItem) {
+    /*
+     * Ersetze den Code dieser Methode durch deine Factory-Implementierung
+     */
+    throw new UnsupportedOperationException(
+        "Ersetze den Code dieser Methode durch deine Factory-Implementierung");
+  }
 }
