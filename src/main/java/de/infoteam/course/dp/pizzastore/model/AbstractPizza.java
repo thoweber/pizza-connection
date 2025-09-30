@@ -31,17 +31,6 @@ public abstract class AbstractPizza implements Pizza {
 		this.state = newState;
 	}
 
-	public State getState() {
-		return this.state;
-	}
-
-	public void updateState(State newState) {
-		if (newState == null || newState.ordinal() < state.ordinal()) {
-			throw new IllegalArgumentException("State " + state + " cannot be updated to " + newState);
-		}
-		this.state = newState;
-	}
-
 	protected Dough getDough() {
 		return dough;
 	}
