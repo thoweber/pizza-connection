@@ -25,7 +25,7 @@ public class PizzaService {
 		/*
 		 * Richtige Factory für bestellte Pizza auswählen und Pizza erzeugen
 		 */
-		var pizza = null;
+		Pizza pizza = null;
 
 		LOGGER.info("Received new order for {}", pizza.name());
 		preparePizza(pizza);
