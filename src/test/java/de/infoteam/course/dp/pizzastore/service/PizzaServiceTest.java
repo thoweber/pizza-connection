@@ -17,44 +17,41 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PizzaServiceTest {
-	
-	@Mock
-	Pizza pizza;
-	
-	@Spy
-	PizzaService pizzaService = new PizzaService();
 
-	@Test
-	void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
-		// when
-		var pizza = pizzaService.order();
-		// then
-		InOrder inOrder = inOrder(pizzaService);
-		then(pizzaService).should(inOrder).preparePizza(pizza);
-		then(pizzaService).should(inOrder).bakePizza(pizza);
-		then(pizzaService).should(inOrder).servePizza(pizza);
-	}
-	
-	@Test
-	void test_preparePizza_calls_addIngredients() {
-		// given
-		given(pizza.getIngredients()).willReturn(List.of(new ThinCrustyDough()));
-		// when
-		pizzaService.preparePizza(pizza);
-		// then
-		then(pizza).should().addIngredients();
-	}
-	
-	@Test
-	void test_bakePizza_accesses_baking_information_from_pizza() {
-		// given
-		given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
-		given(pizza.getBakingTemperature()).willReturn(250);
-		// when
-		pizzaService.bakePizza(pizza);
-		// then
-		then(pizza).should().getBakingDuration();
-		then(pizza).should().getBakingTemperature();
-	}
+  @Mock Pizza pizza;
 
+  @Spy PizzaService pizzaService = new PizzaService();
+
+  @Test
+  void test_order_calls_preparePizza_bakePizza_servePizza_in_order() {
+    // when
+    var pizza = pizzaService.order();
+    // then
+    InOrder inOrder = inOrder(pizzaService);
+    then(pizzaService).should(inOrder).preparePizza(pizza);
+    then(pizzaService).should(inOrder).bakePizza(pizza);
+    then(pizzaService).should(inOrder).servePizza(pizza);
+  }
+
+  @Test
+  void test_preparePizza_calls_addIngredients() {
+    // given
+    given(pizza.getIngredients()).willReturn(List.of(new ThinCrustyDough()));
+    // when
+    pizzaService.preparePizza(pizza);
+    // then
+    then(pizza).should().addIngredients();
+  }
+
+  @Test
+  void test_bakePizza_accesses_baking_information_from_pizza() {
+    // given
+    given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
+    given(pizza.getBakingTemperature()).willReturn(250);
+    // when
+    pizzaService.bakePizza(pizza);
+    // then
+    then(pizza).should().getBakingDuration();
+    then(pizza).should().getBakingTemperature();
+  }
 }

@@ -11,37 +11,35 @@ import java.util.Collections;
 import java.util.List;
 
 public class DefaultPizza implements Pizza {
-	
-	private static final String NAME = "default pizza";
 
-	private final List<Ingredient> ingredients = new ArrayList<>();
+  private static final String NAME = "default pizza";
 
-	@Override
-	public void addIngredients() {
-		this.ingredients.add(new ThinCrustyDough());
-		this.ingredients.add(new PlainTomatoSauce());
-		this.ingredients.add(new MozzarellaCheese());
-	}
+  private final List<Ingredient> ingredients = new ArrayList<>();
 
-	@Override
-	public List<Ingredient> getIngredients() {
-		return Collections.unmodifiableList(this.ingredients);
-	}
+  @Override
+  public void addIngredients() {
+    ingredients.add(new ThinCrustyDough());
+    ingredients.add(new PlainTomatoSauce());
+    ingredients.add(new MozzarellaCheese());
+  }
 
+  @Override
+  public List<Ingredient> getIngredients() {
+    return Collections.unmodifiableList(ingredients);
+  }
 
-	@Override
-	public Duration getBakingDuration() {
-		return Duration.ofMinutes(6);
-	}
+  @Override
+  public Duration getBakingDuration() {
+    return Duration.ofMinutes(6);
+  }
 
-	@Override
-	public int getBakingTemperature() {
-		return 337;
-	}
+  @Override
+  public int getBakingTemperature() {
+    return 337;
+  }
 
-	@Override
-	public String name() {
-		return DefaultPizza.NAME;
-	}
-	
+  @Override
+  public String name() {
+    return DefaultPizza.NAME;
+  }
 }
