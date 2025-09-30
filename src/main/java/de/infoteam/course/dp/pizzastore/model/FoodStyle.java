@@ -2,7 +2,8 @@ package de.infoteam.course.dp.pizzastore.model;
 
 public enum FoodStyle {
 
-	SICILIAN("sicilian"), GOURMET("gourmet");
+	SICILIAN("sicilian"),
+  GOURMET("gourmet");
 	
 	private final String name;
 	

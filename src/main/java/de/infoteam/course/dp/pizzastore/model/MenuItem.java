@@ -7,13 +7,13 @@ public enum MenuItem {
   VEGGIE_PIZZA("veggie pizza"),
 	TOMATO_SALAD("tomato salad");
 
-	private final String name;
+  private final String name;
 
-	MenuItem(String name) {
-		this.name = name;
-	}
+  MenuItem(String name) {
+    this.name = name;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 }
