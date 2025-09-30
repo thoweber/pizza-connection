@@ -22,7 +22,7 @@ public class PizzaService {
 
   public Pizza order(MenuItem selectedItem, PizzaStyle selectedStyle) {
     var pizza = chooseFactory(selectedStyle).createPizza(selectedItem);
-    ;
+
     LOGGER.info("Received new order for {}", pizza.name());
     preparePizza(pizza);
     bakePizza(pizza);
