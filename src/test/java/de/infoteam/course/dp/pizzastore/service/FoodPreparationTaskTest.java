@@ -1,65 +1,91 @@
 package de.infoteam.course.dp.pizzastore.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.inOrder;
+import static de.infoteam.course.dp.pizzastore.model.State.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.infoteam.course.dp.pizzastore.model.Pizza;
+import de.infoteam.course.dp.pizzastore.model.Ingredient;
+import de.infoteam.course.dp.pizzastore.model.State;
+import de.infoteam.course.dp.pizzastore.model.dishes.TomatoSalad;
 import de.infoteam.course.dp.pizzastore.model.dishes.VeggiePizza;
+import de.infoteam.course.dp.pizzastore.model.ingredients.cheese.MozzarellaCheese;
 import de.infoteam.course.dp.pizzastore.model.ingredients.dough.ThinCrustyDough;
 import de.infoteam.course.dp.pizzastore.model.ingredients.sauce.PlainTomatoSauce;
-import java.time.Duration;
-import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.ArtichokeTopping;
+import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.OliveTopping;
+import de.infoteam.course.dp.pizzastore.model.ingredients.toppings.TomatoTopping;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class FoodPreparationTaskTest {
-	
-	@Spy
-	Pizza pizza = new VeggiePizza(1, new ThinCrustyDough(), new PlainTomatoSauce());
-	
-	IngredientLogger ingredientLogger = new IngredientLogger();
-	
-	@Spy
-	FoodPreparationTask pizzaChef = new FoodPreparationTask(pizza, ingredientLogger, false);
 
-	@Test
-	void test_run_calls_preparePizza_logIngredients_bakePizza_serveDish_in_order() {
-		// when
-		pizzaChef.run();
-		// then
-		InOrder inOrder = inOrder(pizzaChef);
-		then(pizzaChef).should(inOrder).prepareDish(any());
-		then(pizzaChef).should(inOrder).logConsumedIngredients(any());
-		then(pizzaChef).should(inOrder).bakePizza(any());
-		then(pizzaChef).should(inOrder).serveDish(any());
+	private static final class SubscriberTestDouble implements Subscriber<DishStateChange> {
+
+		private final List<State> stateList = new ArrayList<>();
+
+		@Override
+		public void update(DishStateChange context) {
+			stateList.add(context.getState());
+		}
+
+		public List<State> getStateList() {
+			return stateList;
+		}
+	}
+
+	private void assertIngredients(List<Class<? extends Ingredient>> expectedIngredients, IngredientLogger ingredientLogger) {
+		var consumedIngredients = ingredientLogger.getConsumedIngredients();
+		assertEquals(expectedIngredients.size(), consumedIngredients.size(), "Number of Ingredients do not match");
+		for (var i = 0; i < expectedIngredients.size(); i++) {
+			assertEquals(expectedIngredients.get(i), consumedIngredients.get(i).getClass(), "Ingredient #" + i + " does not match");
+		}
 	}
 
 	@Test
-	void test_prepareDish_calls_addIngredients() {
+	void test_run_changes_states_for_pizza_in_order() {
 		// given
-		given(pizza.getIngredients()).willReturn(Arrays.asList(new ThinCrustyDough()));
+		var ingredientLogger = new IngredientLogger();
+		var foodPreparationTask = new FoodPreparationTask(new VeggiePizza(1, new ThinCrustyDough(), new PlainTomatoSauce()), ingredientLogger, false);
+		var subscriber = new SubscriberTestDouble();
+		foodPreparationTask.subscribe(subscriber);
 		// when
-		pizzaChef.prepareDish(pizza);
+		foodPreparationTask.run();
 		// then
-		then(pizza).should().addIngredients();
+		var states = subscriber.getStateList();
+		assertEquals(IN_PREPARATION, states.get(0));
+		assertEquals(IN_OVEN, states.get(1));
+		assertEquals(DISH_UP, states.get(2));
+		assertEquals(READY, states.get(3));
+
+		var expectedIngredients = List.of(ThinCrustyDough.class, PlainTomatoSauce.class, MozzarellaCheese.class,
+				TomatoTopping.class, ArtichokeTopping.class, OliveTopping.class);
+		assertIngredients(expectedIngredients, ingredientLogger);
 	}
 
 	@Test
-	void test_bakePizza_accesses_baking_information_from_pizza() {
+	void test_run_changes_states_for_salad_in_order() {
 		// given
-		given(pizza.getBakingDuration()).willReturn(Duration.ofMinutes(10));
-		given(pizza.getBakingTemperature()).willReturn(250);
+		var ingredientLogger = new IngredientLogger();
+    var foodPreparationTask =
+        new FoodPreparationTask(
+            new TomatoSalad(2, new ArtichokeTopping(), new MozzarellaCheese()),
+            ingredientLogger,
+            false);
+		var subscriber = new SubscriberTestDouble();
+		foodPreparationTask.subscribe(subscriber);
 		// when
-		pizzaChef.bakePizza(pizza);
+		foodPreparationTask.run();
 		// then
-		then(pizza).should().getBakingDuration();
-		then(pizza).should().getBakingTemperature();
+		var states = subscriber.getStateList();
+		assertEquals(IN_PREPARATION, states.get(0));
+		assertEquals(DISH_UP, states.get(1));
+		assertEquals(READY, states.get(2));
+
+		var expectedIngredients = List.of(TomatoTopping.class, TomatoTopping.class, TomatoTopping.class,
+				ArtichokeTopping.class, MozzarellaCheese.class);
+		assertIngredients(expectedIngredients, ingredientLogger);
 	}
-	
+
 }

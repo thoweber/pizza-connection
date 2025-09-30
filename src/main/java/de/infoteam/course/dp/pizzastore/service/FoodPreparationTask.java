@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import de.infoteam.course.dp.pizzastore.model.Dish;
 import de.infoteam.course.dp.pizzastore.model.State;
+import de.infoteam.course.dp.pizzastore.service.prepchain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,98 +30,29 @@ public class FoodPreparationTask implements Runnable, Publisher<DishStateChange>
 		this.ingredientLogger = ingredientLogger;
 	}
 
-	FoodPreparationTask(Pizza dish, IngredientLogger ingredientLogger, boolean simulateProgress) {
+	FoodPreparationTask(Dish dish, IngredientLogger ingredientLogger, boolean simulateProgress) {
 		this(dish, ingredientLogger);
 		this.simulateProgress = simulateProgress;
 	}
 
 	@Override
 	public void run() {
-		/*
-		 * Dieser Code ist zu abhängig vom Essensangebot. Wir werden das Chain of
-		 * Responsibility Pattern implementieren.
-		 */
-		prepareDish(dish);
-		logConsumedIngredients(dish);
-		if (dish instanceof Pizza) {
-			bakePizza((Pizza) dish);
-		}
-		serveDish(dish);
-	}
-
-	void prepareDish(Dish pizza) {
-		pizza.updateState(State.IN_PREPARATION);
-		notifySubscribers();
-
-		pizza.addIngredients();
-
-		// output ingredients to log
-		StringJoiner joiner = new StringJoiner(", ");
-		pizza.getIngredients().stream().map(Ingredient::name).forEach(joiner::add);
-		LOGGER.info(" > adding ingredients: {}", joiner);
-
-		// sleep
-		if (simulateProgress) {
-			sleep(Duration.ofSeconds(5));
-		}
-	}
-
-	void bakePizza(Pizza pizza) {
-		pizza.updateState(State.IN_OVEN);
-		notifySubscribers();
-
-		// output baking procedure to log
-		LOGGER.info(" > baking for {} minutes at {}° Celsius", pizza.getBakingDuration().toMinutes(),
-				pizza.getBakingTemperature());
-		// sleep
-		if (simulateProgress) {
-			sleep(Duration.ofSeconds(pizza.getBakingDuration().toMinutes() * 3));
-		}
-	}
-
-	void serveDish(Dish pizza) {
-		pizza.updateState(State.DISH_UP);
-		notifySubscribers();
-		// output serving to log
-		LOGGER.info(" > serving...");
-		// sleep
-		if (simulateProgress) {
-			sleep(Duration.ofSeconds(1));
-		}
-		pizza.updateState(State.READY);
-		notifySubscribers();
-	}
-
-	void logConsumedIngredients(Dish pizza) {
-		pizza.getIngredients().forEach(this.ingredientLogger::logIngredient);
-	}
-
-	private void sleep(Duration duration) {
-		try {
-			Thread.sleep(duration.toMillis());
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			LOGGER.info("The PizzaChef has been interrupted while doing important work!");
-		}
+		var chain = new FoodPreparationHandler(simulateProgress);
+		chain.setNext(new LogIngredientsHandler(ingredientLogger, simulateProgress))
+				.setNext(new BakingHandler(simulateProgress))
+				.setNext(new DishUpHandler(simulateProgress))
+				.setNext(new ServiceHandler(simulateProgress));
+		chain.handle(dish, subscribers);
 	}
 
 	@Override
 	public void subscribe(Subscriber<DishStateChange> subscriber) {
-		this.subscribers.add(subscriber);
+		subscribers.add(subscriber);
 	}
 
 	@Override
 	public void unsubscribe(Subscriber<DishStateChange> subscriber) {
-		this.subscribers.remove(subscriber);
+		subscribers.remove(subscriber);
 	}
 
-	@Override
-	public void notifySubscribers() {
-		final DishStateChange next = DishStateChange.of(this.dish);
-		this.subscribers.forEach(s -> s.update(next));
-		// clear all subscriptions when task is done
-		if (next.getState() == State.READY) {
-			this.subscribers.clear();
-		}
-	}
 }
