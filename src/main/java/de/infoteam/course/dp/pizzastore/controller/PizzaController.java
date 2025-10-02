@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-
 public interface PizzaController {
 
   @PostMapping("/close-kitchen")
@@ -17,9 +15,8 @@ public interface PizzaController {
   @GetMapping("/consumed-ingredients")
   ConsumedIngredientsResponse consumedIngredients();
 
-  @GetMapping("/queue")
-  List<PizzaResponse> queue();
-
-  @GetMapping("/pick-up")
-  List<PizzaResponse> pickUp();
+	/*
+	 * Die Methoden queue() und pickUp() sind für den Remote-Proxy irrelevant,
+	 * da sie nicht aus dem Code heraus aufgerufen werden.
+	 */
 }
