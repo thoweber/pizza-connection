@@ -42,9 +42,12 @@ Im `PizzaController` sollen zwei neue REST-Endpunkte geschaffen werden:
 
 _Verwendet das Observer-Pattern, um den Fortschritt zwischen `PizzaPerparationTask` und `PizzaService` auszutauschen. Das `PizzaRepository` soll dabei die "single source of truth" sein_ 😁
 
-**Als kleine Hilfestellung hier nochmal das Pattern in UML:**
 
-![Oberserver Pattern](src/main/resources/observer-pattern-uml.png "Observer Pattern")
+
+## **Viel Erfolg🍀 - ihr schafft das!**
+
+### Das Pattern als UML
+![UML](pattern-uml.png)
 
 1. Der Publisher veröffentlich Ereignisse, die für andere Objekte von Interesse sind.
 
@@ -66,19 +69,6 @@ _Verwendet das Observer-Pattern, um den Fortschritt zwischen `PizzaPerparationTa
 
 1. Der Client erstellt Publisher- und Subscriber-Objekte und registriert dann Subscriber für Publisher Updates.
 
-## **Viel Erfolg🍀 - ihr schafft das!**
-
-### Das Pattern als UML
-![UML](pattern-uml.png)
-
-Diese Implementierung nutzt das Prinzip der Objektkomposition: Der Adapter implementiert die Schnittstelle des einen Objekts und wickelt das andere ein. Sie kann in allen gängigen Programmiersprachen implementiert werden.
-
-1. Der Client ist eine Klasse, die die vorhandene Geschäftslogik des Programms enthält.
-2. Die Client-Schnittstelle beschreibt ein Protokoll, das andere Klassen folgen müssen, um mit dem Client-Code zusammenarbeiten zu können.
-3. Der Service ist eine nützliche Klasse (in der Regel eine Drittanbieter- oder Legacy-Klasse). Der Client kann diese Klasse nicht direkt verwenden, da sie eine inkompatible Schnittstelle hat.
-4. Der Adapter ist eine Klasse, die in der Lage ist, sowohl mit dem Client und dem Dienst arbeiten kann: Sie implementiert die Client-Schnittstelle und umhüllt das Dienstobjekt. Der Adapter empfängt Aufrufe vom Client über die Adapterschnittstelle und übersetzt sie an das verpackte Dienstobjekt in einem Format, das er versteht.
-5. Der Client-Code wird nicht an die konkrete Adapterklasse gekoppelt, solange er mit dem Adapter über die Client-Schnittstelle arbeitet. Dadurch können neue Typen von Adaptern in das Programm eingeführt werden, ohne den bestehenden Client-Code zu zerstören.  
-Dies kann nützlich sein, wenn die Schnittstelle der Serviceklasse geändert oder ersetzt wird.
 ----
 
 ### Maven verwenden
