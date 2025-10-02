@@ -55,14 +55,12 @@ public class PizzaControllerImpl implements PizzaController {
 	}
 
 	@GetMapping("/queue")
-	@Override
 	public List<PizzaResponse> queue() {
 		return this.pizzaRepository.findAll().stream().filter(p -> p.getState() != State.READY).map(this::toPizzaResponse)
 				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/pick-up")
-	@Override
 	public List<PizzaResponse> pickUp() {
 		return this.pizzaRepository.findAllByState(State.READY).stream().map(this::toPizzaResponse).collect(Collectors.toList());
 	}
