@@ -14,7 +14,8 @@ Es steht also ein Refactoring an. Der REST-Code zum Zugriff auf den `PizzaContro
 * `PizzaController` ist jetzt ein Interface, welches die Funktion des alten `PizzaController`s beschreibt
 
 ### Aufgabe
-* erstelle einen `PizzaControllerProxy`, der die Funktionen des `PizzaController`s zur Verfügung stellt. Der Proxy soll mit dem Controller über REST kommunizieren
+* erstelle einen `PizzaControllerProxy`, der die Funktionen des `PizzaController`s zur Verfügung stellt. Der Proxy soll mit dem Controller über REST kommunizieren.  
+  **Wichtig:** die Methoden ````
 * verwende den `PizzaControllerProxy` in der `PizzaStoreApp` und entferne sämtlichen REST-basierten Code in `PizzaStoreApp`
 * da du mit dem Proxy auch die länge der Warteschlange abfragen kannst, wird nach jeder Bestellung ausgegeben, wie lange die Schlange gerade ist
 
