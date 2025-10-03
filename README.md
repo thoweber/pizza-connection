@@ -52,10 +52,12 @@ Viel Erfolg beim Anwenden des Patterns🍀
 ### Das Pattern als UML
 ![UML](pattern-uml.png)
 
-1. Der ServiceInterface beschreibt den Interface der Service-Klasse. Der Proxy muss den Interface implementieren, um sich selbst als Service-Objekt auszugeben.
-2. Der Service ist eine Klasse, der einige Business-Logik bereitstellt.
-3. Die Proxy Klasse hat ein Referenzfeld, das auf ein Serviceobjekt zeigt. Nachdem der Proxy seien Verarbeitung abgeschlossen hat (z.B. lazy initialization, logging, access control, caching etc.) übergibt er die Anfrage an das Service-Objekt. Normalerweise verwalten Proxys den gesamten Lebenszyklus ihrer Service-Objekte.
-4. Der Client sollte sowohl mit Services als auch mit Proxys über dieselbe Schnittstelle arbeiten. Auf diese Weise können Sie einen Proxy in jeden Code übergeben, der ein Serviceobjekt erwartet.
+1. Der `Handler` deklariert die Schnittstelle, die für alle konkreten Handler gemeinsam ist. Sie enthält eine einzige Methode zur Bearbeitung von Anfragen, aber manchmal kann sie auch eine andere Methode zum Setzen des nächsten Handlers in der Kette enthalten.
+2. Der `BaseHandler` ist eine optionale Klasse, in die du den Boilerplate-Code, der von allen Handlern gemeinsam verwendet wird, einfügen kannst.
+3. Konkrete Handler (`ConcreteHandler`) enthalten den eigentlichen Code für die Bearbeitung von Anfragen.  
+   Bei Erhalt einer Anfrage muss jeder Handler entscheiden, ob er diese bearbeiten und zusätzlich entlang der Kette weiterleiten will.  
+   Der Client kann Ketten nur einmal oder dynamisch zusammenstellen, je nach Logik der Anwendung.
+
 
 ----
 
