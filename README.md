@@ -45,7 +45,7 @@ Und viele weitere Anpassungen, die sich aus den Umbennenungen und den neuen Elem
 ### Aufgabe
 Unser Schwachpunkt ist noch `FoodPreparationTask` (ehemals PizzaPreparationTask). Zwar konnten wir uns zunächst einmal mit einem If-Block behelfen und so den Betrieb aufrecht erhalten, aber diese Lösung skaliert nicht👎
 
-Wir haben etwas Recherche betrieben und möchten das Problem mit dem _Chain of Responsibility Pattern_ lösen: Jede einzelne Zubereitungsaufgabe soll dabei einen eigenen `Handler` verschoben werden.
+Wir haben etwas Recherche betrieben und möchten das Problem mit dem _Chain of Responsibility Pattern_ lösen: Jede einzelne Zubereitungsaufgabe soll dabei in einen eigenen `Handler` verschoben werden.
 
 Viel Erfolg beim Anwenden des Patterns🍀
 
