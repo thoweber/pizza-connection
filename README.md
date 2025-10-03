@@ -20,8 +20,15 @@ Es steht also ein Refactoring an. Der REST-Code zum Zugriff auf den `PizzaContro
 * da du mit dem Proxy auch die länge der Warteschlange abfragen kannst, wird nach jeder Bestellung ausgegeben, wie lange die Schlange gerade ist
 
 # Wichtige Tipps:
+* `RestTemplate` ist die Klasse in Spring, mit der du einfach einen Client für eine REST-Anfrage erstellen kannst.
 * ℹ Der Umgang mit einer Liste an Objekten/einem JSON-Array im Spring `RestTemplate` ist nicht sofort selbsterklären. Deshalb habe ich euch noch einen hilfreichen Link bereitgestellt:  
-  **Informationen zum [Arbeiten mit einer Liste von Objekten](https://www.baeldung.com/spring-rest-template-list) im Spring `RestTemplate`.**
+  **Informationen zum [Arbeiten mit einer Liste von Objekten](https://www.baeldung.com/spring-rest-template-list) im Spring `RestTemplate`.**  
+  _Beispiel:_
+  ```java
+  public List<Something> queue() {
+      return Arrays.asList(restTemplate.getForEntity("http://localhost:8080/something", Something[].class).getBody());
+  }
+  ```
 * Der `PizzaControllerProxy` benötigt die `@Component`-Annotation, damit er für die Dependency Injection von Spring verfügbar ist.
 * Den Aufruf des Endpunkts `/close-kitchen` kannst du wie folgt umsetzen:
   ```java
