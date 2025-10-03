@@ -42,7 +42,6 @@ public class FoodControllerProxy implements FoodController {
 		return Arrays.asList(restTemplate.getForEntity(serverAddress + queueRoute, FoodResponse[].class).getBody());
 	}
 
-	@Override
 	public List<FoodResponse> pickUp() {
 		return Arrays.asList(restTemplate.getForEntity(serverAddress + queueRoute, FoodResponse[].class).getBody());
 	}

@@ -20,6 +20,8 @@ public interface FoodController {
   @GetMapping("/queue")
   List<FoodResponse> queue();
 
-  @GetMapping("/pick-up")
-  List<FoodResponse> pickUp();
+	/*
+	 * Die Methoden queue() und pickUp() sind für den Remote-Proxy irrelevant,
+	 * da sie nicht aus dem Code heraus aufgerufen werden.
+	 */
 }

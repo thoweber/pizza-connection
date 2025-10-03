@@ -62,7 +62,6 @@ public class FoodControllerImpl implements FoodController {
 	}
 
 	@GetMapping("/pick-up")
-	@Override
 	public List<FoodResponse> pickUp() {
 		return this.dishRepository.findAllByState(State.READY).stream().map(this::toFoodResponse).collect(Collectors.toList());
 	}
